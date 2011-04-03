@@ -206,7 +206,8 @@ Kifu.Csa = {
   parse: function(source) {
     var kifu = {
       'board':  Kifu.Board(),
-      'format': 'csa'
+      'format': 'csa',
+      'moves':  Kifu.Move()
     };
 
     var lines = Kifu.Csa.toLines(source);
@@ -225,9 +226,19 @@ Kifu.Csa = {
     } else if (line == '-') {
       kifu['start_player'] = 'white';
       return true;
+    } else if (line.substr(0, 3) == "'* ") {
+      kifu['moves'].addComment(line.substr(3));
     }
 
     switch (line.charAt(0)) {
+    case '+':
+    case '-':
+      var from = [line.charAt(1)-'0', line.charAt(2)-'0'];
+      var to   = [line.charAt(3)-'0', line.charAt(4)-'0'];
+      var piece = line.substr(5, 2);
+      kifu['moves'].addMove(from, to, piece);
+      break;
+
     case 'N':
       var player = (line.charAt(1) == '+' ? 'black' : 'white') + 'Player';
       kifu[player] = line.substr(2);
@@ -293,6 +304,11 @@ Kifu.Csa = {
       }
       return false;
 
+    case 'T':
+      var period = parseInt(line.substr(1));
+      kifu['moves'].addPeriod(period);
+      break;
+
     case 'V':
       kifu['version'] = line.substr(1);
       return true;
@@ -315,6 +331,46 @@ Kifu.Csa = {
     return source.split("\r");
   }
 };
+
+
+/*
+ * Kifu.Move Object
+ */
+Kifu.Move = (function() { return new Kifu.Move.initialize(); });
+Kifu.Move.extend = Kifu.Move.prototype.extend = Kifu.extend;
+
+Kifu.Move.prototype.extend({
+  addComment: function(comment) {
+    this._moves[this._moves.length-1]['comment'] = comment;
+    return this;
+  },
+
+  addMove: function(from, to, piece) {
+    var move = this._moves[this._moves.length-1];
+    if (move['piece']) {
+      this._moves.push({});
+      move = this._moves[this._moves.length-1];
+    }
+
+    move['from']  = from;
+    move['to']    = to;
+    move['piece'] = piece;
+    return this;
+  },
+
+  addPeriod: function(period) {
+    this._moves[this._moves.length-1]['period'] = period;
+    return this;
+  }
+});
+
+Kifu.Move.extend({
+  initialize: function() {
+    this._moves = [{}];
+  }
+});
+
+Kifu.Move.initialize.prototype = Kifu.Move.prototype
 
 
 window.Kifu = Kifu;
