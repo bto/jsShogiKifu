@@ -219,11 +219,19 @@ Kifu.Csa = {
   },
 
   parseByLine: function(line, kifu) {
+    if (line == '+') {
+      kifu['start_player'] = 'black';
+      return true;
+    } else if (line == '-') {
+      kifu['start_player'] = 'white';
+      return true;
+    }
+
     switch (line.charAt(0)) {
     case 'N':
       var player = (line.charAt(1) == '+' ? 'black' : 'white') + 'Player';
       kifu[player] = line.substr(2);
-      break;
+      return true;
 
     case 'P':
       switch (line.charAt(1)) {
@@ -239,7 +247,7 @@ Kifu.Csa = {
           var piece = p_info.substr(2);
           kifu['board'].trash(x, y, piece);
         }
-        break;
+        return true;
 
       case '+':
       case '-':
@@ -258,12 +266,12 @@ Kifu.Csa = {
             kifu['board'].set(x, y, piece, black);
           }
         }
-        break;
+        return true;
 
       default:
         var y = line.charAt(1) - '0';
         if (y < 1 || 9 < y) {
-          break;
+          return false;
         }
         for (var i = 0; i < 9; i++) {
           var p_info = line.substr(2+i*3, 3);
@@ -281,14 +289,16 @@ Kifu.Csa = {
           var piece = p_info.substr(1, 2);
           kifu['board'].set(x, y, piece, black);
         }
-        break;
+        return true;
       }
-      break;
+      return false;
 
     case 'V':
       kifu['version'] = line.substr(1);
-      break;
+      return true;
     }
+
+    return false;
   },
 
   toLines: function(source) {
