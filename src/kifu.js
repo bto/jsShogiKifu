@@ -151,6 +151,14 @@ Kifu.Board.prototype.extend({
     return this;
   },
 
+  toObject: function() {
+    return {
+      'board':  this._board,
+      'pieces': this._pieces,
+      'stand':  this._stand
+    };
+  },
+
   trash: function(x, y, piece) {
     if (!piece) {
       piece = this._board[x][y]['piece'];
@@ -215,6 +223,12 @@ Kifu.Csa = {
       var line = lines[i];
       Kifu.Csa.parseByLine(line, kifu);
     }
+
+    var board = kifu['board'].toObject();
+    kifu['board']  = board['board'];
+    kifu['pieces'] = board['pieces'];
+    kifu['stand']  = board['stand'];
+    kifu['moves']  = kifu['moves'].toArray();
 
     return kifu;
   },
@@ -361,6 +375,10 @@ Kifu.Move.prototype.extend({
   addPeriod: function(period) {
     this._moves[this._moves.length-1]['period'] = period;
     return this;
+  },
+
+  toArray: function() {
+    return this._moves;
   }
 });
 
