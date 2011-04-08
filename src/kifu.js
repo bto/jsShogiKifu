@@ -224,12 +224,6 @@ Kifu.Csa = {
       Kifu.Csa.parseByLine(line, kifu);
     }
 
-    var board = kifu['board'].toObject();
-    kifu['board']  = board['board'];
-    kifu['pieces'] = board['pieces'];
-    kifu['stand']  = board['stand'];
-    kifu['moves']  = kifu['moves'].toArray();
-
     return kifu;
   },
 
@@ -252,6 +246,40 @@ Kifu.Csa = {
       var piece = line.substr(5, 2);
       kifu['moves'].addMove(from, to, piece);
       break;
+
+    case '$':
+      var pos   = line.indexOf(':');
+      var key   = line.substr(1, pos-1).toLowerCase();
+      var value = line.substr(pos+1);
+
+      switch (key) {
+      case 'end_time':
+      case 'start_time':
+        var date = new Date(0, 0, 0, 0, 0, 0);
+        var t = value.split(' ');
+        var t0 = t[0].split('/');
+        date.setYear(parseInt(t0[0]));
+        date.setMonth(parseInt(t0[1])-1);
+        date.setDate(parseInt(t0[2]));
+        if (t[1]) {
+          var t1 = t[1].split(':');
+          date.setHours(parseInt(t1[0]));
+          date.setMinutes(parseInt(t1[1]));
+          date.setSeconds(parseInt(t1[2]));
+        }
+        value = date;
+        break;
+
+      case 'time_limit':
+        var hours   = parseInt(value.substr(0, 2));
+        var minutes = parseInt(value.substr(3, 2));
+        var extra   = parseInt(value.substr(6));
+        value = {
+          'allotted': hours * 60 + minutes,
+          'extra': extra};
+      }
+
+      kifu[key] = value;
 
     case 'N':
       var player = (line.charAt(1) == '+' ? 'black' : 'white') + '_player';
