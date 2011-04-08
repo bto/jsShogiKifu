@@ -276,6 +276,21 @@ Kifu.Csa = {
       kifu[key] = value;
       return true;
 
+    case '%':
+      var value   = line.substr(1).toLowerCase();
+      var options = {};
+
+      switch (value.charAt(0)) {
+      case '+':
+      case '-':
+        options['player'] = value.charAt(0) == '+' ? 'black' : 'white';
+        value = value.substr(1);
+        break;
+      }
+
+      kifu['moves'].addSpecial(value, options);
+      return true;
+
     case '+':
     case '-':
       var from = [line.charAt(1)-'0', line.charAt(2)-'0'];
@@ -401,6 +416,15 @@ Kifu.Move.prototype.extend({
 
   addPeriod: function(period) {
     this._moves[this._moves.length-1]['period'] = period;
+    return this;
+  },
+
+  addSpecial: function(type, options) {
+    var move = this.newMove();
+    move['type'] = type;
+    for (var property in options) {
+      move[property] = options[property];
+    }
     return this;
   },
 
