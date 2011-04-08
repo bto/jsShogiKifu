@@ -27,7 +27,6 @@ Kifu.prototype.extend({
     }
     var klass = Kifu.capitalize(this._format);
     this._kifu = Kifu[klass].parse(this._source);
-    console.log(this._kifu);
     return this;
   }
 });
