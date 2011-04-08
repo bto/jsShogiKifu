@@ -25,8 +25,16 @@ Kifu.prototype.extend({
     if (format) {
       this._format = format;
     }
+
+    this._kifu = {
+      'board':  Kifu.Board(),
+      'format': 'csa',
+      'moves':  Kifu.Move()
+    };
+
     var klass = Kifu.capitalize(this._format);
-    this._kifu = Kifu[klass].parse(this._source);
+    Kifu[klass].parse(this._kifu, this._source);
+
     return this;
   }
 });
@@ -205,16 +213,73 @@ Kifu.Board.initialize.prototype = Kifu.Board.prototype
 
 
 /*
+ * Kifu.Move Object
+ */
+Kifu.Move = (function() { return new Kifu.Move.initialize(); });
+Kifu.Move.extend = Kifu.Move.prototype.extend = Kifu.extend;
+
+Kifu.Move.prototype.extend({
+  addComment: function(comment) {
+    this._moves[this._moves.length-1]['comment'] = comment;
+    return this;
+  },
+
+  addMove: function(from, to, piece) {
+    var move = this.newMove();
+    move['type']  = 'move';
+    move['from']  = from;
+    move['to']    = to;
+    move['piece'] = piece;
+    return this;
+  },
+
+  addPeriod: function(period) {
+    this._moves[this._moves.length-1]['period'] = period;
+    return this;
+  },
+
+  addSpecial: function(type, options) {
+    var move = this.newMove();
+    move['type'] = type;
+    for (var property in options) {
+      move[property] = options[property];
+    }
+    return this;
+  },
+
+  newMove: function() {
+    var move = this._moves[this._moves.length-1];
+    if (move['type']) {
+      this._moves.push({});
+      move = this._moves[this._moves.length-1];
+    }
+    return move;
+  },
+
+  toArray: function() {
+    return this._moves;
+  }
+});
+
+Kifu.Move.extend({
+  initialize: function() {
+    this._moves = [{}];
+  }
+});
+
+Kifu.Move.initialize.prototype = Kifu.Move.prototype
+
+
+window.Kifu = Kifu;
+})(window);
+
+
+/*
  * Kifu.Csa Object
  */
+(function(Kifu) {
 Kifu.Csa = {
-  parse: function(source) {
-    var kifu = {
-      'board':  Kifu.Board(),
-      'format': 'csa',
-      'moves':  Kifu.Move()
-    };
-
+  parse: function(kifu, source) {
     var lines = Kifu.Csa.toLines(source);
     for (var i in lines) {
       var line = lines[i];
@@ -245,18 +310,8 @@ Kifu.Csa = {
       switch (key) {
       case 'end_time':
       case 'start_time':
-        var date = new Date(0, 0, 0, 0, 0, 0);
-        var t = value.split(' ');
-        var t0 = t[0].split('/');
-        date.setYear(parseInt(t0[0]));
-        date.setMonth(parseInt(t0[1])-1);
-        date.setDate(parseInt(t0[2]));
-        if (t[1]) {
-          var t1 = t[1].split(':');
-          date.setHours(parseInt(t1[0]));
-          date.setMinutes(parseInt(t1[1]));
-          date.setSeconds(parseInt(t1[2]));
-        }
+        var date = new Date();
+        date.setTime(Date.parse(value));
         value = date;
         break;
 
@@ -388,67 +443,6 @@ Kifu.Csa = {
     return source.split("\r");
   }
 };
-
-
-/*
- * Kifu.Move Object
- */
-Kifu.Move = (function() { return new Kifu.Move.initialize(); });
-Kifu.Move.extend = Kifu.Move.prototype.extend = Kifu.extend;
-
-Kifu.Move.prototype.extend({
-  addComment: function(comment) {
-    this._moves[this._moves.length-1]['comment'] = comment;
-    return this;
-  },
-
-  addMove: function(from, to, piece) {
-    var move = this.newMove();
-    move['type']  = 'move';
-    move['from']  = from;
-    move['to']    = to;
-    move['piece'] = piece;
-    return this;
-  },
-
-  addPeriod: function(period) {
-    this._moves[this._moves.length-1]['period'] = period;
-    return this;
-  },
-
-  addSpecial: function(type, options) {
-    var move = this.newMove();
-    move['type'] = type;
-    for (var property in options) {
-      move[property] = options[property];
-    }
-    return this;
-  },
-
-  newMove: function() {
-    var move = this._moves[this._moves.length-1];
-    if (move['type']) {
-      this._moves.push({});
-      move = this._moves[this._moves.length-1];
-    }
-    return move;
-  },
-
-  toArray: function() {
-    return this._moves;
-  }
-});
-
-Kifu.Move.extend({
-  initialize: function() {
-    this._moves = [{}];
-  }
-});
-
-Kifu.Move.initialize.prototype = Kifu.Move.prototype
-
-
-window.Kifu = Kifu;
-})(window);
+})(Kifu);
 
 /* vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2: */
