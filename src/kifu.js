@@ -239,14 +239,6 @@ Kifu.Csa = {
     }
 
     switch (line.charAt(0)) {
-    case '+':
-    case '-':
-      var from = [line.charAt(1)-'0', line.charAt(2)-'0'];
-      var to   = [line.charAt(3)-'0', line.charAt(4)-'0'];
-      var piece = line.substr(5, 2);
-      kifu['moves'].addMove(from, to, piece);
-      break;
-
     case '$':
       var pos   = line.indexOf(':');
       var key   = line.substr(1, pos-1).toLowerCase();
@@ -280,6 +272,14 @@ Kifu.Csa = {
       }
 
       kifu[key] = value;
+
+    case '+':
+    case '-':
+      var from = [line.charAt(1)-'0', line.charAt(2)-'0'];
+      var to   = [line.charAt(3)-'0', line.charAt(4)-'0'];
+      var piece = line.substr(5, 2);
+      kifu['moves'].addMove(from, to, piece);
+      break;
 
     case 'N':
       var player = (line.charAt(1) == '+' ? 'black' : 'white') + '_player';
