@@ -236,6 +236,7 @@ Kifu.Csa = {
       return true;
     } else if (line.substr(0, 3) == "'* ") {
       kifu['moves'].addComment(line.substr(3));
+      return true;
     }
 
     switch (line.charAt(0)) {
@@ -269,10 +270,11 @@ Kifu.Csa = {
         value = {
           'allotted': hours * 60 + minutes,
           'extra': extra};
+        break;
       }
 
       kifu[key] = value;
-      break;
+      return true;
 
     case '+':
     case '-':
@@ -280,7 +282,7 @@ Kifu.Csa = {
       var to   = [line.charAt(3)-'0', line.charAt(4)-'0'];
       var piece = line.substr(5, 2);
       kifu['moves'].addMove(from, to, piece);
-      break;
+      return true;
 
     case 'N':
       var player = (line.charAt(1) == '+' ? 'black' : 'white') + '_player';
@@ -350,7 +352,7 @@ Kifu.Csa = {
     case 'T':
       var period = parseInt(line.substr(1));
       kifu['moves'].addPeriod(period);
-      break;
+      return true;
 
     case 'V':
       kifu['version'] = line.substr(1);
@@ -389,12 +391,8 @@ Kifu.Move.prototype.extend({
   },
 
   addMove: function(from, to, piece) {
-    var move = this._moves[this._moves.length-1];
-    if (move['piece']) {
-      this._moves.push({});
-      move = this._moves[this._moves.length-1];
-    }
-
+    var move = this.newMove();
+    move['type']  = 'move';
     move['from']  = from;
     move['to']    = to;
     move['piece'] = piece;
@@ -404,6 +402,15 @@ Kifu.Move.prototype.extend({
   addPeriod: function(period) {
     this._moves[this._moves.length-1]['period'] = period;
     return this;
+  },
+
+  newMove: function() {
+    var move = this._moves[this._moves.length-1];
+    if (move['type']) {
+      this._moves.push({});
+      move = this._moves[this._moves.length-1];
+    }
+    return move;
   },
 
   toArray: function() {
