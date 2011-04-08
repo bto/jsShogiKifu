@@ -254,7 +254,7 @@ Kifu.Csa = {
       break;
 
     case 'N':
-      var player = (line.charAt(1) == '+' ? 'black' : 'white') + 'Player';
+      var player = (line.charAt(1) == '+' ? 'black' : 'white') + '_player';
       kifu[player] = line.substr(2);
       return true;
 
