@@ -27,9 +27,9 @@ Kifu.prototype.extend({
     }
 
     this._kifu = {
-      'board':  Kifu.Board(),
-      'format': 'csa',
-      'moves':  Kifu.Move()
+      board:  Kifu.Board(),
+      format: format,
+      moves:  Kifu.Move()
     };
 
     var klass = Kifu.capitalize(this._format);
@@ -132,7 +132,7 @@ Kifu.Board.prototype.extend({
   },
 
   set: function(x, y, piece, black) {
-    this._board[x][y] = {'black': black, 'piece': piece};
+    this._board[x][y] = {black: black, piece: piece};
     this._pieces[piece] -= 1;
     return this;
   },
@@ -158,9 +158,9 @@ Kifu.Board.prototype.extend({
 
   toObject: function() {
     return {
-      'board':  this._board,
-      'pieces': this._pieces,
-      'stand':  this._stand
+      board:  this._board,
+      pieces: this._pieces,
+      stand:  this._stand
     };
   },
 
@@ -181,7 +181,7 @@ Kifu.Board.extend({
   initialize: function() {
     this._board  = Kifu.Board.empty();
     this._pieces = Kifu.Board.pieces();
-    this._stand  = {'black': {}, 'white': {}};
+    this._stand  = {black: {}, white: {}};
   },
 
   empty: function() {
@@ -197,14 +197,14 @@ Kifu.Board.extend({
 
   pieces: function() {
     return {
-      'FU': 18,
-      'KY':  4,
-      'KE':  4,
-      'GI':  4,
-      'KI':  4,
-      'KA':  2,
-      'HI':  2,
-      'OU':  2
+      FU: 18,
+      KY:  4,
+      KE:  4,
+      GI:  4,
+      KI:  4,
+      KA:  2,
+      HI:  2,
+      OU:  2
     };
   }
 });
@@ -220,7 +220,8 @@ Kifu.Move.extend = Kifu.Move.prototype.extend = Kifu.extend;
 
 Kifu.Move.prototype.extend({
   addComment: function(comment) {
-    this._moves[this._moves.length-1]['comment'] = comment;
+    var move = this._moves[this._moves.length-1];
+    move['comment'] = (move['comment'] || '') + comment + "\n";
     return this;
   },
 
@@ -320,8 +321,8 @@ Kifu.Csa = {
         var minutes = parseInt(value.substr(3, 2));
         var extra   = parseInt(value.substr(6));
         value = {
-          'allotted': hours * 60 + minutes,
-          'extra': extra};
+          allotted: hours * 60 + minutes,
+          extra: extra};
         break;
       }
 
