@@ -5,7 +5,7 @@
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 <script type="text/javascript" src="../src/kifu.js"></script>
 <script><!--
-  Kifu.ajax('./csa1.txt', 'csa', function(kifu) {
+  Kifu.ajax({'url': './csa1.txt'}, 'csa', function(kifu) {
     window.kifu = kifu;
     console.log(kifu);
   });

@@ -39,15 +39,13 @@ Kifu.extend({
     }
   },
 
-  ajax: function(url, format, func_obj) {
-    jQuery.ajax({
-      dataType: 'text',
-      type:     'GET',
-      url:      url,
-      success: function(source) {
-        func_obj(Kifu(source, format));
-      }
-    });
+  ajax: function(options, format, func_obj) {
+    options['dataType'] = 'text';
+    options['type']     = 'GET';
+    options['success']  = function(source) {
+      return func_obj(Kifu(source, format));
+    };
+    return jQuery.ajax(options);
   },
 
   capitalize: function(str) {
