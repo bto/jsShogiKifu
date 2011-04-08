@@ -272,6 +272,7 @@ Kifu.Csa = {
       }
 
       kifu[key] = value;
+      break;
 
     case '+':
     case '-':
