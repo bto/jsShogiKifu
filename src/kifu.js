@@ -225,12 +225,18 @@ Kifu.Move.prototype.extend({
     return this;
   },
 
-  addMove: function(from, to, piece) {
+  addMove: function(from, to, piece, options) {
     var move = this.newMove();
     move['type']  = 'move';
     move['from']  = from;
     move['to']    = to;
     move['piece'] = piece;
+    for (var property in options) {
+      move[property] = options[property];
+    }
+    if (to[0] == 0) {
+      move['to'] = this._moves[this._moves.length-2]['to'];
+    }
     return this;
   },
 
@@ -264,7 +270,7 @@ Kifu.Move.prototype.extend({
 
 Kifu.Move.extend({
   initialize: function() {
-    this._moves = [{}];
+    this._moves = [{type: 'init'}];
   }
 });
 
@@ -428,6 +434,200 @@ Kifu.Csa = {
     }
 
     return false;
+  },
+
+  toLines: function(source) {
+    var lines = source.split("\r\n");
+    if (lines.length > 1) {
+      return lines;
+    }
+
+    lines = source.split("\n");
+    if (lines.length > 1) {
+      return lines;
+    }
+
+    return source.split("\r");
+  }
+};
+})(Kifu);
+
+
+/*
+ * Kifu.Kif Object
+ */
+(function(Kifu) {
+
+var kifu_map = {
+  '同':   0,
+  '　':   0,
+  '１':   1,
+  '２':   2,
+  '３':   3,
+  '４':   4,
+  '５':   5,
+  '６':   6,
+  '７':   7,
+  '８':   8,
+  '９':   9,
+  '一':   1,
+  '二':   2,
+  '三':   3,
+  '四':   4,
+  '五':   5,
+  '六':   6,
+  '七':   7,
+  '八':   8,
+  '九':   9,
+  '歩':   'FU',
+  '香':   'KY',
+  '桂':   'KE',
+  '銀':   'GI',
+  '金':   'KI',
+  '角':   'KA',
+  '飛':   'HI',
+  '王':   'OU',
+  '玉':   'OU',
+  '歩成': 'TO',
+  '香成': 'NY',
+  '桂成': 'NK',
+  '銀成': 'NG',
+  '角成': 'UM',
+  '飛成': 'RY',
+  'と金': 'TO',
+  '成香': 'NY',
+  '成桂': 'NK',
+  '成銀': 'NG',
+  '馬':   'UM',
+  '龍':   'RY',
+};
+
+Kifu.Kif = {
+  parse: function(kifu, source) {
+    var lines = Kifu.Kif.toLines(source);
+    for (var i in lines) {
+      var line = lines[i];
+      Kifu.Kif.parseByLine(line, kifu);
+    }
+
+    console.log(kifu);
+    return kifu;
+  },
+
+  parseByLine: function(line, kifu) {
+    switch (line.charAt(0)) {
+    case '*':
+      kifu['moves'].addComment(line.substr(1));
+      return true;
+    }
+
+    if (line.match(/^\s+([0-9]+)\s+(.+)\s+\((.*)\)$/)) {
+      var num  = parseInt(RegExp.$1);
+      var move = Kifu.Kif.strip(RegExp.$2);
+      var time = Kifu.Kif.strip(RegExp.$3);
+
+      if (move == '投了') {
+        kifu['moves'].addSpecial('toryo');
+        return true;
+      }
+
+      var to = [kifu_map[move.charAt(0)], kifu_map[move.charAt(1)]];
+      if (move.substr(2).match(/(.*)\(([1-9])([1-9])\)/)) {
+        var piece = kifu_map[RegExp.$1];
+        var from  = [parseInt(RegExp.$2), parseInt(RegExp.$3)];
+        move.match(/(.*)\(/);
+        var str   = RegExp.$1;
+      } else {
+        var piece = kifu_map[move.charAt(2)];
+        var from  = [0, 0];
+        var str   = move;
+      }
+      console.log(from, to, piece, str);
+      kifu['moves'].addMove(from, to, piece, {str: str});
+
+      return true;
+    }
+
+    if (line.match(/(.+)：(.+)/)) {
+      var key   = RegExp.$1;
+      var value = Kifu.Kif.strip(RegExp.$2);
+
+      switch (key) {
+      case '対局ID':
+        kifu['kif'] = kifu['kif'] || {};
+        kifu['kif']['id'] = parseInt(value);
+        return true;
+
+      case '開始日時':
+        kifu['start_time'] = Kifu.Kif.toDate(value);
+        return true;
+
+      case '終了日時':
+        kifu['end_time'] = Kifu.Kif.toDate(value);
+        return true;
+
+      case '表題':
+        kifu['title'] = value;
+        return true;
+
+      case '棋戦':
+        kifu['event'] = value;
+        return true;
+
+      case '持ち時間':
+        if (value.match(/各([0-9]+)時間/)) {
+          kifu['time_limit'] = kifu['time_limit'] || {};
+          kifu['time_limit']['allotted'] = parseInt(RegExp.$1) * 60;
+        }
+        return true;
+
+      case '消費時間':
+        if (value.match(/[0-9]+▲([0-9]+)△([0-9]+)/)) {
+          kifu['time_consumed'] = {
+            black: parseInt(RegExp.$1),
+            white: parseInt(RegExp.$2)
+          };
+        }
+        return true;
+
+      case '場所':
+        kifu['site'] = value;
+        return true;
+
+      case '手合割':
+        switch (value) {
+        case '平手':
+        default:
+          kifu['board'].hirate();
+          break;
+        }
+        return true;
+
+      case '先手':
+        kifu['black_player'] = value;
+        return true;
+
+      case '後手':
+        kifu['white_player'] = value;
+        return true;
+
+      default:
+        kifu[key] = value;
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  strip: function(str) {
+    return str.replace(/^\s+/, '').replace(/\s+$/, '');
+  },
+
+  toDate: function(str) {
+    var date = new Date();
+    date.setTime(Date.parse(str));
+    return date;
   },
 
   toLines: function(source) {
