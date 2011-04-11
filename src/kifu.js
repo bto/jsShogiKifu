@@ -275,6 +275,10 @@ Kifu.Move.prototype.extend({
     return this;
   },
 
+  get: function(step) {
+    return this._moves[step];
+  },
+
   newMove: function() {
     var move = this._moves[this._moves.length-1];
     if (move['type']) {
