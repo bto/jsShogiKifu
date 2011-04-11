@@ -113,39 +113,45 @@ Kifu.Board.prototype.extend({
     return this._board;
   },
 
+  deploy: function(x, y, piece, black) {
+    this.set(x, y, piece, black);
+    this._pieces[piece] -= 1;
+    return this;
+  },
+
   get: function(x, y) {
     return this._board[x][y];
   },
 
   hirate: function() {
-    this.set(1, 9, 'KY', true);
-    this.set(2, 9, 'KE', true);
-    this.set(3, 9, 'GI', true);
-    this.set(4, 9, 'KI', true);
-    this.set(5, 9, 'OU', true);
-    this.set(6, 9, 'KI', true);
-    this.set(7, 9, 'GI', true);
-    this.set(8, 9, 'KE', true);
-    this.set(9, 9, 'KY', true);
-    this.set(8, 8, 'KA', true);
-    this.set(2, 8, 'HI', true);
+    this.deploy(1, 9, 'KY', true);
+    this.deploy(2, 9, 'KE', true);
+    this.deploy(3, 9, 'GI', true);
+    this.deploy(4, 9, 'KI', true);
+    this.deploy(5, 9, 'OU', true);
+    this.deploy(6, 9, 'KI', true);
+    this.deploy(7, 9, 'GI', true);
+    this.deploy(8, 9, 'KE', true);
+    this.deploy(9, 9, 'KY', true);
+    this.deploy(8, 8, 'KA', true);
+    this.deploy(2, 8, 'HI', true);
     for (i = 1; i <= 9; i++) {
-      this.set(i, 7, 'FU', true);
+      this.deploy(i, 7, 'FU', true);
     }
 
-    this.set(1, 1, 'KY', false);
-    this.set(2, 1, 'KE', false);
-    this.set(3, 1, 'GI', false);
-    this.set(4, 1, 'KI', false);
-    this.set(5, 1, 'OU', false);
-    this.set(6, 1, 'KI', false);
-    this.set(7, 1, 'GI', false);
-    this.set(8, 1, 'KE', false);
-    this.set(9, 1, 'KY', false);
-    this.set(2, 2, 'KA', false);
-    this.set(8, 2, 'HI', false);
+    this.deploy(1, 1, 'KY', false);
+    this.deploy(2, 1, 'KE', false);
+    this.deploy(3, 1, 'GI', false);
+    this.deploy(4, 1, 'KI', false);
+    this.deploy(5, 1, 'OU', false);
+    this.deploy(6, 1, 'KI', false);
+    this.deploy(7, 1, 'GI', false);
+    this.deploy(8, 1, 'KE', false);
+    this.deploy(9, 1, 'KY', false);
+    this.deploy(2, 2, 'KA', false);
+    this.deploy(8, 2, 'HI', false);
     for (i = 1; i <= 9; i++) {
-      this.set(i, 3, 'FU', false);
+      this.deploy(i, 3, 'FU', false);
     }
 
     return this;
@@ -162,7 +168,6 @@ Kifu.Board.prototype.extend({
 
   set: function(x, y, piece, black) {
     this._board[x][y] = {black: black, piece: piece};
-    this._pieces[piece] -= 1;
     return this;
   },
 
@@ -442,7 +447,7 @@ Kifu.Csa = {
           }
           var x     = 9 - i;
           var piece = p_info.substr(1, 2);
-          kifu['board'].set(x, y, piece, black);
+          kifu['board'].deploy(x, y, piece, black);
         }
         return true;
       }
