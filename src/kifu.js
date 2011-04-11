@@ -75,6 +75,16 @@ Kifu.prototype.extend({
     this._step  = 0;
 
     return this;
+  },
+
+  prev: function() {
+    var move = this._kifu['moves'].get(this._step);
+    if (move) {
+      this._board.moveReverse(move);
+      this._black = move['black'];
+      this._step--
+    }
+    return move;
   }
 });
 
@@ -214,6 +224,29 @@ Kifu.Board.prototype.extend({
       this.trash(x1, y1);
     } else {
       this.trashStand(move['to']['piece'], black);
+    }
+
+    return this;
+  },
+
+  moveReverse: function(move) {
+    var x1    = move['from']['x'];
+    var y1    = move['from']['y'];
+    var x2    = move['to']['x'];
+    var y2    = move['to']['y'];
+    var black = move['black'];
+
+    if (x1) {
+      this.set(x1, y1, move['from']['piece']);
+    } else {
+      this.setStand(move['from']['piece'], black);
+    }
+
+    if (move['stand']) {
+      this.set(x2, y2, move['stand']['piece'], !black);
+      this.trashStand(move['stand']['stand'], black);
+    } else {
+      this.trash(x2, y2);
     }
 
     return this;

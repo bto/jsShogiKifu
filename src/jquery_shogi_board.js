@@ -45,6 +45,28 @@ var moveNext = function(kifu, config) {
   }
 };
 
+var movePrev = function(kifu, config) {
+  var move   = kifu.prev();
+  var from   = move['from'];
+  var to     = move['to'];
+  var black  = move['black'];
+  var piece  = to['piece'];
+  var stand  = move['stand'];
+
+  if (from['x']) {
+    pieceSet(from['x'], from['y'], from['piece'], black, config);
+  } else {
+    standSet(from['piece'], black, config);
+  }
+
+  if (stand) {
+    pieceSet(to['x'], to['y'], stand['piece'], !black, config);
+    standRemove(stand['stand'], black, config);
+  } else {
+    pieceRemove(to['x'], to['y'], config);
+  }
+};
+
 var pieceImgTag = function(piece, black, config) {
   var name = piece.toLowerCase();
   if (!black) {
@@ -117,6 +139,10 @@ $.fn.shogiBoard = function(kifu, options) {
 
     $('#jsb_next_'+suffix).click(function() {
       return moveNext(kifu, config);
+    });
+
+    $('#jsb_prev_'+suffix).click(function() {
+      return movePrev(kifu, config);
     });
   };
   return $.ajax(ajax_opts);
