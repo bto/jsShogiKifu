@@ -19,14 +19,40 @@ var boardSet = function(board, config) {
       if (!piece) {
         continue;
       }
-      cell.append(pieceImgTag(piece, config));
+      cell.append(pieceImgTag(piece['piece'], piece['black'], config));
     }
   }
 };
 
-var pieceImgTag = function(piece, config) {
-  var name = piece['piece'].toLowerCase();
-  if (!piece['black']) {
+var moveNext = function(kifu, config) {
+  var suffix      = config['suffix'];
+  var move        = kifu.next();
+  var x1          = move['from'][0];
+  var y1          = move['from'][1];
+  var x2          = move['to'][0];
+  var y2          = move['to'][1];
+  var black       = move['black'];
+  var piece       = move['piece'];
+  var stand_piece = move['stand'];
+
+  if (x1 == 0) {
+    standCell(black, piece, suffix).find('img').last().remove();
+  } else {
+    boardCell(x1, y1, suffix).empty();
+  }
+
+  boardCell(x2, y2, suffix).empty()
+    .append(pieceImgTag(piece, black, config));
+
+  if (stand_piece) {
+    standCell(black, stand_piece, suffix)
+      .append(pieceImgTag(stand_piece, black, config));
+  }
+};
+
+var pieceImgTag = function(piece, black, config) {
+  var name = piece.toLowerCase();
+  if (!black) {
     name += '_r';
   }
   var image_url = config['url_prefix'] + '/images/' + name + '.png';
@@ -37,6 +63,12 @@ var pieceImgTag = function(piece, config) {
 var playerSet = function(info, suffix) {
   $('#jsb_player_black_'+suffix).empty().append('▲'+info['player_black']);
   $('#jsb_player_white_'+suffix).empty().append('▽'+info['player_white']);
+};
+
+var standCell = function(black, piece, suffix) {
+  var player = black ? 'black' : 'white';
+  piece = piece.toLowerCase();
+  return $('#jsb_stand_'+player+'_'+piece+'_'+suffix);
 };
 
 $.fn.shogiBoard = function(kifu, options) {
@@ -69,6 +101,10 @@ $.fn.shogiBoard = function(kifu, options) {
     boardSet(kifu.boardInit(), config);
 
     playerSet(info, suffix);
+
+    $('#jsb_next_'+suffix).click(function() {
+      return moveNext(kifu, config);
+    });
   };
   return $.ajax(ajax_opts);
 };
