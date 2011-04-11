@@ -306,10 +306,10 @@ Kifu.Csa = {
 
   parseByLine: function(line, kifu) {
     if (line == '+') {
-      kifu['info']['start_player'] = 'black';
+      kifu['info']['player_start'] = 'black';
       return true;
     } else if (line == '-') {
-      kifu['info']['start_player'] = 'white';
+      kifu['info']['player_start'] = 'white';
       return true;
     } else if (line.substr(0, 3) == "'* ") {
       kifu['moves'].addComment(line.substr(3));
@@ -367,7 +367,7 @@ Kifu.Csa = {
       return true;
 
     case 'N':
-      var player = (line.charAt(1) == '+' ? 'black' : 'white') + '_player';
+      var player = 'player_' + (line.charAt(1) == '+' ? 'black' : 'white');
       kifu['info'][player] = line.substr(2);
       return true;
 
@@ -610,11 +610,11 @@ Kifu.Kif = {
         return true;
 
       case '先手':
-        kifu['info']['black_player'] = value;
+        kifu['info']['player_black'] = value;
         return true;
 
       case '後手':
-        kifu['info']['white_player'] = value;
+        kifu['info']['player_white'] = value;
         return true;
 
       default:
