@@ -21,8 +21,12 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 }
 
 Kifu.prototype.extend({
+  boardInit: function() {
+    return this._kifu['board']._board;
+  },
+
   info: function() {
-    return this._kif['info'];
+    return this._kifu['info'];
   },
 
   parse: function(format) {
