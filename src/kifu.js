@@ -68,6 +68,19 @@ Kifu.extend({
     return str.charAt(0).toUpperCase() + str.substr(1);
   },
 
+  clone: function(source) {
+    var result = {};
+    for (var property in source) {
+      var value = source[property];
+      if (typeof value == 'object') {
+        result[property] = Kifu.clone(value);
+      } else {
+        result[property] = value;
+      }
+    }
+    return result;
+  },
+
   load: function(source) {
     var element = document.getElementById(source);
     if (element) {
