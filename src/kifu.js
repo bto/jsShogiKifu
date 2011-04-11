@@ -21,19 +21,17 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 }
 
 Kifu.prototype.extend({
+  info: function() {
+    return this._kif['info'];
+  },
+
   parse: function(format) {
     if (format) {
-      this._format = format;
+      this._kifu['info']['format'] = format;
     }
 
-    this._kifu = {
-      board:  Kifu.Board(),
-      format: format,
-      moves:  Kifu.Move()
-    };
-
-    var klass = Kifu.capitalize(this._format);
-    Kifu[klass].parse(this._kifu, this._source);
+    var klass = Kifu.capitalize(this._kifu['info']['format']);
+    Kifu[klass].parse(this._kifu);
 
     return this;
   }
@@ -41,7 +39,13 @@ Kifu.prototype.extend({
 
 Kifu.extend({
   initialize: function(source, format) {
-    this._source = Kifu.load(source);
+    this._kifu = {
+      board: Kifu.Board(),
+      info:  {},
+      moves: Kifu.Move()
+    };
+
+    this._kifu['info']['source'] = Kifu.load(source);
     if (format) {
       this.parse(format);
     }
@@ -286,8 +290,8 @@ window.Kifu = Kifu;
  */
 (function(Kifu) {
 Kifu.Csa = {
-  parse: function(kifu, source) {
-    var lines = Kifu.Csa.toLines(source);
+  parse: function(kifu) {
+    var lines = Kifu.Csa.toLines(kifu['info']['source']);
     for (var i in lines) {
       var line = lines[i];
       Kifu.Csa.parseByLine(line, kifu);
@@ -298,10 +302,10 @@ Kifu.Csa = {
 
   parseByLine: function(line, kifu) {
     if (line == '+') {
-      kifu['start_player'] = 'black';
+      kifu['info']['start_player'] = 'black';
       return true;
     } else if (line == '-') {
-      kifu['start_player'] = 'white';
+      kifu['info']['start_player'] = 'white';
       return true;
     } else if (line.substr(0, 3) == "'* ") {
       kifu['moves'].addComment(line.substr(3));
@@ -332,7 +336,7 @@ Kifu.Csa = {
         break;
       }
 
-      kifu[key] = value;
+      kifu['info'][key] = value;
       return true;
 
     case '%':
@@ -360,7 +364,7 @@ Kifu.Csa = {
 
     case 'N':
       var player = (line.charAt(1) == '+' ? 'black' : 'white') + '_player';
-      kifu[player] = line.substr(2);
+      kifu['info'][player] = line.substr(2);
       return true;
 
     case 'P':
@@ -429,7 +433,7 @@ Kifu.Csa = {
       return true;
 
     case 'V':
-      kifu['version'] = line.substr(1);
+      kifu['info']['version'] = line.substr(1);
       return true;
     }
 
@@ -503,14 +507,13 @@ var kifu_map = {
 };
 
 Kifu.Kif = {
-  parse: function(kifu, source) {
-    var lines = Kifu.Kif.toLines(source);
+  parse: function(kifu) {
+    var lines = Kifu.Kif.toLines(kifu['info']['source']);
     for (var i in lines) {
       var line = lines[i];
       Kifu.Kif.parseByLine(line, kifu);
     }
 
-    console.log(kifu);
     return kifu;
   },
 
@@ -542,7 +545,6 @@ Kifu.Kif = {
         var from  = [0, 0];
         var str   = move;
       }
-      console.log(from, to, piece, str);
       kifu['moves'].addMove(from, to, piece, {str: str});
 
       return true;
@@ -554,36 +556,36 @@ Kifu.Kif = {
 
       switch (key) {
       case '対局ID':
-        kifu['kif'] = kifu['kif'] || {};
-        kifu['kif']['id'] = parseInt(value);
+        kifu['info']['kif'] = kifu['info']['kif'] || {};
+        kifu['info']['kif']['id'] = parseInt(value);
         return true;
 
       case '開始日時':
-        kifu['start_time'] = Kifu.Kif.toDate(value);
+        kifu['info']['start_time'] = Kifu.Kif.toDate(value);
         return true;
 
       case '終了日時':
-        kifu['end_time'] = Kifu.Kif.toDate(value);
+        kifu['info']['end_time'] = Kifu.Kif.toDate(value);
         return true;
 
       case '表題':
-        kifu['title'] = value;
+        kifu['info']['title'] = value;
         return true;
 
       case '棋戦':
-        kifu['event'] = value;
+        kifu['info']['event'] = value;
         return true;
 
       case '持ち時間':
         if (value.match(/各([0-9]+)時間/)) {
-          kifu['time_limit'] = kifu['time_limit'] || {};
-          kifu['time_limit']['allotted'] = parseInt(RegExp.$1) * 60;
+          kifu['info']['time_limit'] = kifu['info']['time_limit'] || {};
+          kifu['info']['time_limit']['allotted'] = parseInt(RegExp.$1) * 60;
         }
         return true;
 
       case '消費時間':
         if (value.match(/[0-9]+▲([0-9]+)△([0-9]+)/)) {
-          kifu['time_consumed'] = {
+          kifu['info']['time_consumed'] = {
             black: parseInt(RegExp.$1),
             white: parseInt(RegExp.$2)
           };
@@ -591,7 +593,7 @@ Kifu.Kif = {
         return true;
 
       case '場所':
-        kifu['site'] = value;
+        kifu['info']['site'] = value;
         return true;
 
       case '手合割':
@@ -604,15 +606,15 @@ Kifu.Kif = {
         return true;
 
       case '先手':
-        kifu['black_player'] = value;
+        kifu['info']['black_player'] = value;
         return true;
 
       case '後手':
-        kifu['white_player'] = value;
+        kifu['info']['white_player'] = value;
         return true;
 
       default:
-        kifu[key] = value;
+        kifu['info'][key] = value;
         return true;
       }
     }
