@@ -178,19 +178,21 @@ Kifu.Board.prototype.extend({
     var y1    = move['from'][1];
     var x2    = move['to'][0];
     var y2    = move['to'][1];
-    var from  = this._board[x1][y1];
     var to    = this._board[x2][y2];
-    var black = from['black'];
+    var black = move['black'];
 
     if (to) {
-      var piece = piece_stand_map[to['piece']];
-      this.setStand(piece, black);
-      move['stand'] = piece;
+      var stand_piece = piece_stand_map[to['piece']];
+      this.setStand(stand_piece, black);
+      move['stand'] = stand_piece;
     }
 
     this.set(x2, y2, move['piece'], black);
-    this.trash(x1, y1);
-    move['black'] = black;
+    if (x1) {
+      this.trash(x1, y1);
+    } else {
+      this.trashStand(move['piece'], black);
+    }
 
     return this;
   },
@@ -237,6 +239,16 @@ Kifu.Board.prototype.extend({
     }
 
     this._board[x][y] = null;
+    return this;
+  },
+
+  trashStand: function(piece, black) {
+    var player = black ? 'black' : 'white';
+    var stand  = this._stand[player];
+    stand[piece] -= 1;
+    if (stand[piece] == 0) {
+      stand[piece] = null;
+    }
     return this;
   }
 });
