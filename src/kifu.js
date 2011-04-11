@@ -195,24 +195,25 @@ Kifu.Board.prototype.extend({
   },
 
   move: function(move) {
-    var x1    = move['from'][0];
-    var y1    = move['from'][1];
-    var x2    = move['to'][0];
-    var y2    = move['to'][1];
+    var x1    = move['from']['x'];
+    var y1    = move['from']['y'];
+    var x2    = move['to']['x'];
+    var y2    = move['to']['y'];
     var to    = this._board[x2][y2];
     var black = move['black'];
 
     if (to) {
       var stand_piece = piece_stand_map[to['piece']];
       this.setStand(stand_piece, black);
-      move['stand'] = stand_piece;
+      move['stand'] = {piece: to['piece'], stand: stand_piece};
     }
 
-    this.set(x2, y2, move['piece'], black);
+    this.set(x2, y2, move['to']['piece'], black);
     if (x1) {
+      move['from']['piece'] = this._board[x1][y1]['piece'];
       this.trash(x1, y1);
     } else {
-      this.trashStand(move['piece'], black);
+      this.trashStand(move['to']['piece'], black);
     }
 
     return this;
@@ -325,14 +326,15 @@ Kifu.Move.prototype.extend({
   addMove: function(from, to, piece, options) {
     var move = this.newMove();
     move['type']  = 'move';
-    move['from']  = from;
-    move['to']    = to;
-    move['piece'] = piece;
+    move['from']  = {x: from[0], y: from[1]};
+    if (to[0] == 0) {
+      var to_prev = this._moves[this._moves.length-2]['to'];
+      move['to'] = {piece: piece, x: to_prev['x'], y: to_prev['y']};
+    } else {
+      move['to'] = {piece: piece, x: to[0], y: to[1]};
+    }
     for (var property in options) {
       move[property] = options[property];
-    }
-    if (to[0] == 0) {
-      move['to'] = this._moves[this._moves.length-2]['to'];
     }
     return this;
   },

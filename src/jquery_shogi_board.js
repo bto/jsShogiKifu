@@ -25,28 +25,23 @@ var boardSet = function(board, config) {
 };
 
 var moveNext = function(kifu, config) {
-  var suffix      = config['suffix'];
-  var move        = kifu.next();
-  var x1          = move['from'][0];
-  var y1          = move['from'][1];
-  var x2          = move['to'][0];
-  var y2          = move['to'][1];
-  var black       = move['black'];
-  var piece       = move['piece'];
-  var stand_piece = move['stand'];
+  var move   = kifu.next();
+  var from   = move['from'];
+  var to     = move['to'];
+  var black  = move['black'];
+  var piece  = to['piece'];
+  var stand  = move['stand'];
 
-  if (x1 == 0) {
-    standCell(black, piece, suffix).find('img').last().remove();
+  if (from['x'] == 0) {
+    standRemove(piece, black, config);
   } else {
-    boardCell(x1, y1, suffix).empty();
+    pieceRemove(from['x'], from['y'], config);
   }
 
-  boardCell(x2, y2, suffix).empty()
-    .append(pieceImgTag(piece, black, config));
+  pieceSet(to['x'], to['y'], piece, black, config);
 
-  if (stand_piece) {
-    standCell(black, stand_piece, suffix)
-      .append(pieceImgTag(stand_piece, black, config));
+  if (stand) {
+    standSet(stand['stand'], black, config);
   }
 };
 
@@ -60,6 +55,15 @@ var pieceImgTag = function(piece, black, config) {
   return '<img src="' + image_url + '" />';
 };
 
+var pieceRemove = function(x, y, config) {
+  return boardCell(x, y, config['suffix']).empty();
+};
+
+var pieceSet = function(x, y, piece, black, config) {
+  return boardCell(x, y, config['suffix']).empty()
+    .append(pieceImgTag(piece, black, config));
+};
+
 var playerSet = function(info, suffix) {
   $('#jsb_player_black_'+suffix).empty().append('▲'+info['player_black']);
   $('#jsb_player_white_'+suffix).empty().append('▽'+info['player_white']);
@@ -69,6 +73,15 @@ var standCell = function(black, piece, suffix) {
   var player = black ? 'black' : 'white';
   piece = piece.toLowerCase();
   return $('#jsb_stand_'+player+'_'+piece+'_'+suffix);
+};
+
+var standRemove = function(piece, black, config) {
+  standCell(black, piece, config['suffix']).find('img').last().remove();
+};
+
+var standSet = function(piece, black, config) {
+  standCell(black, piece, config['suffix'])
+    .append(pieceImgTag(piece, black, config));
 };
 
 $.fn.shogiBoard = function(kifu, options) {
