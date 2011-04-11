@@ -37,8 +37,25 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 }
 
 Kifu.prototype.extend({
+  board: function() {
+    return this._board;
+  },
+
   boardInit: function() {
     return this._kifu['board'].board();
+  },
+
+  next: function() {
+    var move = this._kifu['moves'].get(this._step+1);
+    if (move) {
+      if (typeof move['black'] == 'undefined') {
+        move['black'] = this._black;
+      }
+      this._board.move(move);
+      this._black = !move['black'];
+      this._step++;
+    }
+    return move;
   },
 
   info: function() {
@@ -52,6 +69,10 @@ Kifu.prototype.extend({
 
     var klass = Kifu.capitalize(this._kifu['info']['format']);
     Kifu[klass].parse(this._kifu);
+
+    this._black = this._kifu['info']['player_start'] == 'black';
+    this._board = Kifu.clone(this._kifu['board']);
+    this._step  = 0;
 
     return this;
   }
