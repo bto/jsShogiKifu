@@ -78,7 +78,6 @@ Kifu.extend({
         } else {
           result[property] = value;
         }
-        result[property] = Kifu.clone(value);
       } else {
         result[property] = value;
       }
