@@ -73,6 +73,11 @@ Kifu.extend({
     for (var property in source) {
       var value = source[property];
       if (typeof value == 'object') {
+        if (value) {
+          result[property] = Kifu.clone(value);
+        } else {
+          result[property] = value;
+        }
         result[property] = Kifu.clone(value);
       } else {
         result[property] = value;
