@@ -61,7 +61,7 @@ Kifu.extend({
   initialize: function(source, format) {
     this._kifu = {
       board: Kifu.Board(),
-      info:  {},
+      info:  {player_start: 'black'},
       moves: Kifu.Move()
     };
 
