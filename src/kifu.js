@@ -22,7 +22,7 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 
 Kifu.prototype.extend({
   boardInit: function() {
-    return this._kifu['board']._board;
+    return this._kifu['board'].board();
   },
 
   info: function() {
@@ -92,6 +92,10 @@ Kifu.Board = (function() { return new Kifu.Board.initialize(); });
 Kifu.Board.extend = Kifu.Board.prototype.extend = Kifu.extend;
 
 Kifu.Board.prototype.extend({
+  board: function() {
+    return this._board;
+  },
+
   get: function(x, y) {
     return this._board[x][y];
   },
