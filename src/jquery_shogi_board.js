@@ -34,6 +34,11 @@ var pieceImgTag = function(piece, config) {
   return '<img src="' + image_url + '" />';
 };
 
+var playerSet = function(info, suffix) {
+  $('#jsb_player_black_'+suffix).empty().append('▲'+info['player_black']);
+  $('#jsb_player_white_'+suffix).empty().append('▽'+info['player_white']);
+};
+
 $.fn.shogiBoard = function(kifu, options) {
   var config = {
     url_prefix: '.'
@@ -56,8 +61,14 @@ $.fn.shogiBoard = function(kifu, options) {
   ajax_opts['type']     = 'GET';
   ajax_opts['url']      = config['url_html'];
   ajax_opts['success']  = function(source) {
-    config['element'].append(source.replace(/%suffix%/g, config['suffix']));
+    var info   = kifu.info();
+    var suffix = config['suffix'];
+
+    config['element'].append(source.replace(/%suffix%/g, suffix));
+
     boardSet(kifu.boardInit(), config);
+
+    playerSet(info, suffix);
   };
   return $.ajax(ajax_opts);
 };
