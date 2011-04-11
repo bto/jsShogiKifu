@@ -168,14 +168,6 @@ Kifu.Board.prototype.extend({
     return this;
   },
 
-  toObject: function() {
-    return {
-      board:  this._board,
-      pieces: this._pieces,
-      stand:  this._stand
-    };
-  },
-
   trash: function(x, y, piece) {
     if (!piece) {
       piece = this._board[x][y]['piece'];
