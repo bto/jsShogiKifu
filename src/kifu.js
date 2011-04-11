@@ -423,7 +423,8 @@ Kifu.Csa = {
       var from = [line.charAt(1)-'0', line.charAt(2)-'0'];
       var to   = [line.charAt(3)-'0', line.charAt(4)-'0'];
       var piece = line.substr(5, 2);
-      kifu['moves'].addMove(from, to, piece);
+      var black = '+' ? true : false;
+      kifu['moves'].addMove(from, to, piece, {black: black});
       return true;
 
     case 'N':
