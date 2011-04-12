@@ -332,7 +332,11 @@ Kifu.Board.prototype.extend({
 
   standTrash: function(piece, black) {
     var player = black ? 'black' : 'white';
-    this._stand[player][piece]--;
+    var stand = this._stand[player];
+    if (!stand[piece]) {
+      return false;
+    }
+    stand[piece]--;
     return this;
   }
 });
