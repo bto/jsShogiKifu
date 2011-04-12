@@ -65,17 +65,14 @@ module('Kifu.Board', {
 });
 
 test('empty board', 1, function() {
-  var empty_board = {
-    1: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null},
-    2: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null},
-    3: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null},
-    4: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null},
-    5: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null},
-    6: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null},
-    7: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null},
-    8: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null},
-    9: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null}};
-  same(Kifu.Board.empty(), empty_board, 'empty board');
+  var board = {};
+  for (var i = 1; i <= 9; i++) {
+    board[i] = {}
+    for (var j = 1; j <= 9; j++) {
+      board[i][j] = null;
+    }
+  };
+  same(Kifu.Board.empty(), board, 'empty board');
 });
 
 test('default pieces', 1, function() {
@@ -142,6 +139,116 @@ test('get and set', 6, function() {
   same(kifu_board.get(8, 1), null, '81 null');
   ok(kifu_board.set(8, 1, 'KE', false), '81KE');
   same(kifu_board.get(8, 1), piece, '81KE');
+});
+
+test('hirate', 4, function() {
+  var board = {
+    1: {
+      1: {black: false, piece: 'KY'},
+      2: null,
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: null,
+      9: {black: true, piece: 'KY'}},
+    2: {
+      1: {black: false, piece: 'KE'},
+      2: {black: false, piece: 'KA'},
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: {black: true, piece: 'HI'},
+      9: {black: true, piece: 'KE'}},
+    3: {
+      1: {black: false, piece: 'GI'},
+      2: null,
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: null,
+      9: {black: true, piece: 'GI'}},
+    4: {
+      1: {black: false, piece: 'KI'},
+      2: null,
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: null,
+      9: {black: true, piece: 'KI'}},
+    5: {
+      1: {black: false, piece: 'OU'},
+      2: null,
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: null,
+      9: {black: true, piece: 'OU'}},
+    6: {
+      1: {black: false, piece: 'KI'},
+      2: null,
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: null,
+      9: {black: true, piece: 'KI'}},
+    7: {
+      1: {black: false, piece: 'GI'},
+      2: null,
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: null,
+      9: {black: true, piece: 'GI'}},
+    8: {
+      1: {black: false, piece: 'KE'},
+      2: {black: false, piece: 'HI'},
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: {black: true, piece: 'KA'},
+      9: {black: true, piece: 'KE'}},
+    9: {
+      1: {black: false, piece: 'KY'},
+      2: null,
+      3: {black: false, piece: 'FU'},
+      4: null,
+      5: null,
+      6: null,
+      7: {black: true, piece: 'FU'},
+      8: null,
+      9: {black: true, piece: 'KY'}},
+  };
+
+  var pieces = {
+    FU: 0,
+    KY: 0,
+    KE: 0,
+    GI: 0,
+    KI: 0,
+    KA: 0,
+    HI: 0,
+    OU: 0};
+
+  ok(kifu_board.hirate(), 'hirate');
+  same(kifu_board.board(), board, 'hirate board');
+  same(kifu_board.pieces(), pieces, 'hirate pieces');
+  same(kifu_board.stand(), {black: {}, white: {}}, 'hirate stand');
 });
 
 
