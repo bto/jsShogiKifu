@@ -35,7 +35,7 @@ test('parse player', 4, function() {
   same(info['player_white'], '升田幸三', 'check white player');
 });
 
-test('parse info', 0, function() {
+test('parse info', 18, function() {
   var kifu = kifu_obj.kifu();
   var info = kifu['info'];
 
