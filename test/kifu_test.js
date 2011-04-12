@@ -95,50 +95,50 @@ test('initialization', 3, function() {
   same(board.stand(),  {black: {}, white: {}}, 'check stand');
 });
 
-test('deploy', 13, function() {
+test('cellDeploy', 13, function() {
   var board  = Kifu.Board.empty();
   var pieces = Kifu.Board.pieces();
 
   // black: 18FU
   board[1][8] = {black: true, piece: 'FU'};
   pieces['FU'] = 17;
-  ok(kifu_board.deploy(1, 8, 'FU', true));
+  ok(kifu_board.cellDeploy(1, 8, 'FU', true));
   same(kifu_board.board(),  board,  'board1');
   same(kifu_board.pieces(), pieces, 'pieces1');
 
   // white: 73KA
   board[7][3] = {black: false, piece: 'KA'};
   pieces['KA'] = 1;
-  ok(kifu_board.deploy(7, 3, 'KA', false));
+  ok(kifu_board.cellDeploy(7, 3, 'KA', false));
   same(kifu_board.board(),  board,  'board2');
   same(kifu_board.pieces(), pieces, 'pieces2');
 
   // white: 73KA fail
-  same(kifu_board.deploy(7, 3, 'KA', true), false, 'double deployment');
+  same(kifu_board.cellDeploy(7, 3, 'KA', true), false, 'double deployment');
   same(kifu_board.board(),  board,  'board2 not changed');
   same(kifu_board.pieces(), pieces, 'pieces2 not changed');
 
   // 74KA: success, 75KA: fail(lack of pieces)
   board[7][4] = {black: true, piece: 'KA'};
   pieces['KA'] = 0;
-  ok(kifu_board.deploy(7, 4, 'KA', true));
-  same(kifu_board.deploy(7, 5, 'KA', false), false, 'lack of pieces');
+  ok(kifu_board.cellDeploy(7, 4, 'KA', true));
+  same(kifu_board.cellDeploy(7, 5, 'KA', false), false, 'lack of pieces');
   same(kifu_board.board(),  board,  'board2 not changed');
   same(kifu_board.pieces(), pieces, 'pieces2 not changed');
 });
 
-test('get, set', 6, function() {
+test('cellGet, cellSet', 6, function() {
   // 26KY
   var piece = {black: true, piece: 'KY'};
-  same(kifu_board.get(2, 6), null, '26 null');
-  ok(kifu_board.set(2, 6, 'KY', true), '26KY');
-  same(kifu_board.get(2, 6), piece, '26KY');
+  same(kifu_board.cellGet(2, 6), null, '26 null');
+  ok(kifu_board.cellSet(2, 6, 'KY', true), '26KY');
+  same(kifu_board.cellGet(2, 6), piece, '26KY');
 
   // 81KE
   var piece = {black: false, piece: 'KE'};
-  same(kifu_board.get(8, 1), null, '81 null');
-  ok(kifu_board.set(8, 1, 'KE', false), '81KE');
-  same(kifu_board.get(8, 1), piece, '81KE');
+  same(kifu_board.cellGet(8, 1), null, '81 null');
+  ok(kifu_board.cellSet(8, 1, 'KE', false), '81KE');
+  same(kifu_board.cellGet(8, 1), piece, '81KE');
 });
 
 test('hirate', 4, function() {

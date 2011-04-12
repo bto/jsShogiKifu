@@ -160,72 +160,78 @@ Kifu.Board.prototype.extend({
     return this._board;
   },
 
-  deploy: function(x, y, piece, black) {
+  cellDeploy: function(x, y, piece, black) {
+    var pieces = this._pieces;
     if (this._board[x][y]) {
       return false;
     }
-    if (this._pieces[piece] == 0) {
+    if (pieces[piece] == 0) {
       return false;
     }
-    this.set(x, y, piece, black);
-    this._pieces[piece] -= 1;
+    this.cellSet(x, y, piece, black);
+    pieces[piece] -= 1;
     return this;
   },
 
-  deployStand: function(piece, black) {
-    var player = black ? 'black' : 'white';
-    var stand  = this._stand[player];
-    var pieces = this._pieces;
-
-    if (piece == 'AL') {
-      for (var p in pieces) {
-        if (p == 'OU') {
-          continue;
-        }
-        stand[p]  = stand[p] || 0;
-        stand[p] += pieces[p];
-        pieces[p] = 0;
-      }
-    } else {
-      this.setStand(pieces, black);
-      pieces[piece] -= 1;
-    }
-    return this;
-  },
-
-  get: function(x, y) {
+  cellGet: function(x, y) {
     return this._board[x][y];
   },
 
-  hirate: function() {
-    this.deploy(1, 9, 'KY', true);
-    this.deploy(2, 9, 'KE', true);
-    this.deploy(3, 9, 'GI', true);
-    this.deploy(4, 9, 'KI', true);
-    this.deploy(5, 9, 'OU', true);
-    this.deploy(6, 9, 'KI', true);
-    this.deploy(7, 9, 'GI', true);
-    this.deploy(8, 9, 'KE', true);
-    this.deploy(9, 9, 'KY', true);
-    this.deploy(8, 8, 'KA', true);
-    this.deploy(2, 8, 'HI', true);
-    for (i = 1; i <= 9; i++) {
-      this.deploy(i, 7, 'FU', true);
+  cellRemove: function(x, y, piece) {
+    var p = this._board[x][y]['piece'];
+    if (!this.cellTrash(x, y, piece)) {
+      return false;
+    }
+    this._pieces[p] += 1;
+    return this;
+  },
+
+  cellSet: function(x, y, piece, black) {
+    this._board[x][y] = {black: black, piece: piece};
+    return this;
+  },
+
+  cellTrash: function(x, y, piece) {
+    if (!piece) {
+      piece = this._board[x][y]['piece'];
+    }
+    if (piece != this._board[x][y]['piece']) {
+      return false;
     }
 
-    this.deploy(1, 1, 'KY', false);
-    this.deploy(2, 1, 'KE', false);
-    this.deploy(3, 1, 'GI', false);
-    this.deploy(4, 1, 'KI', false);
-    this.deploy(5, 1, 'OU', false);
-    this.deploy(6, 1, 'KI', false);
-    this.deploy(7, 1, 'GI', false);
-    this.deploy(8, 1, 'KE', false);
-    this.deploy(9, 1, 'KY', false);
-    this.deploy(2, 2, 'KA', false);
-    this.deploy(8, 2, 'HI', false);
+    this._board[x][y] = null;
+    return this;
+  },
+
+  hirate: function() {
+    this.cellDeploy(1, 9, 'KY', true);
+    this.cellDeploy(2, 9, 'KE', true);
+    this.cellDeploy(3, 9, 'GI', true);
+    this.cellDeploy(4, 9, 'KI', true);
+    this.cellDeploy(5, 9, 'OU', true);
+    this.cellDeploy(6, 9, 'KI', true);
+    this.cellDeploy(7, 9, 'GI', true);
+    this.cellDeploy(8, 9, 'KE', true);
+    this.cellDeploy(9, 9, 'KY', true);
+    this.cellDeploy(8, 8, 'KA', true);
+    this.cellDeploy(2, 8, 'HI', true);
     for (i = 1; i <= 9; i++) {
-      this.deploy(i, 3, 'FU', false);
+      this.cellDeploy(i, 7, 'FU', true);
+    }
+
+    this.cellDeploy(1, 1, 'KY', false);
+    this.cellDeploy(2, 1, 'KE', false);
+    this.cellDeploy(3, 1, 'GI', false);
+    this.cellDeploy(4, 1, 'KI', false);
+    this.cellDeploy(5, 1, 'OU', false);
+    this.cellDeploy(6, 1, 'KI', false);
+    this.cellDeploy(7, 1, 'GI', false);
+    this.cellDeploy(8, 1, 'KE', false);
+    this.cellDeploy(9, 1, 'KY', false);
+    this.cellDeploy(2, 2, 'KA', false);
+    this.cellDeploy(8, 2, 'HI', false);
+    for (i = 1; i <= 9; i++) {
+      this.cellDeploy(i, 3, 'FU', false);
     }
 
     return this;
@@ -241,17 +247,17 @@ Kifu.Board.prototype.extend({
 
     if (to) {
       var stand_piece = piece_stand_map[to['piece']];
-      this.setStand(stand_piece, black);
+      this.standSet(stand_piece, black);
       move['stand'] = {piece: to['piece'], stand: stand_piece};
     }
 
-    this.set(x2, y2, move['to']['piece'], black);
+    this.cellSet(x2, y2, move['to']['piece'], black);
     if (x1) {
       move['from']['piece'] = this._board[x1][y1]['piece'];
-      this.trash(x1, y1);
+      this.cellTrash(x1, y1);
     } else {
       move['from']['piece'] = move['to']['piece'];
-      this.trashStand(move['to']['piece'], black);
+      this.standTrash(move['to']['piece'], black);
     }
 
     return this;
@@ -267,7 +273,7 @@ Kifu.Board.prototype.extend({
     if (x1) {
       this.set(x1, y1, move['from']['piece']);
     } else {
-      this.setStand(move['from']['piece'], black);
+      this.standSet(move['from']['piece'], black);
     }
 
     if (move['stand']) {
@@ -284,21 +290,32 @@ Kifu.Board.prototype.extend({
     return this._pieces;
   },
 
-  remove: function(x, y, piece) {
-    var p = this._board[x][y]['piece'];
-    if (!this.trash(x, y, piece)) {
-      return false;
+  stand: function() {
+    return this._stand;
+  },
+
+  standDeploy: function(piece, black) {
+    var player = black ? 'black' : 'white';
+    var stand  = this._stand[player];
+    var pieces = this._pieces;
+
+    if (piece == 'AL') {
+      for (var p in pieces) {
+        if (p == 'OU') {
+          continue;
+        }
+        stand[p]  = stand[p] || 0;
+        stand[p] += pieces[p];
+        pieces[p] = 0;
+      }
+    } else {
+      this.standSet(pieces, black);
+      pieces[piece] -= 1;
     }
-    this._pieces[p] += 1;
     return this;
   },
 
-  set: function(x, y, piece, black) {
-    this._board[x][y] = {black: black, piece: piece};
-    return this;
-  },
-
-  setStand: function(piece, black) {
+  standSet: function(piece, black) {
     var player = black ? 'black' : 'white';
     var stand = this._stand[player];
     stand[piece] = stand[piece] || 0;
@@ -306,23 +323,7 @@ Kifu.Board.prototype.extend({
     return this;
   },
 
-  stand: function() {
-    return this._stand;
-  },
-
-  trash: function(x, y, piece) {
-    if (!piece) {
-      piece = this._board[x][y]['piece'];
-    }
-    if (piece != this._board[x][y]['piece']) {
-      return false;
-    }
-
-    this._board[x][y] = null;
-    return this;
-  },
-
-  trashStand: function(piece, black) {
+  standTrash: function(piece, black) {
     var player = black ? 'black' : 'white';
     var stand  = this._stand[player];
     stand[piece] -= 1;
@@ -553,9 +554,9 @@ Kifu.Csa = {
           var y     = p_info.charAt(1) - '0';
           var piece = p_info.substr(2);
           if (x == 0 && y == 0) {
-            kifu['board'].deployStand(piece, black);
+            kifu['board'].standDeploy(piece, black);
           } else {
-            kifu['board'].deploy(x, y, piece, black);
+            kifu['board'].cellDeploy(x, y, piece, black);
           }
         }
         return true;
@@ -579,7 +580,7 @@ Kifu.Csa = {
           }
           var x     = 9 - i;
           var piece = p_info.substr(1, 2);
-          kifu['board'].deploy(x, y, piece, black);
+          kifu['board'].cellDeploy(x, y, piece, black);
         }
         return true;
       }
