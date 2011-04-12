@@ -27,20 +27,30 @@ test('capitalize', 1, function() {
   same(s, 'Foo', 'capitalize');
 });
 
-test('clone', 4, function() {
+test('clone', 6, function() {
+  // simple object
   var h1 = {foo: 'foo'};
   var h2 = Kifu.clone(h1);
-  same(h1, h2, 'wheter same object');
-
+  same(h1, h2, 'same simple object');
   h2['foo'] = 'bar';
-  QUnit.notDeepEqual(h1, h2, 'whether different object');
+  QUnit.notDeepEqual(h1, h2, 'different simple object');
 
+  // deep object
   h1 = {foo: 'foo', bar: {bar: 'bar', baz: null}};
   h2 = Kifu.clone(h1);
-  same(h1, h2, 'wheter same object 2');
-
+  same(h1, h2, 'same deep object');
   h2['bar']['baz'] = 'baz';
-  QUnit.notDeepEqual(h1, h2, 'whether different object 2');
+  QUnit.notDeepEqual(h1, h2, 'different deep object');
+
+  // simple array
+  var a1 = [1, 2, null];
+  var a2 = Kifu.clone(a1);
+  same(a1, a2, 'same simple array');
+
+  // deep array
+  var a1 = [1, null, {foo: 'bar'}];
+  var a2 = Kifu.clone(a1);
+  same(a1, a2, 'same deep array');
 });
 
 test('load', 2, function() {
