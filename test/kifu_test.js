@@ -391,6 +391,48 @@ test('move, moveReverse', 36, function() {
   }
 });
 
+test('standDeploy, standRemove', 16, function() {
+  var pieces = Kifu.clone(kifu_board.pieces());
+  var stand  = Kifu.clone(kifu_board.stand());
+
+  // +KA
+  pieces['KA'] = 1;
+  stand['black']['KA'] = 1;
+  ok(kifu_board.standDeploy('KA', true), '+KA');
+  same(kifu_board.pieces(), pieces, '+KA pieces');
+  same(kifu_board.stand(),  stand,  '+KA stand');
+
+  // -KA
+  pieces['KA'] = 0;
+  stand['white']['KA'] = 1;
+  ok(kifu_board.standDeploy('KA', false), '-KA');
+  same(kifu_board.standDeploy('KA', false), false, '-KA');
+  same(kifu_board.pieces(), pieces, '-KA pieces');
+  same(kifu_board.stand(),  stand,  '-KA stand');
+
+  // +AL
+  pieces = Kifu.Board.standEmpty();
+  pieces['OU'] = 2;
+  stand['black'] = Kifu.Board.piecesDefault();
+  stand['black']['KA'] = 1;
+  stand['black']['OU'] = 0;
+  ok(kifu_board.standDeploy('AL', true), '+AL');
+  same(kifu_board.pieces(), pieces, '+AL pieces');
+  same(kifu_board.stand(),  stand,  '+AL stand');
+
+  // remove -KA
+  stand['white']['KA'] = 0;
+  ok(kifu_board.standRemove('KA', false), 'remove -KA');
+  same(kifu_board.stand(), stand, 'remove -KA stand');
+
+  // remove +KA
+  stand['black']['KA'] = 0;
+  ok(kifu_board.standRemove('KA', true), 'remove +KA');
+  same(kifu_board.standRemove('KA', true), false, 'remove +KA');
+  same(kifu_board.stand(), stand, 'remove +KA stand');
+  same(kifu_board.standRemove('KA', true), false, 'remove +KA');
+});
+
 test('standSet, standTrash', 9, function() {
   var stand = Kifu.clone(kifu_board.stand());
 
