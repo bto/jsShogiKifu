@@ -459,6 +459,19 @@ test('standSet, standTrash', 9, function() {
 });
 
 
+var kifu_move;
+
+module('Kifu.Move', {
+  setup: function() {
+    kifu_move = Kifu.Move();
+  }
+});
+
+test('initialization', 1, function() {
+  same(kifu_move.moves(), [{type: 'init'}]);
+});
+
+
 })();
 
 /* vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2: */
