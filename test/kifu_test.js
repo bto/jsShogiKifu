@@ -89,10 +89,9 @@ test('default pieces', 1, function() {
 });
 
 test('initialization', 3, function() {
-  var board = Kifu.Board();
-  same(board.board(),  Kifu.Board.empty(), 'check board');
-  same(board.pieces(), Kifu.Board.pieces(), 'check pieces');
-  same(board.stand(),  {black: {}, white: {}}, 'check stand');
+  same(kifu_board.board(),  Kifu.Board.empty(), 'check board');
+  same(kifu_board.pieces(), Kifu.Board.pieces(), 'check pieces');
+  same(kifu_board.stand(),  {black: {}, white: {}}, 'check stand');
 });
 
 test('cellDeploy, cellRemove', 30, function() {
@@ -273,10 +272,12 @@ test('hirate', 4, function() {
     HI: 0,
     OU: 0};
 
+  var stand = Kifu.clone(kifu_board.stand());
+
   ok(kifu_board.hirate(), 'hirate');
-  same(kifu_board.board(), board, 'hirate board');
+  same(kifu_board.board(),  board,  'hirate board');
   same(kifu_board.pieces(), pieces, 'hirate pieces');
-  same(kifu_board.stand(), {black: {}, white: {}}, 'hirate stand');
+  same(kifu_board.stand(),  stand,  'hirate stand');
 });
 
 test('move, moveReverse', 0, function() {
