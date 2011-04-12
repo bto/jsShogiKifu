@@ -85,6 +85,13 @@ Kifu.prototype.extend({
       this._step--
     }
     return move;
+  },
+
+  source: function(source) {
+    if (source) {
+      this._kifu['info']['source'] = Kifu.load(source);
+    }
+    return source;
   }
 });
 
@@ -96,7 +103,10 @@ Kifu.extend({
       moves: Kifu.Move()
     };
 
-    this._kifu['info']['source'] = Kifu.load(source);
+    if (source) {
+      this.source(source);
+    }
+
     if (format) {
       this.parse(format);
     }
