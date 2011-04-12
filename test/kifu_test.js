@@ -535,6 +535,33 @@ test('addMove', 4, function() {
   same(kifu_move.get(4), move, '0025FU');
 });
 
+test('addPeriod', 8, function() {
+  // 10sec
+  var move = Kifu.clone(kifu_move.get(0));
+  move['period'] = 10;
+  ok(kifu_move.addPeriod(10), '10sec');
+  same(kifu_move.get(0), move, '10sec move');
+
+  // 20sec
+  var move = Kifu.clone(kifu_move.get(0));
+  move['period'] = 20;
+  ok(kifu_move.addPeriod(20), '20sec');
+  same(kifu_move.get(0), move, '20sec move');
+
+  // 15sec
+  kifu_move.addMove([2, 7], [2, 6], 'FU');
+  var move = Kifu.clone(kifu_move.get(1));
+  move['period'] = 15;
+  ok(kifu_move.addPeriod(15), '15sec');
+  same(kifu_move.get(1), move, '15sec move');
+
+  // 30sec
+  var move = Kifu.clone(kifu_move.get(1));
+  move['period'] = 30;
+  ok(kifu_move.addPeriod(30), '30sec');
+  same(kifu_move.get(1), move, '30sec move');
+});
+
 
 })();
 
