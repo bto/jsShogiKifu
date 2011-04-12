@@ -39,7 +39,7 @@ test('addComment', 10, function() {
   same(kifu_move.get(1), move2, 'comment4 move2');
 });
 
-test('addMove', 4, function() {
+test('addMove', 5, function() {
   // +2726FU
   var move = {
     black: true,
@@ -75,6 +75,16 @@ test('addMove', 4, function() {
     type:  'move'};
   kifu_move.addMove([0, 0], [2, 5], 'FU', {str: '２五歩打'});
   same(kifu_move.get(4), move, '0025FU');
+
+  // 2600HI
+  var move = {
+    str:   '同　飛',
+    from:  {             x: 2, y: 6},
+    to:    {piece: 'HI', x: 2, y: 5},
+    type:  'move'};
+  kifu_move.addSpecial('MATTA');
+  kifu_move.addMove([2, 6], [0, 0], 'HI', {str: '同　飛'});
+  same(kifu_move.get(6), move, '2600HI');
 });
 
 test('addPeriod', 8, function() {
