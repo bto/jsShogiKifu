@@ -315,10 +315,20 @@ Kifu.Board.prototype.extend({
         stand[p] += pieces[p];
         pieces[p] = 0;
       }
-    } else {
-      this.standSet(pieces, black);
+    } else if (pieces[piece]) {
+      this.standSet(piece, black);
       pieces[piece] -= 1;
+    } else {
+      return false;
     }
+    return this;
+  },
+
+  standRemove: function(piece, black) {
+    if (!this.standTrash(piece, black)) {
+      return false;
+    }
+    this._pieces[piece]++;
     return this;
   },
 
