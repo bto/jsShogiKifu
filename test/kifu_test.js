@@ -99,8 +99,8 @@ test('initialization', 3, function() {
 });
 
 test('deploy', 13, function() {
-  var board       = Kifu.Board.empty();
-  var pieces      = Kifu.Board.pieces();
+  var board  = Kifu.Board.empty();
+  var pieces = Kifu.Board.pieces();
 
   // black: 18FU
   board[1][8] = {black: true, piece: 'FU'};
@@ -128,6 +128,20 @@ test('deploy', 13, function() {
   same(kifu_board.deploy(7, 5, 'KA', false), false, 'lack of pieces');
   same(kifu_board.board(),  board,  'board2 not changed');
   same(kifu_board.pieces(), pieces, 'pieces2 not changed');
+});
+
+test('get and set', 6, function() {
+  // 26KY
+  var piece = {black: true, piece: 'KY'};
+  same(kifu_board.get(2, 6), null, '26 null');
+  ok(kifu_board.set(2, 6, 'KY', true), '26KY');
+  same(kifu_board.get(2, 6), piece, '26KY');
+
+  // 81KE
+  var piece = {black: false, piece: 'KE'};
+  same(kifu_board.get(8, 1), null, '81 null');
+  ok(kifu_board.set(8, 1, 'KE', false), '81KE');
+  same(kifu_board.get(8, 1), piece, '81KE');
 });
 
 
