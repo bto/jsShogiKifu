@@ -391,6 +391,31 @@ test('move, moveReverse', 36, function() {
   }
 });
 
+test('standSet, standTrash', 9, function() {
+  var stand = Kifu.clone(kifu_board.stand());
+
+  // +FU
+  stand['black']['FU'] = 1;
+  ok(kifu_board.standSet('FU', true), '+FU');
+  same(kifu_board.stand(), stand, '+FU stand');
+
+  // -KY
+  stand['white']['KY'] = 1;
+  ok(kifu_board.standSet('KY', false), '-KY');
+  same(kifu_board.stand(), stand, '-KY stand');
+
+  // trash -KY
+  stand['white']['KY'] = 0;
+  ok(kifu_board.standTrash('KY', false), 'trash -KY');
+  same(kifu_board.stand(), stand, 'trash -KY stand');
+
+  // trash +FU
+  stand['black']['FU'] = 0;
+  ok(kifu_board.standTrash('FU', true), 'trash +FU');
+  same(kifu_board.stand(), stand, 'trash +FU stand');
+  same(kifu_board.standTrash('FU', true), false, 'trash +FU');
+});
+
 
 })();
 
