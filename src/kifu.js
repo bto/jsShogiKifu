@@ -252,6 +252,10 @@ Kifu.Board.prototype.extend({
     return this;
   },
 
+  pieces: function() {
+    return this._pieces;
+  },
+
   remove: function(x, y, piece) {
     var p = this._board[x][y]['piece'];
     if (!this.trash(x, y, piece)) {
@@ -283,6 +287,10 @@ Kifu.Board.prototype.extend({
       this._pieces[piece] -= 1;
     }
     return this;
+  },
+
+  stand: function() {
+    return this._stand;
   },
 
   trash: function(x, y, piece) {
