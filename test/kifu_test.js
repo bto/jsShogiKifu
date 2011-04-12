@@ -497,6 +497,44 @@ test('addComment', 10, function() {
   same(kifu_move.get(1), move2, 'comment4 move2');
 });
 
+test('addMove', 4, function() {
+  // +2726FU
+  var move = {
+    black: true,
+    from:  {             x: 2, y: 7},
+    to:    {piece: 'FU', x: 2, y: 6},
+    type:  'move'};
+  kifu_move.addMove([2, 7], [2, 6], 'FU', {black: true});
+  same(kifu_move.get(1), move, '+2726FU');
+
+  // -2326FU
+  var move = {
+    black: false,
+    from:  {             x: 2, y: 3},
+    to:    {piece: 'FU', x: 2, y: 6},
+    type:  'move'};
+  kifu_move.addMove([2, 3], [2, 6], 'FU', {black: false});
+  same(kifu_move.get(2), move, '-2326FU');
+
+  // 2800HI
+  var move = {
+    str:   '同　飛',
+    from:  {             x: 2, y: 8},
+    to:    {piece: 'HI', x: 2, y: 6},
+    type:  'move'};
+  kifu_move.addMove([2, 8], [0, 0], 'HI', {str: '同　飛'});
+  same(kifu_move.get(3), move, '2800HI');
+
+  // 0025FU
+  var move = {
+    str:   '２五歩打',
+    from:  {             x: 0, y: 0},
+    to:    {piece: 'FU', x: 2, y: 5},
+    type:  'move'};
+  kifu_move.addMove([0, 0], [2, 5], 'FU', {str: '２五歩打'});
+  same(kifu_move.get(4), move, '0025FU');
+});
+
 
 })();
 
