@@ -401,7 +401,10 @@ Kifu.Move.prototype.extend({
     move['type']  = 'move';
     move['from']  = {x: from[0], y: from[1]};
     if (to[0] == 0) {
-      var to_prev = this._moves[this._moves.length-2]['to'];
+      for (var i = this._moves.length-2; 0 <= i; i--) {
+        var to_prev = this._moves[i]['to'];
+        if (to_prev) break;
+      }
       move['to'] = {piece: piece, x: to_prev['x'], y: to_prev['y']};
     } else {
       move['to'] = {piece: piece, x: to[0], y: to[1]};
@@ -512,7 +515,7 @@ Kifu.Csa = {
       return true;
 
     case '%':
-      var value   = line.substr(1).toLowerCase();
+      var value   = line.substr(1);
       var options = {};
 
       switch (value.charAt(0)) {
@@ -703,7 +706,7 @@ Kifu.Kif = {
       var time = Kifu.Kif.strip(RegExp.$3);
 
       if (move == '投了') {
-        kifu['moves'].addSpecial('toryo');
+        kifu['moves'].addSpecial('TORYO');
         return true;
       }
 
