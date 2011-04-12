@@ -164,6 +164,21 @@ test('addSpecial', 4, function() {
   same(kifu_move.moves(), moves, 'moves');
 });
 
+test('newMove', 5, function() {
+  var moves = Kifu.clone(kifu_move.moves());
+
+  same(kifu_move.get(1), undefined, 'undefined first move');
+  kifu_move.newMove();
+  same(kifu_move.get(1), {}, 'defined first move');
+  same(kifu_move.get(2), undefined, 'undefined second move');
+  kifu_move.newMove();
+  same(kifu_move.get(2), undefined, 'undefined second move');
+  moves.push({});
+
+  // check moves
+  same(kifu_move.moves(), moves, 'moves');
+});
+
 
 })();
 
