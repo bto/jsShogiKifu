@@ -471,6 +471,32 @@ test('initialization', 1, function() {
   same(kifu_move.moves(), [{type: 'init'}]);
 });
 
+test('addComment', 10, function() {
+  // comment1
+  var move1 = {type: 'init', comment: "comment1\n"};
+  ok(kifu_move.addComment('comment1'), 'comment1');
+  same(kifu_move.get(0), move1, 'comment1 move1');
+
+  // comment2
+  move1['comment'] += "comment2\n";
+  ok(kifu_move.addComment('comment2'), 'comment2');
+  same(kifu_move.get(0), move1, 'comment2 move1');
+
+  // comment3
+  kifu_move.addMove([2, 7], [2, 6], 'FU');
+  var move2 = Kifu.clone(kifu_move.get(1));
+  move2['comment'] = "comment3\n";
+  ok(kifu_move.addComment('comment3'), 'comment3');
+  same(kifu_move.get(0), move1, 'comment3 move1');
+  same(kifu_move.get(1), move2, 'comment3 move2');
+
+  // comment4
+  move2['comment'] += "comment4\n";
+  ok(kifu_move.addComment('comment4'), 'comment4');
+  same(kifu_move.get(0), move1, 'comment4 move1');
+  same(kifu_move.get(1), move2, 'comment4 move2');
+});
+
 
 })();
 
