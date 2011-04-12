@@ -278,16 +278,16 @@ Kifu.Board.prototype.extend({
     var black = move['black'];
 
     if (x1) {
-      this.set(x1, y1, move['from']['piece']);
+      this.cellSet(x1, y1, move['from']['piece'], black);
     } else {
       this.standSet(move['from']['piece'], black);
     }
 
     if (move['stand']) {
-      this.set(x2, y2, move['stand']['piece'], !black);
-      this.trashStand(move['stand']['stand'], black);
+      this.cellSet(x2, y2, move['stand']['piece'], !black);
+      this.standTrash(move['stand']['stand'], black);
     } else {
-      this.trash(x2, y2);
+      this.cellTrash(x2, y2);
     }
 
     return this;
@@ -332,23 +332,21 @@ Kifu.Board.prototype.extend({
 
   standTrash: function(piece, black) {
     var player = black ? 'black' : 'white';
-    var stand  = this._stand[player];
-    stand[piece] -= 1;
-    if (stand[piece] == 0) {
-      stand[piece] = null;
-    }
+    this._stand[player][piece]--;
     return this;
   }
 });
 
 Kifu.Board.extend({
   initialize: function() {
-    this._board  = Kifu.Board.empty();
-    this._pieces = Kifu.Board.pieces();
-    this._stand  = {black: {}, white: {}};
+    this._board  = Kifu.Board.boardEmpty();
+    this._pieces = Kifu.Board.piecesDefault();
+    this._stand  = {
+      black: Kifu.Board.standEmpty(),
+      white: Kifu.Board.standEmpty()};
   },
 
-  empty: function() {
+  boardEmpty: function() {
     var board = {};
     for (var i = 1; i <= 9; i++) {
       board[i] = {}
@@ -359,17 +357,12 @@ Kifu.Board.extend({
     return board;
   },
 
-  pieces: function() {
-    return {
-      FU: 18,
-      KY:  4,
-      KE:  4,
-      GI:  4,
-      KI:  4,
-      KA:  2,
-      HI:  2,
-      OU:  2
-    };
+  piecesDefault: function() {
+    return {FU: 18, KY: 4, KE: 4, GI: 4, KI: 4, KA: 2, HI: 2, OU: 2};
+  },
+
+  standEmpty: function() {
+    return {FU: 0, KY: 0, KE: 0, GI: 0, KI: 0, KA: 0, HI: 0, OU: 0};
   }
 });
 
