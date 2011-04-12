@@ -172,6 +172,27 @@ Kifu.Board.prototype.extend({
     return this;
   },
 
+  deployStand: function(piece, black) {
+    var player = black ? 'black' : 'white';
+    var stand  = this._stand[player];
+    var pieces = this._pieces;
+
+    if (piece == 'AL') {
+      for (var p in pieces) {
+        if (p == 'OU') {
+          continue;
+        }
+        stand[p]  = stand[p] || 0;
+        stand[p] += pieces[p];
+        pieces[p] = 0;
+      }
+    } else {
+      this.setStand(pieces, black);
+      pieces[piece] -= 1;
+    }
+    return this;
+  },
+
   get: function(x, y) {
     return this._board[x][y];
   },
@@ -278,20 +299,9 @@ Kifu.Board.prototype.extend({
 
   setStand: function(piece, black) {
     var player = black ? 'black' : 'white';
-    if (piece == 'AL') {
-      for (var p in this._pieces) {
-        if (p == 'OU') {
-          continue;
-        }
-        this._stand[player][p] = this._stand[player][p] || 0;
-        this._stand[player][p] += this._pieces[p];
-        this._pieces[p] = 0;
-      }
-    } else {
-      this._stand[player][piece] = this._stand[player][piece] || 0;
-      this._stand[player][piece] += 1;
-      this._pieces[piece] -= 1;
-    }
+    var stand = this._stand[player];
+    stand[piece] = stand[piece] || 0;
+    stand[piece]++;
     return this;
   },
 
@@ -542,9 +552,9 @@ Kifu.Csa = {
           var y     = p_info.charAt(1) - '0';
           var piece = p_info.substr(2);
           if (x == 0 && y == 0) {
-            kifu['board'].setStand(piece, black);
+            kifu['board'].deployStand(piece, black);
           } else {
-            kifu['board'].set(x, y, piece, black);
+            kifu['board'].deploy(x, y, piece, black);
           }
         }
         return true;
