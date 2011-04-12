@@ -250,6 +250,7 @@ Kifu.Board.prototype.extend({
       move['from']['piece'] = this._board[x1][y1]['piece'];
       this.trash(x1, y1);
     } else {
+      move['from']['piece'] = move['to']['piece'];
       this.trashStand(move['to']['piece'], black);
     }
 
