@@ -161,6 +161,12 @@ Kifu.Board.prototype.extend({
   },
 
   deploy: function(x, y, piece, black) {
+    if (this._board[x][y]) {
+      return false;
+    }
+    if (this._pieces[piece] == 0) {
+      return false;
+    }
     this.set(x, y, piece, black);
     this._pieces[piece] -= 1;
     return this;
