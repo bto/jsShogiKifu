@@ -430,6 +430,10 @@ Kifu.Move.prototype.extend({
     return this._moves[step];
   },
 
+  moves: function() {
+    return this._moves;
+  },
+
   newMove: function() {
     var move = this._moves[this._moves.length-1];
     if (move['type']) {
@@ -437,10 +441,6 @@ Kifu.Move.prototype.extend({
       move = this._moves[this._moves.length-1];
     }
     return move;
-  },
-
-  toArray: function() {
-    return this._moves;
   }
 });
 
