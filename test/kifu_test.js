@@ -64,7 +64,7 @@ module('Kifu.Board', {
   }
 });
 
-test('empty board', 1, function() {
+test('boardEmpty', 1, function() {
   var board = {};
   for (var i = 1; i <= 9; i++) {
     board[i] = {}
@@ -72,26 +72,24 @@ test('empty board', 1, function() {
       board[i][j] = null;
     }
   };
-  same(Kifu.Board.empty(), board, 'empty board');
+  same(Kifu.Board.boardEmpty(), board, 'boardEmpty');
 });
 
-test('default pieces', 1, function() {
-  var pieces = {
-    FU: 18,
-    KY:  4,
-    KE:  4,
-    GI:  4,
-    KI:  4,
-    KA:  2,
-    HI:  2,
-    OU:  2};
-  same(Kifu.Board.pieces(), pieces, 'default pieces');
+test('piecesDefault', 1, function() {
+  var pieces = {FU: 18, KY: 4, KE: 4, GI: 4, KI: 4, KA: 2, HI: 2, OU: 2};
+  same(Kifu.Board.piecesDefault(), pieces, 'piecesDefault');
+});
+
+test('standEmpty', 1, function() {
+  var stand = {FU: 0, KY: 0, KE: 0, GI: 0, KI: 0, KA: 0, HI: 0, OU: 0};
+  same(Kifu.Board.standEmpty(), stand, 'standEmpty');
 });
 
 test('initialization', 3, function() {
-  same(kifu_board.board(),  Kifu.Board.empty(), 'check board');
-  same(kifu_board.pieces(), Kifu.Board.pieces(), 'check pieces');
-  same(kifu_board.stand(),  {black: {}, white: {}}, 'check stand');
+  var stand = {black: Kifu.Board.standEmpty(), white: Kifu.Board.standEmpty()};
+  same(kifu_board.board(),  Kifu.Board.boardEmpty(), 'board');
+  same(kifu_board.pieces(), Kifu.Board.piecesDefault(), 'pieces');
+  same(kifu_board.stand(),  stand, 'stand');
 });
 
 test('cellDeploy, cellRemove', 30, function() {
@@ -154,7 +152,7 @@ test('cellDeploy, cellRemove', 30, function() {
   same(kifu_board.stand(),  stand,  'remove 74HI stand');
 });
 
-test('cellGet, cellSet, cellTrash', 0, function() {
+test('cellGet, cellSet, cellTrash', 10, function() {
   // +26KY
   var piece = {black: true, piece: 'KY'};
   same(kifu_board.cellGet(2, 6), null, 'get 26');
@@ -348,7 +346,7 @@ test('move, moveReverse', 0, function() {
 
   // -0055KA
   board[5][5] = {black: false, piece: 'KA'};
-  stand['white']['KA'] = null;
+  stand['white']['KA'] = 0;
   states.push({
     title:  '-0055KA',
     board:  Kifu.clone(board),
@@ -371,6 +369,25 @@ test('move, moveReverse', 0, function() {
     same(kifu_board.pieces(), state['pieces'], title+' pieces');
     same(kifu_board.stand(),  state['stand'],  title+' stand');
     same(state['move1'], state['move2'], title+' move');
+  }
+
+  for (var i = states.length-1; 0 <= i; i--) {
+    var state      = states[i];
+    var state_prev = states[i-1];
+    var title      = state['title'];
+
+    if (!state_prev) {
+      var b = Kifu.Board().hirate();
+      state_prev = {
+        board:  b.board(),
+        pieces: b.pieces(),
+        stand:  b.stand()};
+    }
+
+    ok(kifu_board.moveReverse(state['move1']), 'reverse '+title);
+    same(kifu_board.board(),  state_prev['board'],  'reverse '+title+' board');
+    same(kifu_board.pieces(), state_prev['pieces'], 'reverse '+title+' pieces');
+    same(kifu_board.stand(),  state_prev['stand'],  'reverse '+title+' stand');
   }
 });
 
