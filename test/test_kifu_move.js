@@ -114,6 +114,23 @@ test('addPeriod', 8, function() {
   same(kifu_move.get(1), move, '30sec move');
 });
 
+test('addSpecial', 3, function() {
+  // TORYO
+  var move = {type: 'TORYO'};
+  kifu_move.addSpecial('TORYO');
+  same(kifu_move.get(1), move, 'TORYO');
+
+  // +ILLEGAL_ACTION
+  var move = {black: true, type: 'ILLEGAL_ACTION'};
+  kifu_move.addSpecial('ILLEGAL_ACTION', {black: true});
+  same(kifu_move.get(2), move, '+ILLEGAL_ACTION');
+
+  // -ILLEGAL_ACTION
+  var move = {black: false, type: 'ILLEGAL_ACTION'};
+  kifu_move.addSpecial('ILLEGAL_ACTION', {black: false});
+  same(kifu_move.get(3), move, '-ILLEGAL_ACTION');
+});
+
 
 })();
 
