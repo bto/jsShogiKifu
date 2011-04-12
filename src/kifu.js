@@ -45,6 +45,10 @@ Kifu.prototype.extend({
     return this._kifu['board'].board();
   },
 
+  kifu: function() {
+    return this._kifu;
+  },
+
   next: function() {
     var move = this._kifu['moves'].get(this._step+1);
     if (move) {
