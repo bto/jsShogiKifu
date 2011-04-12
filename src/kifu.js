@@ -195,10 +195,14 @@ Kifu.Board.prototype.extend({
   },
 
   cellTrash: function(x, y, piece) {
-    if (!piece) {
-      piece = this._board[x][y]['piece'];
+    var cell = this._board[x][y];
+    if (!cell) {
+      return false;
     }
-    if (piece != this._board[x][y]['piece']) {
+    if (!piece) {
+      piece = cell['piece'];
+    }
+    if (piece != cell['piece']) {
       return false;
     }
 
