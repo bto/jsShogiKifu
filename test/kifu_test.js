@@ -154,18 +154,22 @@ test('cellDeploy, cellRemove', 30, function() {
   same(kifu_board.stand(),  stand,  'remove 74HI stand');
 });
 
-test('cellGet, cellSet', 6, function() {
-  // 26KY
+test('cellGet, cellSet, cellTrash', 0, function() {
+  // +26KY
   var piece = {black: true, piece: 'KY'};
-  same(kifu_board.cellGet(2, 6), null, '26 null');
-  ok(kifu_board.cellSet(2, 6, 'KY', true), '26KY');
-  same(kifu_board.cellGet(2, 6), piece, '26KY');
+  same(kifu_board.cellGet(2, 6), null, 'get 26');
+  ok(kifu_board.cellSet(2, 6, 'KY', true), 'set +26KY');
+  same(kifu_board.cellGet(2, 6), piece, 'get 26');
 
-  // 81KE
-  var piece = {black: false, piece: 'KE'};
-  same(kifu_board.cellGet(8, 1), null, '81 null');
-  ok(kifu_board.cellSet(8, 1, 'KE', false), '81KE');
-  same(kifu_board.cellGet(8, 1), piece, '81KE');
+  // -26HI
+  var piece = {black: false, piece: 'HI'};
+  ok(kifu_board.cellSet(2, 6, 'HI', false), 'set -26HI');
+  same(kifu_board.cellGet(2, 6), piece, 'get 26');
+  same(kifu_board.cellTrash(2, 6, 'KA'), false, 'trash 26KA');
+  same(kifu_board.cellGet(2, 6), piece, 'get 26');
+  ok(kifu_board.cellTrash(2, 6), 'trash 26');
+  same(kifu_board.cellGet(2, 6), null, 'get 26');
+  same(kifu_board.cellTrash(2, 6), false, 'trash 26');
 });
 
 test('hirate', 4, function() {
