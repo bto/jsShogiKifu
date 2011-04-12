@@ -178,11 +178,14 @@ Kifu.Board.prototype.extend({
   },
 
   cellRemove: function(x, y, piece) {
-    var p = this._board[x][y]['piece'];
+    var cell = this._board[x][y];
+    if (!cell) {
+      return false;
+    }
     if (!this.cellTrash(x, y, piece)) {
       return false;
     }
-    this._pieces[p] += 1;
+    this._pieces[cell['piece']] += 1;
     return this;
   },
 
