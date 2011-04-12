@@ -282,7 +282,7 @@ test('hirate', 4, function() {
   same(kifu_board.stand(),  stand,  'hirate stand');
 });
 
-test('move, moveReverse', 0, function() {
+test('move, moveReverse', 36, function() {
   kifu_board.hirate();
   var board  = Kifu.clone(kifu_board.board());
   var pieces = Kifu.clone(kifu_board.pieces());
