@@ -127,7 +127,7 @@ test('deploy', 13, function() {
   same(kifu_board.pieces(), pieces, 'pieces2 not changed');
 });
 
-test('get and set', 6, function() {
+test('get, set', 6, function() {
   // 26KY
   var piece = {black: true, piece: 'KY'};
   same(kifu_board.get(2, 6), null, '26 null');
@@ -249,6 +249,96 @@ test('hirate', 4, function() {
   same(kifu_board.board(), board, 'hirate board');
   same(kifu_board.pieces(), pieces, 'hirate pieces');
   same(kifu_board.stand(), {black: {}, white: {}}, 'hirate stand');
+});
+
+test('move, moveReverse', 0, function() {
+  kifu_board.hirate();
+  var board  = Kifu.clone(kifu_board.board());
+  var pieces = Kifu.clone(kifu_board.pieces());
+  var stand  = Kifu.clone(kifu_board.stand());
+  var states = [];
+
+  // +2726FU
+  board[2][7] = null;
+  board[2][6] = {black: true, piece: 'FU'};
+  states.push({
+    title:  '+2726FU',
+    board:  Kifu.clone(board),
+    pieces: Kifu.clone(pieces),
+    stand:  Kifu.clone(stand),
+    move1: {
+      black: true,
+      from:  {             x: 2, y: 7},
+      to:    {piece: 'FU', x: 2, y: 6}},
+    move2: {
+      black: true,
+      from:  {piece: 'FU', x: 2, y: 7},
+      to:    {piece: 'FU', x: 2, y: 6}}});
+
+  // -8288RY
+  board[8][2] = null;
+  board[8][8] = {black: false, piece: 'RY'};
+  stand['white']['KA'] = 1;
+  states.push({
+    title:  '+8288RY',
+    board:  Kifu.clone(board),
+    pieces: Kifu.clone(pieces),
+    stand:  Kifu.clone(stand),
+    move1: {
+      black: false,
+      from:  {             x: 8, y: 2},
+      to:    {piece: 'RY', x: 8, y: 8}},
+    move2: {
+      black: false,
+      stand: {piece: 'KA', stand: 'KA'},
+      from:  {piece: 'HI', x: 8, y: 2},
+      to:    {piece: 'RY', x: 8, y: 8}}});
+
+  // +7988GI
+  board[7][9] = null;
+  board[8][8] = {black: true, piece: 'GI'};
+  stand['black']['HI'] = 1;
+  states.push({
+    title:  '+7988GI',
+    board:  Kifu.clone(board),
+    pieces: Kifu.clone(pieces),
+    stand:  Kifu.clone(stand),
+    move1: {
+      black: true,
+      from:  {             x: 7, y: 9},
+      to:    {piece: 'GI', x: 8, y: 8}},
+    move2: {
+      black: true,
+      stand: {piece: 'RY', stand: 'HI'},
+      from:  {piece: 'GI', x: 7, y: 9},
+      to:    {piece: 'GI', x: 8, y: 8}}});
+
+  // -0055KA
+  board[5][5] = {black: false, piece: 'KA'};
+  stand['white']['KA'] = null;
+  states.push({
+    title:  '-0055KA',
+    board:  Kifu.clone(board),
+    pieces: Kifu.clone(pieces),
+    stand:  Kifu.clone(stand),
+    move1: {
+      black: false,
+      from:  {             x: 0, y: 0},
+      to:    {piece: 'KA', x: 5, y: 5}},
+    move2: {
+      black: false,
+      from:  {piece: 'KA', x: 0, y: 0},
+      to:    {piece: 'KA', x: 5, y: 5}}});
+
+  for (var i in states) {
+    var state = states[i];
+    var title = state['title'];
+    ok(kifu_board.move(state['move1']), title);
+    same(kifu_board.board(),  state['board'],  title+' board');
+    same(kifu_board.pieces(), state['pieces'], title+' pieces');
+    same(kifu_board.stand(),  state['stand'],  title+' stand');
+    same(state['move1'], state['move2'], title+' move');
+  }
 });
 
 
