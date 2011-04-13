@@ -114,6 +114,28 @@ var standSet = function(piece, black, config) {
     .append(pieceImgTag(piece, black, config));
 };
 
+var registerFunctions = function(kifu, config) {
+  var suffix = config['suffix'];
+
+  $('#jsb_next_'+suffix).click(function() {
+    return moveNext(kifu, config);
+  });
+
+  $('#jsb_prev_'+suffix).click(function() {
+    return movePrev(kifu, config);
+  });
+
+  $('#jsb_first_'+suffix).click(function() {
+    kifu.first();
+    return boardSet(kifu.board_init.board, config);
+  });
+
+  $('#jsb_last_'+suffix).click(function() {
+    kifu.last();
+    return boardSet(kifu.board.board, config);
+  });
+};
+
 $.fn.shogiBoard = function(kifu, options) {
   var config = {
     url_prefix: '.'
@@ -140,28 +162,9 @@ $.fn.shogiBoard = function(kifu, options) {
     var suffix = config['suffix'];
 
     config['element'].append(source.replace(/%suffix%/g, suffix));
-
     boardSet(kifu.board_init.board, config);
-
     playerSet(info, suffix);
-
-    $('#jsb_next_'+suffix).click(function() {
-      return moveNext(kifu, config);
-    });
-
-    $('#jsb_prev_'+suffix).click(function() {
-      return movePrev(kifu, config);
-    });
-
-    $('#jsb_first_'+suffix).click(function() {
-      kifu.first();
-      return boardSet(kifu.board_init.board, config);
-    });
-
-    $('#jsb_last_'+suffix).click(function() {
-      kifu.last();
-      return boardSet(kifu.board.board, config);
-    });
+    registerFunctions(kifu, config);
   };
   return $.ajax(ajax_opts);
 };
