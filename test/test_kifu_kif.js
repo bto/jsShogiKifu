@@ -150,6 +150,14 @@ test('strip', 3, function() {
   same(Kifu.Kif.strip(' 　baz 　'), 'baz', 'baz');
 });
 
+test('toDate', 2, function() {
+  var date = '2011/5/4 9:00';
+  same(Kifu.Kif.toDate(date), new Date(2011, 4, 4, 9), date);
+
+  var date = '2010/11/25 18:15';
+  same(Kifu.Kif.toDate(date), new Date(2010, 10, 25, 18, 15), date);
+});
+
 
 })();
 
