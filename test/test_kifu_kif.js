@@ -158,6 +158,12 @@ test('toDate', 2, function() {
   same(Kifu.Kif.toDate(date), new Date(2010, 10, 25, 18, 15), date);
 });
 
+test('toLines', 1, function() {
+  var source = "foo\r\nbar\rbaz\nfoo2\nbar2\nbaz2\n";
+  var lines  = ['foo', 'bar', 'baz', 'foo2', 'bar2', 'baz2'];
+  same(Kifu.Kif.toLines(source), lines, source);
+});
+
 
 })();
 
