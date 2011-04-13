@@ -10,9 +10,9 @@ module('Kifu.Csa', {
 });
 
 test('parse version', 4, function() {
-  var kifu  = kifu_obj.kifu();
-  var info  = kifu['info'];
-  var info2 = Kifu().kifu()['info'];
+  var kifu  = kifu_obj
+  var info  = kifu_obj.info;
+  var info2 = Kifu().info;
 
   // version 2
   info2['version'] = '2';
@@ -28,9 +28,9 @@ test('parse version', 4, function() {
 });
 
 test('parse player', 4, function() {
-  var kifu  = kifu_obj.kifu();
-  var info  = kifu['info'];
-  var info2 = Kifu().kifu()['info'];
+  var kifu  = kifu_obj
+  var info  = kifu_obj.info;
+  var info2 = Kifu().info;
 
   // black player
   info2['player_black'] = '大山康晴';
@@ -46,9 +46,9 @@ test('parse player', 4, function() {
 });
 
 test('parse info', 18, function() {
-  var kifu  = kifu_obj.kifu();
-  var info  = kifu['info'];
-  var info2 = Kifu().kifu()['info'];
+  var kifu  = kifu_obj
+  var info  = kifu_obj.info;
+  var info2 = Kifu().info;
 
   // EVENT
   info2['event'] = '名人戦';
@@ -106,25 +106,25 @@ test('parse info', 18, function() {
 });
 
 test('parse initial board hirate', 4, function() {
-  var kifu  = kifu_obj.kifu();
+  var kifu  = kifu_obj;
   var board = Kifu.Board().hirate();
 
   // hirate
   var line = 'PI';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 
   // hirate komaochi
-  kifu['board'] = Kifu.Board();
+  kifu.board_init = Kifu.Board();
   board.cellRemove(8, 2, 'HI');
   board.cellRemove(2, 2, 'KA');
   var line = 'PI82HI22KA';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 });
 
 test('parse initial board all', 16, function() {
-  var kifu  = kifu_obj.kifu();
+  var kifu  = kifu_obj;
   var board = Kifu.Board();
 
   // 1st line
@@ -138,13 +138,13 @@ test('parse initial board all', 16, function() {
   board.cellDeploy(2, 1, 'KE', false);
   var line = 'P1-KY-KE-GI-KI-OU-KI-GI-KE * ';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 
   // 2nd line
   board.cellDeploy(8, 2, 'HI', false);
   var line = 'P2 * -HI *  *  *  *  *  *  * ';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 
   // 3rd line
   board.cellDeploy(9, 3, 'FU', false);
@@ -158,7 +158,7 @@ test('parse initial board all', 16, function() {
   board.cellDeploy(1, 3, 'FU', false);
   var line = 'P3-FU-FU-FU-FU-FU-FU-FU-FU-FU';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 
   // 4-6 line
   var line = 'P4 *  *  *  *  *  *  *  *  * ';
@@ -167,7 +167,7 @@ test('parse initial board all', 16, function() {
   ok(Kifu.Csa.parseByLine(line, kifu), line);
   var line = 'P6 *  *  *  *  *  *  *  *  * ';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, '4-6 line board');
+  same(kifu.board_init, board, '4-6 line board');
 
   // 7th line
   board.cellDeploy(9, 7, 'FU', true);
@@ -181,14 +181,14 @@ test('parse initial board all', 16, function() {
   board.cellDeploy(1, 7, 'FU', true);
   var line = 'P7+FU+FU+FU+FU+FU+FU+FU+FU+FU';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 
   // 8th line
   board.cellDeploy(8, 8, 'KA', true);
   board.cellDeploy(2, 8, 'HI', true);
   var line = 'P8 * +KA *  *  *  *  * +HI * ';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 
   // 9th line
   board.cellDeploy(9, 9, 'KY', true);
@@ -202,23 +202,23 @@ test('parse initial board all', 16, function() {
   board.cellDeploy(1, 9, 'KY', true);
   var line = 'P9+KY+KE+GI+KI+OU+KI+GI+KE+KY';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 });
 
 test('parse initial board each', 8, function() {
-  var kifu  = kifu_obj.kifu();
+  var kifu  = kifu_obj;
   var board = Kifu.Board();
 
   // P+63RY00KI
   board.cellDeploy(6, 3, 'RY', true);
   board.standDeploy('KI', true);
   ok(Kifu.Csa.parseByLine('P+63RY00KI', kifu), 'P+63RY00KI');
-  same(kifu['board'], board, 'P+63RY00KI board');
+  same(kifu.board_init, board, 'P+63RY00KI board');
 
   // P+00KI
   board.standDeploy('KI', true);
   ok(Kifu.Csa.parseByLine('P+00KI', kifu), 'P+00KI');
-  same(kifu['board'], board, 'P+00KI board');
+  same(kifu.board_init, board, 'P+00KI board');
 
   // P-42OU33GI22KI23FU
   board.cellDeploy(4, 2, 'OU', false);
@@ -227,19 +227,19 @@ test('parse initial board each', 8, function() {
   board.cellDeploy(2, 3, 'FU', false);
   var line = 'P-42OU33GI22KI23FU';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 
   // P-00AL
   board.standDeploy('AL', false);
   var line = 'P-00AL';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 });
 
 test('parse start player', 5, function() {
-  var kifu  = kifu_obj.kifu();
-  var info  = kifu['info'];
-  var info2 = Kifu().kifu()['info'];
+  var kifu  = kifu_obj
+  var info  = kifu_obj.info;
+  var info2 = Kifu().info;
 
   // -
   info2['player_start'] = 'white';
@@ -256,68 +256,68 @@ test('parse start player', 5, function() {
 });
 
 test('parse moves', 20, function() {
-  var kifu  = kifu_obj.kifu();
+  var kifu  = kifu_obj
   var moves = Kifu.Move();
 
   // '* comment1'
   moves.addComment('comment1');
   var line = "'* comment1";
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // '* comment2'
   moves.addComment('comment2');
   var line = "'* comment2";
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // '+2726FU'
   moves.addMove([2, 7], [2, 6], 'FU', {black: true});
   var line = '+2726FU';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // 'T10'
   moves.addPeriod(10);
   var line = 'T10';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // '* comment3'
   moves.addComment('comment3');
   var line = "'* comment3";
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // '-0055KA'
   moves.addMove([0, 0], [5, 5], 'KA', {black: false});
   var line = '-0055KA';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // 'T30'
   moves.addPeriod(30);
   var line = 'T30';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // %TORYO
   moves.addSpecial('TORYO');
   var line = '%TORYO';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // %+ILLEGAL_ACTION
   moves.addSpecial('ILLEGAL_ACTION', {black: true});
   var line = '%+ILLEGAL_ACTION';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // %-ILLEGAL_ACTION
   moves.addSpecial('ILLEGAL_ACTION', {black: false});
   var line = '%-ILLEGAL_ACTION';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 });
 
 test('toLines', 2, function() {
@@ -371,10 +371,10 @@ T6\n\
 '---------------------------------------------------------\n\
 ";
 
-  var kifu  = Kifu().kifu();
-  var board = kifu['board'];
-  var info  = kifu['info'];
-  var moves = kifu['moves'];
+  var kifu  = Kifu();
+  var board = kifu.board_init;
+  var info  = kifu.info;
+  var moves = kifu.moves;
   info['source']       = source;
   info['version']      = '2.2';
   info['player_black'] = 'NAKAHARA';
@@ -394,9 +394,8 @@ T6\n\
   moves.addSpecial('CHUDAN');
 
   kifu_obj.source(source);
-  var kifu2 = kifu_obj.kifu();
-  Kifu.Csa.parse(kifu2);
-  same(kifu2, kifu, 'sample csa');
+  Kifu.Csa.parse(kifu_obj);
+  same(kifu_obj, kifu, 'sample csa');
 });
 
 

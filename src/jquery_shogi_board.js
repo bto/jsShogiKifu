@@ -128,12 +128,12 @@ $.fn.shogiBoard = function(kifu, options) {
   ajax_opts['type']     = 'GET';
   ajax_opts['url']      = config['url_html'];
   ajax_opts['success']  = function(source) {
-    var info   = kifu.info();
+    var info   = kifu.info;
     var suffix = config['suffix'];
 
     config['element'].append(source.replace(/%suffix%/g, suffix));
 
-    boardSet(kifu.boardInit(), config);
+    boardSet(kifu.board_init.board(), config);
 
     playerSet(info, suffix);
 

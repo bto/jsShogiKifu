@@ -16,7 +16,7 @@ test('ajax', 2, function() {
   Kifu.ajax({url: 'csa1.txt'}, 'csa', function(kifu) {
     start();
 
-    var info = kifu.info('info');
+    var info = kifu.info;
     same(info['format'], 'csa', 'check format');
     same(info['source'], source, 'source');
   });

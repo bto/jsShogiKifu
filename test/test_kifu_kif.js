@@ -10,9 +10,9 @@ module('Kifu.Kif', {
 });
 
 test('parse info', 26, function() {
-  var kifu  = kifu_obj.kifu();
-  var info  = kifu['info'];
-  var info2 = Kifu().kifu()['info'];
+  var kifu  = kifu_obj;
+  var info  = kifu.info;
+  var info2 = Kifu().info;
 
   // 対局ID
   info2['kif'] = {id: 246};
@@ -94,66 +94,66 @@ test('parse info', 26, function() {
 });
 
 test('parse initial board hirate', 2, function() {
-  var kifu  = kifu_obj.kifu();
+  var kifu  = kifu_obj;
   var board = Kifu.Board().hirate();
 
   // 平手
   var line = '手合割：平手　　';
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['board'], board, line+' board');
+  same(kifu.board_init, board, line+' board');
 });
 
 test('parse moves', 16, function() {
-  var kifu  = kifu_obj.kifu();
+  var kifu  = kifu_obj;
   var moves = Kifu.Move();
 
   // * comment1
   moves.addComment('comment1');
   var line = "*comment1";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // * comment2
   moves.addComment('comment2');
   var line = "*comment2";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   //    1 ７六歩(77)   ( 0:00/00:00:00)
   moves.addMove([7, 7], [7, 6], 'FU', {str: '７六歩'});
   var line = "   1 ７六歩(77)   ( 0:00/00:00:00)";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   // * comment3
   moves.addComment('comment3');
   var line = "*comment3";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   //    2 同　歩(73)   ( 0:00/00:00:00)
   moves.addMove([7, 3], [0, 0], 'FU', {str: '同　歩'});
   var line = "   2 同　歩(73)   ( 0:00/00:00:00)";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   //    3 ５五角打     ( 0:00/00:00:00)
   moves.addMove([0, 0], [5, 5], 'KA', {str: '５五角打'});
   var line = "   3 ５五角打     ( 0:00/00:00:00)";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   //    4 ８八飛成(82) ( 0:00/00:00:00)
   moves.addMove([8, 2], [8, 8], 'RY', {str: '８八飛成'});
   var line = "   4 ８八飛成(82) ( 0:00/00:00:00)";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 
   //    5 投了         ( 0:00/00:00:00)
   moves.addSpecial('TORYO');
   var line = "   5 投了         ( 0:00/00:00:00)";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
-  same(kifu['moves'], moves, line+' move');
+  same(kifu.moves, moves, line+' move');
 });
 
 test('strip', 3, function() {
