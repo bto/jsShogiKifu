@@ -809,7 +809,8 @@ Kifu.Kif = {
         return true;
 
       default:
-        kifu['info'][key] = value;
+        kifu['info']['kif'] = kifu['info']['kif'] || {};
+        kifu['info']['kif'][key] = value;
         return true;
       }
     }
