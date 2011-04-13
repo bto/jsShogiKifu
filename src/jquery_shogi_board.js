@@ -152,6 +152,11 @@ $.fn.shogiBoard = function(kifu, options) {
     $('#jsb_prev_'+suffix).click(function() {
       return movePrev(kifu, config);
     });
+
+    $('#jsb_first_'+suffix).click(function() {
+      kifu.first();
+      return boardSet(kifu.board_init.board, config);
+    });
   };
   return $.ajax(ajax_opts);
 };
