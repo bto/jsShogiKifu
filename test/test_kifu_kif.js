@@ -9,7 +9,7 @@ module('Kifu.Kif', {
   }
 });
 
-test('parse info', 24, function() {
+test('parse info', 26, function() {
   var kifu  = kifu_obj.kifu();
   var info  = kifu['info'];
   var info2 = Kifu().kifu()['info'];
@@ -59,6 +59,12 @@ test('parse info', 24, function() {
   // 場所
   info2['site'] = '長崎・にっしょうかん別邸紅葉亭';
   var line = '場所：長崎・にっしょうかん別邸紅葉亭';
+  ok(Kifu.Kif.parseByLine(line, kifu), line);
+  same(info, info2, line+' info');
+
+  // 戦型：横歩取り
+  info2['opening'] = '横歩取り';
+  var line = '戦型：横歩取り';
   ok(Kifu.Kif.parseByLine(line, kifu), line);
   same(info, info2, line+' info');
 
