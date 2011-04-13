@@ -60,7 +60,7 @@ Kifu.prototype.extend({
     Kifu[klass].parse(this);
 
     this.black = this.info['player_start'] == 'black';
-    this.board = Kifu.clone(this.board_init);
+    this.board = this.board_init.clone();
     this.step  = 0;
 
     return this;
@@ -206,6 +206,14 @@ Kifu.Board.prototype.extend({
 
     this.board[x][y] = null;
     return this;
+  },
+
+  clone: function() {
+    var obj = new Kifu.Board;
+    obj.board  = Kifu.clone(this.board);
+    obj.pieces = Kifu.clone(this.pieces);
+    obj.stand  = Kifu.clone(this.stand);
+    return obj;
   },
 
   hirate: function() {
