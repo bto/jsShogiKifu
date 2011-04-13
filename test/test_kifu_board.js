@@ -37,7 +37,7 @@ test('initialization', 3, function() {
   same(kifu_board.stand(),  stand, 'stand');
 });
 
-test('cellDeploy, cellRemove', 30, function() {
+test('cellDeploy, cellRemove', 34, function() {
   var board  = Kifu.clone(kifu_board.board());
   var pieces = Kifu.clone(kifu_board.pieces());
   var stand  = Kifu.clone(kifu_board.stand());
@@ -64,14 +64,14 @@ test('cellDeploy, cellRemove', 30, function() {
   same(kifu_board.pieces(), pieces, 'deploy +73KA pieces');
   same(kifu_board.stand(),  stand,  'deploy +73KA stand');
 
-  // deploy +74KA: success, deploy +75KA: fail(lack of pieces)
-  board[7][4] = {black: true, piece: 'KA'};
+  // deploy +74UM: success, deploy +75KA: fail(lack of pieces)
+  board[7][4] = {black: true, piece: 'UM'};
   pieces['KA'] = 0;
-  ok(kifu_board.cellDeploy(7, 4, 'KA', true), 'deploy +74KA');
+  ok(kifu_board.cellDeploy(7, 4, 'UM', true), 'deploy +74UM');
   same(kifu_board.cellDeploy(7, 5, 'KA', false), false, 'deploy +75KA');
-  same(kifu_board.board(),  board,  'deploy +74KA board');
-  same(kifu_board.pieces(), pieces, 'deploy +74KA pieces');
-  same(kifu_board.stand(),  stand,  'deploy +74KA stand');
+  same(kifu_board.board(),  board,  'deploy +74UM board');
+  same(kifu_board.pieces(), pieces, 'deploy +74UM pieces');
+  same(kifu_board.stand(),  stand,  'deploy +74UM stand');
 
   // remove 18FU
   board[1][8] = null;
@@ -95,6 +95,14 @@ test('cellDeploy, cellRemove', 30, function() {
   same(kifu_board.board(),  board,  'remove 74HI board');
   same(kifu_board.pieces(), pieces, 'remove 74HI pieces');
   same(kifu_board.stand(),  stand,  'remove 74HI stand');
+
+  // remove 74UM
+  board[7][4] = null;
+  pieces['KA'] = 2;
+  ok(kifu_board.cellRemove(7, 4, 'UM'), 'remove 74UM');
+  same(kifu_board.board(),  board,  'remove 74UM board');
+  same(kifu_board.pieces(), pieces, 'remove 74UM pieces');
+  same(kifu_board.stand(),  stand,  'remove 74UM stand');
 });
 
 test('cellGet, cellSet, cellTrash', 10, function() {
