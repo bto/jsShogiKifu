@@ -98,21 +98,8 @@ Kifu.prototype.extend({
     var moves = this.moves.moves;
     for (var i in moves) {
       var move = moves[i];
-      if (move['type'] != 'move') {
-        continue;
-      }
       if (move['str']) {
         result.push(move['str']);
-      } else {
-        var str = '';
-        var to = move['to'];
-        str += number_x_map[to['x']];
-        str += number_y_map[to['y']];
-        str += piece_string_map[to['piece']];
-        if (!move['from']['x']) {
-          str += '打';
-        }
-        result.push(str);
       }
     }
     return result;
@@ -155,6 +142,19 @@ Kifu.prototype.extend({
       if (typeof move['black'] == 'undefined') {
         move['black'] = black;
       }
+
+      if (!move['str']) {
+        var str = '';
+        var to = move['to'];
+        str += number_x_map[to['x']];
+        str += number_y_map[to['y']];
+        str += piece_string_map[to['piece']];
+        if (!move['from']['x']) {
+          str += '打';
+        }
+        move['str'] = str;
+      }
+
       board.move(move);
       black = !move['black'];
     }
