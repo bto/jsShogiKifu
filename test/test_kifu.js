@@ -91,7 +91,7 @@ test('initialization', 9, function() {
   same(kifu.moves,      Kifu.Move(),  'source moves');
 });
 
-test('source', 0, function() {
+test('source', 5, function() {
   var kifu   = Kifu();
 
   same(kifu.source(), undefined, 'first status');
