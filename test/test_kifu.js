@@ -95,7 +95,7 @@ test('next, prev', 31, function() {
   var kifu = Kifu('V2.2');
   kifu.board_init.hirate();
   kifu.parse('csa');
-  kifu.moves.addMove([2, 7], [2, 6], 'FU');
+  kifu.moves.addMove([2, 7], [2, 6], 'FU', {black: true});
   kifu.moves.addMove([3, 3], [3, 4], 'FU', {black: false});
   var black = kifu.black;
   var board = kifu.board.clone();
@@ -104,7 +104,6 @@ test('next, prev', 31, function() {
 
   // 1st move
   var move = moves.get(1);
-  move['black'] = true;
   board.move(move);
   black = false;
   step  = 1;
