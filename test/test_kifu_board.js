@@ -214,7 +214,7 @@ test('hirate', 4, function() {
       6: null,
       7: {black: true, piece: 'FU'},
       8: null,
-      9: {black: true, piece: 'KY'}},
+      9: {black: true, piece: 'KY'}}
   };
 
   var pieces = {
