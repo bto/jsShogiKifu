@@ -91,8 +91,23 @@ test('initialization', 9, function() {
   same(kifu.moves,      Kifu.Move(),  'source moves');
 });
 
+test('parse', 7, function() {
+  var board = Kifu.Board();
+  var info  = {
+    format: 'csa', player_start: 'black', source: 'V2.2', version: '2.2'};
+  var moves = Kifu.Move();
+  var kifu = Kifu('V2.2');
+  ok(kifu.parse('csa'), 'parse');
+  same(kifu.black,      true,  'black');
+  same(kifu.board,      board, 'board');
+  same(kifu.board_init, board, 'board_init');
+  same(kifu.info,       info,  'info');
+  same(kifu.moves,      moves, 'moves');
+  same(kifu.step,       0,     'step');
+});
+
 test('source', 5, function() {
-  var kifu   = Kifu();
+  var kifu = Kifu();
 
   same(kifu.source(), undefined, 'first status');
 
