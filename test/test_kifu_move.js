@@ -10,11 +10,11 @@ module('Kifu.Move', {
 });
 
 test('initialization', 1, function() {
-  same(kifu_move.moves(), [{type: 'init'}]);
+  same(kifu_move.moves, [{type: 'init'}]);
 });
 
 test('addComment', 11, function() {
-  var moves = Kifu.clone(kifu_move.moves());
+  var moves = Kifu.clone(kifu_move.moves);
 
   // comment1
   var move1 = {type: 'init', comment: "comment1\n"};
@@ -43,11 +43,11 @@ test('addComment', 11, function() {
   same(kifu_move.get(1), move2, 'comment4 move2');
 
   // check moves
-  same(kifu_move.moves(), moves, 'moves');
+  same(kifu_move.moves, moves, 'moves');
 });
 
 test('addMove', 6, function() {
-  var moves = Kifu.clone(kifu_move.moves());
+  var moves = Kifu.clone(kifu_move.moves);
 
   // +2726FU
   var move = {
@@ -102,11 +102,11 @@ test('addMove', 6, function() {
   same(kifu_move.get(6), move, '2600HI');
 
   // check moves
-  same(kifu_move.moves(), moves, 'moves');
+  same(kifu_move.moves, moves, 'moves');
 });
 
 test('addPeriod', 9, function() {
-  var moves = Kifu.clone(kifu_move.moves());
+  var moves = Kifu.clone(kifu_move.moves);
 
   // 10sec
   var move = Kifu.clone(kifu_move.get(0));
@@ -136,11 +136,11 @@ test('addPeriod', 9, function() {
   same(kifu_move.get(1), move, '30sec move');
 
   // check moves
-  same(kifu_move.moves(), moves, 'moves');
+  same(kifu_move.moves, moves, 'moves');
 });
 
 test('addSpecial', 4, function() {
-  var moves = Kifu.clone(kifu_move.moves());
+  var moves = Kifu.clone(kifu_move.moves);
 
   // TORYO
   var move = {type: 'TORYO'};
@@ -161,11 +161,11 @@ test('addSpecial', 4, function() {
   same(kifu_move.get(3), move, '-ILLEGAL_ACTION');
 
   // check moves
-  same(kifu_move.moves(), moves, 'moves');
+  same(kifu_move.moves, moves, 'moves');
 });
 
 test('newMove', 5, function() {
-  var moves = Kifu.clone(kifu_move.moves());
+  var moves = Kifu.clone(kifu_move.moves);
 
   same(kifu_move.get(1), undefined, 'undefined first move');
   kifu_move.newMove();
@@ -176,7 +176,7 @@ test('newMove', 5, function() {
   moves.push({});
 
   // check moves
-  same(kifu_move.moves(), moves, 'moves');
+  same(kifu_move.moves, moves, 'moves');
 });
 
 

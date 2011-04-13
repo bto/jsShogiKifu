@@ -133,7 +133,7 @@ $.fn.shogiBoard = function(kifu, options) {
 
     config['element'].append(source.replace(/%suffix%/g, suffix));
 
-    boardSet(kifu.board_init.board(), config);
+    boardSet(kifu.board_init.board, config);
 
     playerSet(info, suffix);
 

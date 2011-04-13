@@ -38,19 +38,15 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 }
 
 Kifu.prototype.extend({
-  board: function() {
-    return this._board;
-  },
-
   next: function() {
-    var move = this.moves.get(this._step+1);
+    var move = this.moves.get(this.step+1);
     if (move) {
       if (typeof move['black'] == 'undefined') {
-        move['black'] = this._black;
+        move['black'] = this.black;
       }
-      this._board.move(move);
-      this._black = !move['black'];
-      this._step++;
+      this.board.move(move);
+      this.black = !move['black'];
+      this.step++;
     }
     return move;
   },
@@ -63,19 +59,19 @@ Kifu.prototype.extend({
     var klass = Kifu.capitalize(this.info['format']);
     Kifu[klass].parse(this);
 
-    this._black = this.info['player_start'] == 'black';
-    this._board = Kifu.clone(this.board_init);
-    this._step  = 0;
+    this.black = this.info['player_start'] == 'black';
+    this.board = Kifu.clone(this.board_init);
+    this.step  = 0;
 
     return this;
   },
 
   prev: function() {
-    var move = this.moves.get(this._step);
+    var move = this.moves.get(this.step);
     if (move) {
-      this._board.moveReverse(move);
-      this._black = move['black'];
-      this._step--
+      this.board.moveReverse(move);
+      this.black = move['black'];
+      this.step--
     }
     return move;
   },
@@ -161,13 +157,9 @@ Kifu.Board = (function() { return new Kifu.Board.initialize(); });
 Kifu.Board.extend = Kifu.Board.prototype.extend = Kifu.extend;
 
 Kifu.Board.prototype.extend({
-  board: function() {
-    return this._board;
-  },
-
   cellDeploy: function(x, y, piece, black) {
-    var pieces = this._pieces;
-    if (this._board[x][y]) {
+    var pieces = this.pieces;
+    if (this.board[x][y]) {
       return false;
     }
     var piece_org = piece_map[piece];
@@ -180,28 +172,28 @@ Kifu.Board.prototype.extend({
   },
 
   cellGet: function(x, y) {
-    return this._board[x][y];
+    return this.board[x][y];
   },
 
   cellRemove: function(x, y, piece) {
-    var cell = this._board[x][y];
+    var cell = this.board[x][y];
     if (!cell) {
       return false;
     }
     if (!this.cellTrash(x, y, piece)) {
       return false;
     }
-    this._pieces[piece_map[cell['piece']]] += 1;
+    this.pieces[piece_map[cell['piece']]] += 1;
     return this;
   },
 
   cellSet: function(x, y, piece, black) {
-    this._board[x][y] = {black: black, piece: piece};
+    this.board[x][y] = {black: black, piece: piece};
     return this;
   },
 
   cellTrash: function(x, y, piece) {
-    var cell = this._board[x][y];
+    var cell = this.board[x][y];
     if (!cell) {
       return false;
     }
@@ -212,7 +204,7 @@ Kifu.Board.prototype.extend({
       return false;
     }
 
-    this._board[x][y] = null;
+    this.board[x][y] = null;
     return this;
   },
 
@@ -255,7 +247,7 @@ Kifu.Board.prototype.extend({
     var y1    = move['from']['y'];
     var x2    = move['to']['x'];
     var y2    = move['to']['y'];
-    var to    = this._board[x2][y2];
+    var to    = this.board[x2][y2];
     var black = move['black'];
 
     if (to) {
@@ -266,7 +258,7 @@ Kifu.Board.prototype.extend({
 
     this.cellSet(x2, y2, move['to']['piece'], black);
     if (x1) {
-      move['from']['piece'] = this._board[x1][y1]['piece'];
+      move['from']['piece'] = this.board[x1][y1]['piece'];
       this.cellTrash(x1, y1);
     } else {
       move['from']['piece'] = move['to']['piece'];
@@ -299,18 +291,10 @@ Kifu.Board.prototype.extend({
     return this;
   },
 
-  pieces: function() {
-    return this._pieces;
-  },
-
-  stand: function() {
-    return this._stand;
-  },
-
   standDeploy: function(piece, black) {
     var player = black ? 'black' : 'white';
-    var stand  = this._stand[player];
-    var pieces = this._pieces;
+    var stand  = this.stand[player];
+    var pieces = this.pieces;
 
     if (piece == 'AL') {
       for (var p in pieces) {
@@ -334,13 +318,13 @@ Kifu.Board.prototype.extend({
     if (!this.standTrash(piece, black)) {
       return false;
     }
-    this._pieces[piece]++;
+    this.pieces[piece]++;
     return this;
   },
 
   standSet: function(piece, black) {
     var player = black ? 'black' : 'white';
-    var stand = this._stand[player];
+    var stand = this.stand[player];
     stand[piece] = stand[piece] || 0;
     stand[piece]++;
     return this;
@@ -348,7 +332,7 @@ Kifu.Board.prototype.extend({
 
   standTrash: function(piece, black) {
     var player = black ? 'black' : 'white';
-    var stand = this._stand[player];
+    var stand = this.stand[player];
     if (!stand[piece]) {
       return false;
     }
@@ -359,9 +343,9 @@ Kifu.Board.prototype.extend({
 
 Kifu.Board.extend({
   initialize: function() {
-    this._board  = Kifu.Board.boardEmpty();
-    this._pieces = Kifu.Board.piecesDefault();
-    this._stand  = {
+    this.board  = Kifu.Board.boardEmpty();
+    this.pieces = Kifu.Board.piecesDefault();
+    this.stand  = {
       black: Kifu.Board.standEmpty(),
       white: Kifu.Board.standEmpty()};
   },
@@ -397,7 +381,7 @@ Kifu.Move.extend = Kifu.Move.prototype.extend = Kifu.extend;
 
 Kifu.Move.prototype.extend({
   addComment: function(comment) {
-    var move = this._moves[this._moves.length-1];
+    var move = this.moves[this.moves.length-1];
     move['comment'] = (move['comment'] || '') + comment + "\n";
     return this;
   },
@@ -407,8 +391,8 @@ Kifu.Move.prototype.extend({
     move['type']  = 'move';
     move['from']  = {x: from[0], y: from[1]};
     if (to[0] == 0) {
-      for (var i = this._moves.length-2; 0 <= i; i--) {
-        var to_prev = this._moves[i]['to'];
+      for (var i = this.moves.length-2; 0 <= i; i--) {
+        var to_prev = this.moves[i]['to'];
         if (to_prev) break;
       }
       move['to'] = {piece: piece, x: to_prev['x'], y: to_prev['y']};
@@ -422,7 +406,7 @@ Kifu.Move.prototype.extend({
   },
 
   addPeriod: function(period) {
-    this._moves[this._moves.length-1]['period'] = period;
+    this.moves[this.moves.length-1]['period'] = period;
     return this;
   },
 
@@ -436,18 +420,14 @@ Kifu.Move.prototype.extend({
   },
 
   get: function(step) {
-    return this._moves[step];
-  },
-
-  moves: function() {
-    return this._moves;
+    return this.moves[step];
   },
 
   newMove: function() {
-    var move = this._moves[this._moves.length-1];
+    var move = this.moves[this.moves.length-1];
     if (move['type']) {
-      this._moves.push({});
-      move = this._moves[this._moves.length-1];
+      this.moves.push({});
+      move = this.moves[this.moves.length-1];
     }
     return move;
   }
@@ -455,7 +435,7 @@ Kifu.Move.prototype.extend({
 
 Kifu.Move.extend({
   initialize: function() {
-    this._moves = [{type: 'init'}];
+    this.moves = [{type: 'init'}];
   }
 });
 
