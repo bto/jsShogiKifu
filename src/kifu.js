@@ -6,7 +6,7 @@
 
 var _Kifu = window.Kifu;
 
-var piece_stand_map = {
+var piece_map = {
   FU: 'FU',
   KY: 'KY',
   KE: 'KE',
@@ -14,6 +14,7 @@ var piece_stand_map = {
   KI: 'KI',
   KA: 'KA',
   HI: 'HI',
+  OU: 'OU',
   TO: 'FU',
   NY: 'KY',
   NK: 'KE',
@@ -183,11 +184,12 @@ Kifu.Board.prototype.extend({
     if (this._board[x][y]) {
       return false;
     }
-    if (pieces[piece] == 0) {
+    var piece_org = piece_map[piece];
+    if (!pieces[piece_org]) {
       return false;
     }
     this.cellSet(x, y, piece, black);
-    pieces[piece] -= 1;
+    pieces[piece_org] -= 1;
     return this;
   },
 
@@ -203,7 +205,7 @@ Kifu.Board.prototype.extend({
     if (!this.cellTrash(x, y, piece)) {
       return false;
     }
-    this._pieces[cell['piece']] += 1;
+    this._pieces[piece_map[cell['piece']]] += 1;
     return this;
   },
 
@@ -271,7 +273,7 @@ Kifu.Board.prototype.extend({
     var black = move['black'];
 
     if (to) {
-      var stand_piece = piece_stand_map[to['piece']];
+      var stand_piece = piece_map[to['piece']];
       this.standSet(stand_piece, black);
       move['stand'] = {piece: to['piece'], stand: stand_piece};
     }
