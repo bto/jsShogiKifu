@@ -73,7 +73,7 @@ test('addMove', 6, function() {
   var move = {
     str:   '同　飛',
     from:  {             x: 2, y: 8},
-    to:    {piece: 'HI', x: 2, y: 6},
+    to:    {piece: 'HI', x: 0, y: 0},
     type:  'move'};
   moves.push(move);
   kifu_move.addMove([2, 8], [0, 0], 'HI', {str: '同　飛'});
@@ -93,7 +93,7 @@ test('addMove', 6, function() {
   var move = {
     str:   '同　飛',
     from:  {             x: 2, y: 6},
-    to:    {piece: 'HI', x: 2, y: 5},
+    to:    {piece: 'HI', x: 0, y: 0},
     type:  'move'};
   moves.push({type: 'MATTA'});
   moves.push(move);
