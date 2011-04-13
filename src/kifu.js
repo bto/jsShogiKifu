@@ -40,7 +40,7 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 Kifu.prototype.extend({
   next: function() {
     var move = this.moves.get(this.step+1);
-    if (move) {
+    if (move && move['type'] == 'move') {
       if (typeof move['black'] == 'undefined') {
         move['black'] = this.black;
       }
@@ -68,7 +68,7 @@ Kifu.prototype.extend({
 
   prev: function() {
     var move = this.moves.get(this.step);
-    if (move) {
+    if (move && move['type'] == 'move') {
       this.board.moveReverse(move);
       this.black = move['black'];
       this.step--
