@@ -828,17 +828,16 @@ Kifu.Kif = {
   },
 
   toLines: function(source) {
-    var lines = source.split("\r\n");
-    if (lines.length > 1) {
-      return lines;
+    var result = [];
+    var lines = source.split(/\r\n|\r|\n/);
+    var l = lines.length;
+    for (var i = 0; i < l; i++) {
+      var line = lines[i];
+      if (line) {
+        result.push(lines[i]);
+      }
     }
-
-    lines = source.split("\n");
-    if (lines.length > 1) {
-      return lines;
-    }
-
-    return source.split("\r");
+    return result;
   }
 };
 })(Kifu);
