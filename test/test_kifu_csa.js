@@ -240,7 +240,7 @@ test('parse start player', 5, function() {
   same(info['player_start'], 'black', line+' info');
 });
 
-test('parse moves', 14, function() {
+test('parse moves', 20, function() {
   var kifu  = kifu_obj.kifu();
   var moves = Kifu.Move();
 
@@ -285,6 +285,24 @@ test('parse moves', 14, function() {
   var line = 'T30';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
   same(kifu['moves'].get(2), moves.get(2), line+' move');
+
+  // %TORYO
+  moves.addSpecial('TORYO');
+  var line = '%TORYO';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(3), moves.get(3), line+' move');
+
+  // %+ILLEGAL_ACTION
+  moves.addSpecial('ILLEGAL_ACTION', {black: true});
+  var line = '%+ILLEGAL_ACTION';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(4), moves.get(4), line+' move');
+
+  // %-ILLEGAL_ACTION
+  moves.addSpecial('ILLEGAL_ACTION', {black: false});
+  var line = '%-ILLEGAL_ACTION';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(5), moves.get(5), line+' move');
 });
 
 test('toLines', 2, function() {
