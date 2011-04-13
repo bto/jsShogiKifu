@@ -80,7 +80,7 @@ Kifu.prototype.extend({
     if (source) {
       this.info['source'] = Kifu.load(source);
     }
-    return source;
+    return this.info['source'];
   }
 });
 
