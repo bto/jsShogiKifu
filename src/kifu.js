@@ -6,6 +6,30 @@
 
 var _Kifu = window.Kifu;
 
+var number_x_map = {
+  1: '１',
+  2: '２',
+  3: '３',
+  4: '４',
+  5: '５',
+  6: '６',
+  7: '７',
+  8: '８',
+  9: '９'
+};
+
+var number_y_map = {
+  1: '一',
+  2: '二',
+  3: '三',
+  4: '四',
+  5: '五',
+  6: '六',
+  7: '七',
+  8: '八',
+  9: '九'
+};
+
 var piece_map = {
   FU: 'FU',
   KY: 'KY',
@@ -21,6 +45,23 @@ var piece_map = {
   NG: 'GI',
   UM: 'KA',
   RY: 'HI'
+};
+
+var piece_string_map = {
+  FU: '歩',
+  KY: '香',
+  KE: '桂',
+  GI: '銀',
+  KI: '金',
+  KA: '角',
+  HI: '飛',
+  OU: '王',
+  TO: 'と',
+  NY: '成香',
+  NK: '成桂',
+  NG: '成銀',
+  UM: '馬',
+  RY: '竜'
 };
 
 /*
@@ -50,6 +91,31 @@ Kifu.prototype.extend({
       var step = this.step;
       this.next();
     } while(step != this.step);
+  },
+
+  moveStrings: function() {
+    var result = [];
+    var moves = this.moves.moves;
+    for (var i in moves) {
+      var move = moves[i];
+      if (move['type'] != 'move') {
+        continue;
+      }
+      if (move['str']) {
+        result.push(move['str']);
+      } else {
+        var str = '';
+        var to = move['to'];
+        str += number_x_map[to['x']];
+        str += number_y_map[to['y']];
+        str += piece_string_map[to['piece']];
+        if (!move['from']['x']) {
+          str += '打';
+        }
+        result.push(str);
+      }
+    }
+    return result;
   },
 
   next: function() {
