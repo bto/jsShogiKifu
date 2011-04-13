@@ -10,87 +10,99 @@ module('Kifu.Csa', {
 });
 
 test('parse version', 4, function() {
-  var kifu = kifu_obj.kifu();
-  var info = kifu['info'];
+  var kifu  = kifu_obj.kifu();
+  var info  = kifu['info'];
+  var info2 = Kifu().kifu()['info'];
 
   // version 2
+  info2['version'] = '2';
   var line = 'V2';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['version'], '2', line+' info');
+  same(info, info2, line+' info');
 
   // version 2.2
+  info2['version'] = '2.2';
   var line = 'V2.2';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['version'], '2.2', line+' info');
+  same(info, info2, line+' info');
 });
 
 test('parse player', 4, function() {
-  var kifu = kifu_obj.kifu();
-  var info = kifu['info'];
+  var kifu  = kifu_obj.kifu();
+  var info  = kifu['info'];
+  var info2 = Kifu().kifu()['info'];
 
   // black player
+  info2['player_black'] = '大山康晴';
   var line = 'N+大山康晴';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['player_black'], '大山康晴', line+' info');
+  same(info, info2, line+' info');
 
   // white player
+  info2['player_white'] = '升田幸三';
   var line = 'N-升田幸三';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['player_white'], '升田幸三', line+' info');
+  same(info, info2, line+' info');
 });
 
 test('parse info', 18, function() {
-  var kifu = kifu_obj.kifu();
-  var info = kifu['info'];
+  var kifu  = kifu_obj.kifu();
+  var info  = kifu['info'];
+  var info2 = Kifu().kifu()['info'];
 
   // EVENT
+  info2['event'] = '名人戦';
   var line = '$EVENT:名人戦';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['event'], '名人戦', line+' info');
+  same(info, info2, line+' info');
 
   // SITE
+  info2['site'] = '陣屋';
   var line = '$SITE:陣屋';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['site'], '陣屋', line+' info');
+  same(info, info2, line+' info');
 
   // START_TIME
-  var start_time = new Date(2011, 3, 7, 9, 45, 10);
+  info2['start_time'] = new Date(2011, 3, 7, 9, 45, 10);
   var line = '$START_TIME:2011/04/07 09:45:10';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['start_time'], start_time, line+' info');
+  same(info, info2, line+' info');
 
   // START_TIME 2
-  var start_time = new Date(2010, 9, 25);
+  info2['start_time'] = new Date(2010, 9, 25);
   var line = '$START_TIME:2010/10/25';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['start_time'], start_time, line+' info');
+  same(info, info2, line+' info');
 
   // END_TIME
-  var end_time = new Date(2011, 3, 8, 10, 20, 30);
+  info2['end_time'] = new Date(2011, 3, 8, 10, 20, 30);
   var line = '$END_TIME:2011/04/08 10:20:30';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['end_time'], end_time, line+' info');
+  same(info, info2, line+' info');
 
   // END_TIME 2
-  var end_time = new Date(2010, 9, 26);
+  info2['end_time'] = new Date(2010, 9, 26);
   var line = '$END_TIME:2010/10/26';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['end_time'], end_time, line+' info');
+  same(info, info2, line+' info');
 
   // TIME_LIMIT
+  info2['time_limit'] = {allotted: 360, extra: 60};
   var line = '$TIME_LIMIT:06:00+60';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['time_limit'], {allotted: 360, extra: 60}, line+' info');
+  same(info, info2, line+' info');
 
   // TIME_LIMIT 2
+  info2['time_limit'] = {allotted: 0, extra: 0};
   var line = '$TIME_LIMIT:00:00+00';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['time_limit'], {allotted: 0, extra: 0}, line+' info');
+  same(info, info2, line+' info');
 
   // OPENING
+  info2['opening'] = '相矢倉';
   var line = '$OPENING:相矢倉';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['opening'], '相矢倉', line+' info');
+  same(info, info2, line+' info');
 });
 
 test('parse initial board hirate', 4, function() {
@@ -225,19 +237,22 @@ test('parse initial board each', 8, function() {
 });
 
 test('parse start player', 5, function() {
-  var kifu = kifu_obj.kifu();
-  var info = kifu['info'];
+  var kifu  = kifu_obj.kifu();
+  var info  = kifu['info'];
+  var info2 = Kifu().kifu()['info'];
 
   // -
+  info2['player_start'] = 'white';
   var line = '-';
   same(info['player_start'], 'black', 'first status');
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['player_start'], 'white', line+' info');
+  same(info, info2, line+' info');
 
   // +
+  info2['player_start'] = 'black';
   var line = '+';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(info['player_start'], 'black', line+' info');
+  same(info, info2, line+' info');
 });
 
 test('parse moves', 20, function() {
@@ -248,61 +263,61 @@ test('parse moves', 20, function() {
   moves.addComment('comment1');
   var line = "'* comment1";
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(0), moves.get(0), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // '* comment2'
   moves.addComment('comment2');
   var line = "'* comment2";
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(0), moves.get(0), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // '+2726FU'
   moves.addMove([2, 7], [2, 6], 'FU', {black: true});
   var line = '+2726FU';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(1), moves.get(1), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // 'T10'
   moves.addPeriod(10);
   var line = 'T10';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(1), moves.get(1), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // '* comment3'
   moves.addComment('comment3');
   var line = "'* comment3";
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(1), moves.get(1), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // '-0055KA'
   moves.addMove([0, 0], [5, 5], 'KA', {black: false});
   var line = '-0055KA';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(2), moves.get(2), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // 'T30'
   moves.addPeriod(30);
   var line = 'T30';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(2), moves.get(2), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // %TORYO
   moves.addSpecial('TORYO');
   var line = '%TORYO';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(3), moves.get(3), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // %+ILLEGAL_ACTION
   moves.addSpecial('ILLEGAL_ACTION', {black: true});
   var line = '%+ILLEGAL_ACTION';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(4), moves.get(4), line+' move');
+  same(kifu['moves'], moves, line+' move');
 
   // %-ILLEGAL_ACTION
   moves.addSpecial('ILLEGAL_ACTION', {black: false});
   var line = '%-ILLEGAL_ACTION';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
-  same(kifu['moves'].get(5), moves.get(5), line+' move');
+  same(kifu['moves'], moves, line+' move');
 });
 
 test('toLines', 2, function() {
