@@ -143,6 +143,16 @@ Kifu.prototype.extend({
         move['black'] = black;
       }
 
+      var to = move['to'];
+      if (to['x'] == 0) {
+        for (var j = i-1; 0 <= j; j--) {
+          var to_prev = moves[j]['to'];
+          if (to_prev) break;
+        }
+        to['x'] = to_prev['x'];
+        to['y'] = to_prev['y'];
+      }
+
       if (!move['str']) {
         var str = '';
         var to = move['to'];
@@ -490,17 +500,9 @@ Kifu.Move.prototype.extend({
 
   addMove: function(from, to, piece, options) {
     var move = this.newMove();
-    move['type']  = 'move';
-    move['from']  = {x: from[0], y: from[1]};
-    if (to[0] == 0) {
-      for (var i = this.moves.length-2; 0 <= i; i--) {
-        var to_prev = this.moves[i]['to'];
-        if (to_prev) break;
-      }
-      move['to'] = {piece: piece, x: to_prev['x'], y: to_prev['y']};
-    } else {
-      move['to'] = {piece: piece, x: to[0], y: to[1]};
-    }
+    move['from'] = {x: from[0], y: from[1]};
+    move['to']   = {piece: piece, x: to[0], y: to[1]};
+    move['type'] = 'move';
     for (var property in options) {
       move[property] = options[property];
     }
