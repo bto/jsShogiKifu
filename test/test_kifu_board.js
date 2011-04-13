@@ -124,10 +124,10 @@ test('cellGet, cellSet, cellTrash', 10, function() {
 });
 
 test('clone', 2, function() {
-  var kifu = kifu_board.clone();
-  same(kifu, kifu_board, 'clone');
-  kifu.stand['black']['FU'] = 1;
-  QUnit.notDeepEqual(kifu, kifu_board, 'clone');
+  var board = kifu_board.clone();
+  same(board, kifu_board, 'clone');
+  board.stand['black']['FU'] = 1;
+  QUnit.notDeepEqual(board, kifu_board, 'clone');
 });
 
 test('hirate', 4, function() {
