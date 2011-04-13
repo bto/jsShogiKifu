@@ -91,7 +91,7 @@ test('initialization', 9, function() {
   same(kifu.moves,      Kifu.Move(),  'source moves');
 });
 
-test('next', 10, function() {
+test('next, prev', 31, function() {
   var kifu = Kifu('V2.2');
   kifu.board_init.hirate();
   kifu.parse('csa');
@@ -124,6 +124,45 @@ test('next', 10, function() {
   same(kifu.board,  board, '2nd board');
   same(kifu.moves,  moves, '2nd moves');
   same(kifu.step,   step,  '2nd step');
+
+  // 3rd move
+  var move = moves.get(3);
+  same(move,        undefined, '3rd move undefined');
+  same(kifu.next(), move,      '3rd move');
+  same(kifu.black,  black,     '3rd black');
+  same(kifu.board,  board,     '3rd board');
+  same(kifu.moves,  moves,     '3rd moves');
+  same(kifu.step,   step,      '3rd step');
+
+  // 2nd prev
+  var move = moves.get(2);
+  board.moveReverse(move);
+  black = false;
+  step  = 1;
+  same(kifu.prev(), move,  '2nd perv move');
+  same(kifu.black,  black, '2nd perv black');
+  same(kifu.board,  board, '2nd perv board');
+  same(kifu.moves,  moves, '2nd perv moves');
+  same(kifu.step,   step,  '2nd perv step');
+
+  // 1st prev
+  var move = moves.get(1);
+  board.moveReverse(move);
+  black = true;
+  step  = 0;
+  same(kifu.prev(), move,  '1st perv move');
+  same(kifu.black,  black, '1st perv black');
+  same(kifu.board,  board, '1st perv board');
+  same(kifu.moves,  moves, '1st perv moves');
+  same(kifu.step,   step,  '1st perv step');
+
+  // init prev
+  var move = moves.get(0);
+  same(kifu.prev(), move,  'init perv move');
+  same(kifu.black,  black, 'init perv black');
+  same(kifu.board,  board, 'init perv board');
+  same(kifu.moves,  moves, 'init perv moves');
+  same(kifu.step,   step,  'init perv step');
 });
 
 test('parse', 7, function() {
