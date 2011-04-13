@@ -54,7 +54,8 @@ test('clone', 6, function() {
 });
 
 test('load', 2, function() {
-  same(Kifu.load('csa1'), "\nV2.2\n", 'load by id');
+  var source = document.getElementById('csa1').innerHTML;
+  same(Kifu.load('csa1'), source, 'load by id');
   same(Kifu.load('foo bar baz'), 'foo bar baz', 'load by string');
 });
 
@@ -88,6 +89,22 @@ test('initialization', 9, function() {
   same(kifu.board_init, Kifu.Board(), 'source board_init');
   same(kifu.info,       info,         'source info');
   same(kifu.moves,      Kifu.Move(),  'source moves');
+});
+
+test('source', 0, function() {
+  var kifu   = Kifu();
+
+  same(kifu.source(), undefined, 'first status');
+
+  // string
+  var source = 'V2.2';
+  same(kifu.source(source), source, source);
+  same(kifu.source(), source, source);
+
+  // document id
+  var source = document.getElementById('csa1').innerHTML;
+  same(kifu.source('csa1'), source, source);
+  same(kifu.source(), source, source);
 });
 
 
