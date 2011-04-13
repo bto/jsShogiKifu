@@ -121,9 +121,6 @@ Kifu.prototype.extend({
   next: function() {
     var move = this.moves.get(this.step+1);
     if (move && move['type'] == 'move') {
-      if (typeof move['black'] == 'undefined') {
-        move['black'] = this.black;
-      }
       this.board.move(move);
       this.black = !move['black'];
       this.step++;
@@ -138,12 +135,29 @@ Kifu.prototype.extend({
 
     var klass = Kifu.capitalize(this.info['format']);
     Kifu[klass].parse(this);
+    this.prepare();
 
     this.black = this.info['player_start'] == 'black';
     this.board = this.board_init.clone();
     this.step  = 0;
 
     return this;
+  },
+
+  prepare: function() {
+    var black = this.info['player_start'] == 'black';
+    var board = this.board_init.clone();
+    var moves = this.moves.moves;
+    for (var i in moves) {
+      var move = moves[i];
+      if (!move || move['type'] != 'move') continue;
+
+      if (typeof move['black'] == 'undefined') {
+        move['black'] = black;
+      }
+      board.move(move);
+      black = !move['black'];
+    }
   },
 
   prev: function() {
