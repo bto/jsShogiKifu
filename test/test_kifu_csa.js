@@ -224,6 +224,22 @@ test('parse initial board each', 8, function() {
   same(kifu['board'], board, line+' board');
 });
 
+test('parse start player', 5, function() {
+  var kifu = kifu_obj.kifu();
+  var info = kifu['info'];
+
+  // -
+  var line = '-';
+  same(info['player_start'], 'black', 'first status');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['player_start'], 'white', line+' info');
+
+  // +
+  var line = '+';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['player_start'], 'black', line+' info');
+});
+
 
 })();
 
