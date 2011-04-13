@@ -573,7 +573,7 @@ Kifu.Csa = {
           var x     = p_info.charAt(0) - '0';
           var y     = p_info.charAt(1) - '0';
           var piece = p_info.substr(2);
-          kifu['board'].trash(x, y, piece);
+          kifu['board'].cellRemove(x, y, piece);
         }
         return true;
 
