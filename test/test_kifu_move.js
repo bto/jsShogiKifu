@@ -164,6 +164,13 @@ test('addSpecial', 4, function() {
   same(kifu_move.moves, moves, 'moves');
 });
 
+test('clone', 2, function() {
+  var moves = kifu_move.clone();
+  same(moves, kifu_move, 'clone');
+  moves.moves[0]['comment'] = 'comment';
+  QUnit.notDeepEqual(moves, kifu_move, 'clone');
+});
+
 test('newMove', 5, function() {
   var moves = Kifu.clone(kifu_move.moves);
 
