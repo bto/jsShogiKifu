@@ -91,6 +91,41 @@ test('initialization', 9, function() {
   same(kifu.moves,      Kifu.Move(),  'source moves');
 });
 
+test('next', 10, function() {
+  var kifu = Kifu('V2.2');
+  kifu.board_init.hirate();
+  kifu.parse('csa');
+  kifu.moves.addMove([2, 7], [2, 6], 'FU');
+  kifu.moves.addMove([3, 3], [3, 4], 'FU', {black: false});
+  var black = kifu.black;
+  var board = kifu.board.clone();
+  var moves = kifu.moves.clone();
+  var step  = kifu.step;
+
+  // 1st move
+  var move = moves.get(1);
+  move['black'] = true;
+  board.move(move);
+  black = false;
+  step  = 1;
+  same(kifu.next(), move,  '1st move');
+  same(kifu.black,  black, '1st black');
+  same(kifu.board,  board, '1st board');
+  same(kifu.moves,  moves, '1st moves');
+  same(kifu.step,   step,  '1st step');
+
+  // 2nd move
+  var move = moves.get(2);
+  board.move(move);
+  black = true;
+  step  = 2;
+  same(kifu.next(), move,  '2nd move');
+  same(kifu.black,  black, '2nd black');
+  same(kifu.board,  board, '2nd board');
+  same(kifu.moves,  moves, '2nd moves');
+  same(kifu.step,   step,  '2nd step');
+});
+
 test('parse', 7, function() {
   var board = Kifu.Board();
   var info  = {
