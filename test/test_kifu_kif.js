@@ -97,7 +97,7 @@ test('parse initial board hirate', 2, function() {
   same(kifu['board'], board, line+' board');
 });
 
-test('parse moves', 14, function() {
+test('parse moves', 16, function() {
   var kifu  = kifu_obj.kifu();
   var moves = Kifu.Move();
 
@@ -137,9 +137,15 @@ test('parse moves', 14, function() {
   ok(Kifu.Kif.parseByLine(line, kifu), line);
   same(kifu['moves'], moves, line+' move');
 
-  //    4 投了         ( 0:00/00:00:00)
+  //    4 ８八飛成(82) ( 0:00/00:00:00)
+  moves.addMove([8, 2], [8, 8], 'RY', {str: '８八飛成'});
+  var line = "   4 ８八飛成(82) ( 0:00/00:00:00)";
+  ok(Kifu.Kif.parseByLine(line, kifu), line);
+  same(kifu['moves'], moves, line+' move');
+
+  //    5 投了         ( 0:00/00:00:00)
   moves.addSpecial('TORYO');
-  var line = "   4 投了         ( 0:00/00:00:00)";
+  var line = "   5 投了         ( 0:00/00:00:00)";
   ok(Kifu.Kif.parseByLine(line, kifu), line);
   same(kifu['moves'], moves, line+' move');
 });
