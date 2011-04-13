@@ -772,7 +772,7 @@ Kifu.Kif = {
         return true;
 
       case '持ち時間':
-        if (value.match(/各([0-9]+)時間/)) {
+        if (value.match(/([0-9]+)時間/)) {
           kifu['info']['time_limit'] = kifu['info']['time_limit'] || {};
           kifu['info']['time_limit']['allotted'] = parseInt(RegExp.$1) * 60;
         }
@@ -789,6 +789,10 @@ Kifu.Kif = {
 
       case '場所':
         kifu['info']['site'] = value;
+        return true;
+
+      case '戦型':
+        kifu['info']['opening'] = value;
         return true;
 
       case '手合割':
