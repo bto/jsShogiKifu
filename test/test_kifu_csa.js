@@ -193,7 +193,7 @@ test('parse initial board all', 16, function() {
   same(kifu['board'], board, line+' board');
 });
 
-test('parse initial board each', 6, function() {
+test('parse initial board each', 8, function() {
   var kifu  = kifu_obj.kifu();
   var board = Kifu.Board();
 
@@ -208,13 +208,18 @@ test('parse initial board each', 6, function() {
   ok(Kifu.Csa.parseByLine('P+00KI', kifu), 'P+00KI');
   same(kifu['board'], board, 'P+00KI board');
 
-  // P-42OU33GI22KI23FU00AL
+  // P-42OU33GI22KI23FU
   board.cellDeploy(4, 2, 'OU', false);
   board.cellDeploy(3, 3, 'GI', false);
   board.cellDeploy(2, 2, 'KI', false);
   board.cellDeploy(2, 3, 'FU', false);
+  var line = 'P-42OU33GI22KI23FU';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
+
+  // P-00AL
   board.standDeploy('AL', false);
-  var line = 'P-42OU33GI22KI23FU00AL';
+  var line = 'P-00AL';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
   same(kifu['board'], board, line+' board');
 });
