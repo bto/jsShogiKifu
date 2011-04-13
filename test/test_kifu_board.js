@@ -123,6 +123,13 @@ test('cellGet, cellSet, cellTrash', 10, function() {
   same(kifu_board.cellTrash(2, 6), false, 'trash 26');
 });
 
+test('clone', 2, function() {
+  var kifu = kifu_board.clone();
+  same(kifu, kifu_board, 'clone');
+  kifu.stand['black']['FU'] = 1;
+  QUnit.notDeepEqual(kifu, kifu_board, 'clone');
+});
+
 test('hirate', 4, function() {
   var board = {
     1: {
