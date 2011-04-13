@@ -45,6 +45,13 @@ Kifu.prototype.extend({
     return this;
   },
 
+  last: function() {
+    do {
+      var step = this.step;
+      this.next();
+    } while(step != this.step);
+  },
+
   next: function() {
     var move = this.moves.get(this.step+1);
     if (move && move['type'] == 'move') {
