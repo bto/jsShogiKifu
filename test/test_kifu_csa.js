@@ -240,7 +240,7 @@ test('parse start player', 5, function() {
   same(info['player_start'], 'black', line+' info');
 });
 
-test('parse moves', 0, function() {
+test('parse moves', 14, function() {
   var kifu  = kifu_obj.kifu();
   var moves = Kifu.Move();
 
@@ -285,6 +285,16 @@ test('parse moves', 0, function() {
   var line = 'T30';
   ok(Kifu.Csa.parseByLine(line, kifu), line);
   same(kifu['moves'].get(2), moves.get(2), line+' move');
+});
+
+test('toLines', 2, function() {
+  var source = "foo\r\nbar\rbaz\nfoo2\nbar2\nbaz2\n";
+  var lines  = ['foo', 'bar', 'baz', 'foo2', 'bar2', 'baz2'];
+  same(Kifu.Csa.toLines(source), lines, source);
+
+  var source = "foo,\r\nbar\rbaz,\nfoo2,\nbar2\nbaz2\n";
+  var lines  = ['foobar', 'bazfoo2bar2', 'baz2'];
+  same(Kifu.Csa.toLines(source), lines, source);
 });
 
 
