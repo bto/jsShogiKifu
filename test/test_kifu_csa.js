@@ -240,6 +240,53 @@ test('parse start player', 5, function() {
   same(info['player_start'], 'black', line+' info');
 });
 
+test('parse moves', 0, function() {
+  var kifu  = kifu_obj.kifu();
+  var moves = Kifu.Move();
+
+  // '* comment1'
+  moves.addComment('comment1');
+  var line = "'* comment1";
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(0), moves.get(0), line+' move');
+
+  // '* comment2'
+  moves.addComment('comment2');
+  var line = "'* comment2";
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(0), moves.get(0), line+' move');
+
+  // '+2726FU'
+  moves.addMove([2, 7], [2, 6], 'FU', {black: true});
+  var line = '+2726FU';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(1), moves.get(1), line+' move');
+
+  // 'T10'
+  moves.addPeriod(10);
+  var line = 'T10';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(1), moves.get(1), line+' move');
+
+  // '* comment3'
+  moves.addComment('comment3');
+  var line = "'* comment3";
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(1), moves.get(1), line+' move');
+
+  // '-0055KA'
+  moves.addMove([0, 0], [5, 5], 'KA', {black: false});
+  var line = '-0055KA';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(2), moves.get(2), line+' move');
+
+  // 'T30'
+  moves.addPeriod(30);
+  var line = 'T30';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['moves'].get(2), moves.get(2), line+' move');
+});
+
 
 })();
 
