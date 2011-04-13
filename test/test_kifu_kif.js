@@ -144,6 +144,12 @@ test('parse moves', 14, function() {
   same(kifu['moves'], moves, line+' move');
 });
 
+test('strip', 3, function() {
+  same(Kifu.Kif.strip('  foo  '),   'foo', 'foo');
+  same(Kifu.Kif.strip('　bar　'),   'bar', 'bar');
+  same(Kifu.Kif.strip(' 　baz 　'), 'baz', 'baz');
+});
+
 
 })();
 
