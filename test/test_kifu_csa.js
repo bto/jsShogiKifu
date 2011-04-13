@@ -315,6 +315,75 @@ test('toLines', 2, function() {
   same(Kifu.Csa.toLines(source), lines, source);
 });
 
+test('parse', 1, function() {
+  var source = "'----------棋譜ファイルの例\"example.csa\"-----------------\n\
+'バージョン\n\
+V2.2\n\
+'対局者名\n\
+N+NAKAHARA\n\
+N-YONENAGA\n\
+'棋譜情報\n\
+'棋戦名\n\
+$EVENT:13th World Computer Shogi Championship\n\
+'対局場所\n\
+$SITE:KAZUSA ARC\n\
+'開始日時\n\
+$START_TIME:2003/05/03 10:30:00\n\
+'終了日時\n\
+$END_TIME:2003/05/03 11:11:05\n\
+'持ち時間:25分、切れ負け\n\
+$TIME_LIMIT:00:25+00\n\
+'戦型:矢倉\n\
+$OPENING:YAGURA\n\
+'平手の局面\n\
+P1-KY-KE-GI-KI-OU-KI-GI-KE-KY\n\
+P2 * -HI *  *  *  *  * -KA * \n\
+P3-FU-FU-FU-FU-FU-FU-FU-FU-FU\n\
+P4 *  *  *  *  *  *  *  *  * \n\
+P5 *  *  *  *  *  *  *  *  * \n\
+P6 *  *  *  *  *  *  *  *  * \n\
+P7+FU+FU+FU+FU+FU+FU+FU+FU+FU\n\
+P8 * +KA *  *  *  *  * +HI * \n\
+P9+KY+KE+GI+KI+OU+KI+GI+KE+KY\n\
+'先手番\n\
++\n\
+'指し手と消費時間\n\
++2726FU\n\
+T12\n\
+-3334FU\n\
+T6\n\
+%CHUDAN\n\
+'---------------------------------------------------------\n\
+";
+
+  var kifu  = Kifu().kifu();
+  var board = kifu['board'];
+  var info  = kifu['info'];
+  var moves = kifu['moves'];
+  info['source']       = source;
+  info['version']      = '2.2';
+  info['player_black'] = 'NAKAHARA';
+  info['player_white'] = 'YONENAGA';
+  info['event']        = '13th World Computer Shogi Championship';
+  info['site']         = 'KAZUSA ARC';
+  info['start_time']   = new Date(2003, 4, 3, 10, 30);
+  info['end_time']     = new Date(2003, 4, 3, 11, 11, 5);
+  info['time_limit']   = {allotted: 25, extra: 0};
+  info['opening']      = 'YAGURA';
+  info['player_start'] = 'black';
+  board.hirate();
+  moves.addMove([2, 7], [2, 6], 'FU', {black: true});
+  moves.addPeriod(12);
+  moves.addMove([3, 3], [3, 4], 'FU', {black: false});
+  moves.addPeriod(6);
+  moves.addSpecial('CHUDAN');
+
+  kifu_obj.source(source);
+  var kifu2 = kifu_obj.kifu();
+  Kifu.Csa.parse(kifu2);
+  same(kifu2, kifu, 'sample csa');
+});
+
 
 })();
 
