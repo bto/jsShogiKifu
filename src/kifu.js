@@ -427,6 +427,12 @@ Kifu.Move.prototype.extend({
     return this;
   },
 
+  clone: function() {
+    var obj = new Kifu.Move;
+    obj.moves = Kifu.clone(this.moves);
+    return obj;
+  },
+
   get: function(step) {
     return this.moves[step];
   },
