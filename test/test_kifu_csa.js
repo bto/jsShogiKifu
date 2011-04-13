@@ -14,12 +14,14 @@ test('parse version', 4, function() {
   var info = kifu['info'];
 
   // version 2
-  ok(Kifu.Csa.parseByLine('V2', kifu), 'parse version 2');
-  same(info['version'], '2', 'check version 2');
+  var line = 'V2';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['version'], '2', line+' info');
 
   // version 2.2
-  ok(Kifu.Csa.parseByLine('V2.2', kifu), 'parse version 2.2');
-  same(info['version'], '2.2', 'check version 2.2');
+  var line = 'V2.2';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['version'], '2.2', line+' info');
 });
 
 test('parse player', 4, function() {
@@ -27,12 +29,14 @@ test('parse player', 4, function() {
   var info = kifu['info'];
 
   // black player
-  ok(Kifu.Csa.parseByLine('N+大山康晴', kifu), 'parse black player');
-  same(info['player_black'], '大山康晴', 'check black player');
+  var line = 'N+大山康晴';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['player_black'], '大山康晴', line+' info');
 
   // white player
-  ok(Kifu.Csa.parseByLine('N-升田幸三', kifu), 'parse white player');
-  same(info['player_white'], '升田幸三', 'check white player');
+  var line = 'N-升田幸三';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['player_white'], '升田幸三', line+' info');
 });
 
 test('parse info', 18, function() {
@@ -40,44 +44,53 @@ test('parse info', 18, function() {
   var info = kifu['info'];
 
   // EVENT
-  ok(Kifu.Csa.parseByLine('$EVENT:名人戦', kifu), 'parse info event');
-  same(info['event'], '名人戦', 'check info event');
+  var line = '$EVENT:名人戦';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['event'], '名人戦', line+' info');
 
   // SITE
-  ok(Kifu.Csa.parseByLine('$SITE:陣屋', kifu), 'parse info site');
-  same(info['site'], '陣屋', 'check info site');
+  var line = '$SITE:陣屋';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['site'], '陣屋', line+' info');
 
   // START_TIME
   var start_time = new Date(2011, 3, 7, 9, 45, 10);
-  ok(Kifu.Csa.parseByLine('$START_TIME:2011/04/07 09:45:10', kifu), 'parse start_time');
-  same(info['start_time'], start_time, 'check info start_time');
+  var line = '$START_TIME:2011/04/07 09:45:10';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['start_time'], start_time, line+' info');
 
   // START_TIME 2
   var start_time = new Date(2010, 9, 25);
-  ok(Kifu.Csa.parseByLine('$START_TIME:2010/10/25', kifu), 'parse start_time 2');
-  same(info['start_time'], start_time, 'check info start_time 2');
+  var line = '$START_TIME:2010/10/25';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['start_time'], start_time, line+' info');
 
   // END_TIME
   var end_time = new Date(2011, 3, 8, 10, 20, 30);
-  ok(Kifu.Csa.parseByLine('$END_TIME:2011/04/08 10:20:30', kifu), 'parse end_time');
-  same(info['end_time'], end_time, 'check info end_time');
+  var line = '$END_TIME:2011/04/08 10:20:30';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['end_time'], end_time, line+' info');
 
   // END_TIME 2
   var end_time = new Date(2010, 9, 26);
-  ok(Kifu.Csa.parseByLine('$END_TIME:2010/10/26', kifu), 'parse end_time 2');
-  same(info['end_time'], end_time, 'check info end_time 2');
+  var line = '$END_TIME:2010/10/26';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['end_time'], end_time, line+' info');
 
   // TIME_LIMIT
-  ok(Kifu.Csa.parseByLine('$TIME_LIMIT:06:00+60', kifu), 'parse time_limit');
-  same(info['time_limit'], {allotted: 360, extra: 60}, 'check time_limit');
+  var line = '$TIME_LIMIT:06:00+60';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['time_limit'], {allotted: 360, extra: 60}, line+' info');
 
   // TIME_LIMIT 2
-  ok(Kifu.Csa.parseByLine('$TIME_LIMIT:00:00+00', kifu), 'parse time_limit 2');
-  same(info['time_limit'], {allotted: 0, extra: 0}, 'check time_limit 2');
+  var line = '$TIME_LIMIT:00:00+00';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['time_limit'], {allotted: 0, extra: 0}, line+' info');
 
   // OPENING
-  ok(Kifu.Csa.parseByLine('$OPENING:相矢倉', kifu), 'parse info opening');
-  same(info['opening'], '相矢倉', 'check info opening');
+  var line = '$OPENING:相矢倉';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(info['opening'], '相矢倉', line+' info');
 });
 
 test('parse initial board hirate', 4, function() {
@@ -85,15 +98,17 @@ test('parse initial board hirate', 4, function() {
   var board = Kifu.Board().hirate();
 
   // hirate
-  ok(Kifu.Csa.parseByLine('PI', kifu), 'parse hirate');
-  same(kifu['board'], board, 'check hirate board');
+  var line = 'PI';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
 
   // hirate komaochi
   kifu['board'] = Kifu.Board();
   board.cellRemove(8, 2, 'HI');
   board.cellRemove(2, 2, 'KA');
-  ok(Kifu.Csa.parseByLine('PI82HI22KA', kifu), 'parse hirate komaochi');
-  same(kifu['board'], board, 'check hirate komaochi board');
+  var line = 'PI82HI22KA';
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
 });
 
 test('parse initial board all', 16, function() {
@@ -110,14 +125,14 @@ test('parse initial board all', 16, function() {
   board.cellDeploy(3, 1, 'GI', false);
   board.cellDeploy(2, 1, 'KE', false);
   var line = 'P1-KY-KE-GI-KI-OU-KI-GI-KE * ';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 1st line');
-  same(kifu['board'], board, 'check 1st line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
 
   // 2nd line
   board.cellDeploy(8, 2, 'HI', false);
   var line = 'P2 * -HI *  *  *  *  *  *  * ';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 2nd line');
-  same(kifu['board'], board, 'check 2nd line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
 
   // 3rd line
   board.cellDeploy(9, 3, 'FU', false);
@@ -130,17 +145,17 @@ test('parse initial board all', 16, function() {
   board.cellDeploy(2, 3, 'FU', false);
   board.cellDeploy(1, 3, 'FU', false);
   var line = 'P3-FU-FU-FU-FU-FU-FU-FU-FU-FU';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 3rd line');
-  same(kifu['board'], board, 'check 3rd line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
 
   // 4-6 line
   var line = 'P4 *  *  *  *  *  *  *  *  * ';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 4th line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
   var line = 'P5 *  *  *  *  *  *  *  *  * ';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 5th line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
   var line = 'P6 *  *  *  *  *  *  *  *  * ';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 6th line');
-  same(kifu['board'], board, 'check 4-6 line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, '4-6 line board');
 
   // 7th line
   board.cellDeploy(9, 7, 'FU', true);
@@ -153,15 +168,15 @@ test('parse initial board all', 16, function() {
   board.cellDeploy(2, 7, 'FU', true);
   board.cellDeploy(1, 7, 'FU', true);
   var line = 'P7+FU+FU+FU+FU+FU+FU+FU+FU+FU';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 7th line');
-  same(kifu['board'], board, 'check 7th line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
 
   // 8th line
   board.cellDeploy(8, 8, 'KA', true);
   board.cellDeploy(2, 8, 'HI', true);
   var line = 'P8 * +KA *  *  *  *  * +HI * ';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 8th line');
-  same(kifu['board'], board, 'check 8th line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
 
   // 9th line
   board.cellDeploy(9, 9, 'KY', true);
@@ -174,8 +189,8 @@ test('parse initial board all', 16, function() {
   board.cellDeploy(2, 9, 'KE', true);
   board.cellDeploy(1, 9, 'KY', true);
   var line = 'P9+KY+KE+GI+KI+OU+KI+GI+KE+KY';
-  ok(Kifu.Csa.parseByLine(line, kifu), 'parse 9th line');
-  same(kifu['board'], board, 'check 9th line');
+  ok(Kifu.Csa.parseByLine(line, kifu), line);
+  same(kifu['board'], board, line+' board');
 });
 
 test('parse initial board each', 6, function() {
