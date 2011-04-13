@@ -541,7 +541,7 @@ Kifu.Csa = {
       switch (value.charAt(0)) {
       case '+':
       case '-':
-        options['player'] = value.charAt(0) == '+' ? 'black' : 'white';
+        options['black'] = value.charAt(0) == '+' ? true : false;
         value = value.substr(1);
         break;
       }
