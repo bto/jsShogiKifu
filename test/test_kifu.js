@@ -65,6 +65,31 @@ test('noConflict', 2, function() {
   Kifu = k;
 });
 
+test('initialization', 9, function() {
+  // simple initialization
+  var kifu = Kifu();
+  var info = {player_start: 'black'};
+  same(kifu.board_init, Kifu.Board(), 'simple board_init');
+  same(kifu.info,       info,         'simple info');
+  same(kifu.moves,      Kifu.Move(),  'simple moves');
+
+  // initialization with source
+  var source = 'V2.2';
+  info['source'] = source;
+  var kifu = Kifu(source);
+  same(kifu.board_init, Kifu.Board(), 'source board_init');
+  same(kifu.info,       info,         'source info');
+  same(kifu.moves,      Kifu.Move(),  'source moves');
+
+  // initialization with source and format
+  info['format']  = 'csa';
+  info['version'] = '2.2';
+  var kifu = Kifu(source, 'csa');
+  same(kifu.board_init, Kifu.Board(), 'source board_init');
+  same(kifu.info,       info,         'source info');
+  same(kifu.moves,      Kifu.Move(),  'source moves');
+});
+
 
 })();
 
