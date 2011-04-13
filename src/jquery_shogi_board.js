@@ -25,12 +25,16 @@ var boardSet = function(board, config) {
 };
 
 var moveNext = function(kifu, config) {
-  var move   = kifu.next();
-  var from   = move['from'];
-  var to     = move['to'];
-  var black  = move['black'];
-  var piece  = to['piece'];
-  var stand  = move['stand'];
+  var move = kifu.next();
+  if (!move || move['type'] != 'move') {
+    return;
+  }
+
+  var from  = move['from'];
+  var to    = move['to'];
+  var black = move['black'];
+  var piece = to['piece'];
+  var stand = move['stand'];
 
   if (from['x'] == 0) {
     standRemove(piece, black, config);
@@ -46,12 +50,16 @@ var moveNext = function(kifu, config) {
 };
 
 var movePrev = function(kifu, config) {
-  var move   = kifu.prev();
-  var from   = move['from'];
-  var to     = move['to'];
-  var black  = move['black'];
-  var piece  = to['piece'];
-  var stand  = move['stand'];
+  var move = kifu.prev();
+  if (!move || move['type'] != 'move') {
+    return;
+  }
+
+  var from  = move['from'];
+  var to    = move['to'];
+  var black = move['black'];
+  var piece = to['piece'];
+  var stand = move['stand'];
 
   if (from['x']) {
     pieceSet(from['x'], from['y'], from['piece'], black, config);
