@@ -33,12 +33,10 @@ V2.2
 <script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
 <script><!--
   Kifu.ajax({url: './csa1.txt'}, 'csa', function(kifu) {
-    console.log(kifu);
     $('#board').shogiBoard(kifu);
   });
 
   Kifu.ajax({url: './ryuou20101014.kif'}, 'kif', function(kifu) {
-    console.log(kifu);
     $('#board2').shogiBoard(kifu);
   });
 --></script>
