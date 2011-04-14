@@ -47,6 +47,8 @@ var moveNext = function(kifu, config) {
   if (stand) {
     standSet(stand['stand'], black, config);
   }
+
+  $('#jsb_moves_'+config['suffix']).val(kifu.step);
 };
 
 var movePrev = function(kifu, config) {
@@ -72,6 +74,18 @@ var movePrev = function(kifu, config) {
     standRemove(stand['stand'], black, config);
   } else {
     pieceRemove(to['x'], to['y'], config);
+  }
+
+  $('#jsb_moves_'+config['suffix']).val(kifu.step);
+};
+
+var moveStringsSet = function(moves, suffix) {
+  var ele = $('#jsb_moves_'+suffix);
+  for (var i in moves) {
+    var move = moves[i];
+    if (move['str']) {
+      ele.append($('<option>').attr({value: i}).text(i+' '+move['str']));
+    }
   }
 };
 
@@ -159,12 +173,14 @@ $.fn.shogiBoard = function(kifu, options) {
   ajax_opts['url']      = config['url_html'];
   ajax_opts['success']  = function(source) {
     var info   = kifu.info;
+    var moves  = kifu.moves;
     var suffix = config['suffix'];
 
     config['element'].append(source.replace(/%suffix%/g, suffix));
     boardSet(kifu.board_init.board, config);
     playerSet(info, suffix);
     registerFunctions(kifu, config);
+    moveStringsSet(kifu.moves.moves, suffix);
   };
   return $.ajax(ajax_opts);
 };
