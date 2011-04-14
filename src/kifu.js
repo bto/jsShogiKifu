@@ -160,6 +160,14 @@ Kifu.prototype.extend({
         to['y'] = move_prev['to']['y'];
       }
 
+      var cell = board.board[to['x']][to['y']];
+      if (cell) {
+        move['stand'] = {
+          piece: cell['piece'],
+          stand: piece_map[cell['piece']]
+        };
+      }
+
       if (!move['str']) {
         var str = '';
         str += number_x_map[to['x']];
