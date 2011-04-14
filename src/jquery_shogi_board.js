@@ -16,10 +16,11 @@ var boardSet = function(board, config) {
     for (var y = 1; y <= 9; y++) {
       var cell  = boardCell(x, y, suffix).empty();
       var piece = board[x][y];
-      if (!piece) {
-        continue;
+      if (piece) {
+        cell.append(pieceImgTag(piece['piece'], piece['black'], config));
+      } else {
+        cell.append('&nbsp;');
       }
-      cell.append(pieceImgTag(piece['piece'], piece['black'], config));
     }
   }
 };
@@ -48,7 +49,9 @@ var moveNext = function(kifu, config) {
     standSet(stand['stand'], black, config);
   }
 
-  $('#jsb_moves_'+config['suffix']).val(kifu.step);
+  var suffix = config['suffix'];
+  $('#jsb_moves_'+suffix).val(kifu.step);
+  $('#jsb_comment_'+suffix).text(move['comment']);
 };
 
 var movePrev = function(kifu, config) {
@@ -100,7 +103,7 @@ var pieceImgTag = function(piece, black, config) {
 };
 
 var pieceRemove = function(x, y, config) {
-  return boardCell(x, y, config['suffix']).empty();
+  return boardCell(x, y, config['suffix']).empty().append('&nbsp;');
 };
 
 var pieceSet = function(x, y, piece, black, config) {
