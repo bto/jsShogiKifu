@@ -179,6 +179,52 @@ test('parse', 7, function() {
   same(kifu.step,       0,     'step');
 });
 
+test('prepare', 8, function() {
+  var kifu  = Kifu();
+  var moves = Kifu.Move();
+  kifu.board_init.hirate();
+
+  // -3334FU
+  kifu.moves.addMove([3, 3], [3, 4], 'FU', {black: false, str: '34foo'});
+  moves.addMove([3, 3], [3, 4], 'FU', {black: false, str: '34foo'});
+  var move = moves.get(1);
+  move['from']['piece'] = 'FU';
+  ok(kifu.prepare(), 'prepare');
+  same(kifu.moves, moves, '-3334FU');
+
+  // 2878HI
+  kifu.moves.addMove([2, 8], [7, 8], 'HI');
+  moves.addMove([2, 8], [7, 8], 'HI');
+  var move = moves.get(2);
+  move['black']         = true;
+  move['from']['piece'] = 'HI';
+  move['str']           = '７八飛';
+  ok(kifu.prepare(), 'prepare');
+  same(kifu.moves, moves, '2878HI');
+
+  // 8100NK
+  kifu.moves.addMove([8, 1], [0, 0], 'NK');
+  moves.addMove([8, 1], [0, 0], 'NK');
+  var move = moves.get(3);
+  move['black']         = false;
+  move['from']['piece'] = 'KE';
+  move['to']['x']       = 7;
+  move['to']['y']       = 8;
+  move['str']           = '７八桂成';
+  ok(kifu.prepare(), 'prepare');
+  same(kifu.moves, moves, '8100NK');
+
+  // 0055KA
+  kifu.moves.addMove([0, 0], [5, 5], 'KA');
+  moves.addMove([0, 0], [5, 5], 'KA');
+  var move = moves.get(4);
+  move['black']         = true;
+  move['from']['piece'] = 'KA';
+  move['str']           = '５五角打';
+  ok(kifu.prepare(), 'prepare');
+  same(kifu.moves, moves, '0055KA');
+});
+
 test('source', 5, function() {
   var kifu = Kifu();
 

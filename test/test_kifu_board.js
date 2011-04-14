@@ -242,7 +242,7 @@ test('hirate', 4, function() {
   same(kifu_board.stand,  stand,  'hirate stand');
 });
 
-test('move, moveReverse', 36, function() {
+test('move, moveReverse', 32, function() {
   kifu_board.hirate();
   var board  = Kifu.clone(kifu_board.board);
   var pieces = Kifu.clone(kifu_board.pieces);
@@ -257,11 +257,7 @@ test('move, moveReverse', 36, function() {
     board:  Kifu.clone(board),
     pieces: Kifu.clone(pieces),
     stand:  Kifu.clone(stand),
-    move1: {
-      black: true,
-      from:  {             x: 2, y: 7},
-      to:    {piece: 'FU', x: 2, y: 6}},
-    move2: {
+    move:   {
       black: true,
       from:  {piece: 'FU', x: 2, y: 7},
       to:    {piece: 'FU', x: 2, y: 6}}});
@@ -275,11 +271,7 @@ test('move, moveReverse', 36, function() {
     board:  Kifu.clone(board),
     pieces: Kifu.clone(pieces),
     stand:  Kifu.clone(stand),
-    move1: {
-      black: false,
-      from:  {             x: 8, y: 2},
-      to:    {piece: 'RY', x: 8, y: 8}},
-    move2: {
+    move:   {
       black: false,
       stand: {piece: 'KA', stand: 'KA'},
       from:  {piece: 'HI', x: 8, y: 2},
@@ -294,11 +286,7 @@ test('move, moveReverse', 36, function() {
     board:  Kifu.clone(board),
     pieces: Kifu.clone(pieces),
     stand:  Kifu.clone(stand),
-    move1: {
-      black: true,
-      from:  {             x: 7, y: 9},
-      to:    {piece: 'GI', x: 8, y: 8}},
-    move2: {
+    move:  {
       black: true,
       stand: {piece: 'RY', stand: 'HI'},
       from:  {piece: 'GI', x: 7, y: 9},
@@ -312,11 +300,7 @@ test('move, moveReverse', 36, function() {
     board:  Kifu.clone(board),
     pieces: Kifu.clone(pieces),
     stand:  Kifu.clone(stand),
-    move1: {
-      black: false,
-      from:  {             x: 0, y: 0},
-      to:    {piece: 'KA', x: 5, y: 5}},
-    move2: {
+    move:   {
       black: false,
       from:  {piece: 'KA', x: 0, y: 0},
       to:    {piece: 'KA', x: 5, y: 5}}});
@@ -324,11 +308,10 @@ test('move, moveReverse', 36, function() {
   for (var i in states) {
     var state = states[i];
     var title = state['title'];
-    ok(kifu_board.move(state['move1']), title);
+    ok(kifu_board.move(state['move']), title);
     same(kifu_board.board,  state['board'],  title+' board');
     same(kifu_board.pieces, state['pieces'], title+' pieces');
     same(kifu_board.stand,  state['stand'],  title+' stand');
-    same(state['move1'], state['move2'], title+' move');
   }
 
   for (var i = states.length-1; 0 <= i; i--) {
@@ -344,7 +327,7 @@ test('move, moveReverse', 36, function() {
         stand:  b.stand};
     }
 
-    ok(kifu_board.moveReverse(state['move1']), 'reverse '+title);
+    ok(kifu_board.moveReverse(state['move']), 'reverse '+title);
     same(kifu_board.board,  state_prev['board'],  'reverse '+title+' board');
     same(kifu_board.pieces, state_prev['pieces'], 'reverse '+title+' pieces');
     same(kifu_board.stand,  state_prev['stand'],  'reverse '+title+' stand');
