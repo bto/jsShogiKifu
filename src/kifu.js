@@ -136,30 +136,40 @@ Kifu.prototype.extend({
     var board = this.board_init.clone();
     var moves = this.moves.moves;
     for (var i in moves) {
-      var move = moves[i];
-      if (!move || move['type'] != 'move') continue;
+      var m = moves[i];
+      if (!m || m['type'] != 'move') continue;
+      var move_prev = move;
+      var move      = m;
+      var from      = move['from'];
+      var to        = move['to'];
 
       if (typeof move['black'] == 'undefined') {
         move['black'] = black;
       }
 
-      var to = move['to'];
-      if (to['x'] == 0) {
-        for (var j = i-1; 0 <= j; j--) {
-          var to_prev = moves[j]['to'];
-          if (to_prev) break;
+      if (!from['piece']) {
+        if (from['x']) {
+          from['piece'] = board.board[from['x']][from['y']]['piece'];
+        } else {
+          from['piece'] = to['piece'];
         }
-        to['x'] = to_prev['x'];
-        to['y'] = to_prev['y'];
+      }
+
+      if (to['x'] == 0) {
+        to['x'] = move_prev['to']['x'];
+        to['y'] = move_prev['to']['y'];
       }
 
       if (!move['str']) {
         var str = '';
-        var to = move['to'];
         str += number_x_map[to['x']];
         str += number_y_map[to['y']];
-        str += piece_string_map[to['piece']];
-        if (!move['from']['x']) {
+        if (from['piece'] == to['piece']) {
+          str += piece_string_map[to['piece']];
+        } else {
+          str += piece_string_map[from['piece']] + '成';
+        }
+        if (!from['x']) {
           str += '打';
         }
         move['str'] = str;
@@ -168,6 +178,8 @@ Kifu.prototype.extend({
       board.move(move);
       black = !move['black'];
     }
+
+    return this;
   },
 
   prev: function() {
@@ -355,49 +367,43 @@ Kifu.Board.prototype.extend({
   },
 
   move: function(move) {
-    var x1    = move['from']['x'];
-    var y1    = move['from']['y'];
-    var x2    = move['to']['x'];
-    var y2    = move['to']['y'];
-    var to    = this.board[x2][y2];
     var black = move['black'];
+    var from  = move['from'];
+    var stand = move['stand'];
+    var to    = move['to'];
 
-    if (to) {
-      var stand_piece = piece_map[to['piece']];
-      this.standSet(stand_piece, black);
-      move['stand'] = {piece: to['piece'], stand: stand_piece};
+    if (from['x']) {
+      this.cellTrash(from['x'], from['y']);
+    } else {
+      this.standTrash(from['piece'], black);
     }
 
-    this.cellSet(x2, y2, move['to']['piece'], black);
-    if (x1) {
-      move['from']['piece'] = this.board[x1][y1]['piece'];
-      this.cellTrash(x1, y1);
-    } else {
-      move['from']['piece'] = move['to']['piece'];
-      this.standTrash(move['to']['piece'], black);
+    this.cellSet(to['x'], to['y'], to['piece'], black);
+
+    if (stand) {
+      this.standSet(stand['stand'], black);
     }
 
     return this;
   },
 
   moveReverse: function(move) {
-    var x1    = move['from']['x'];
-    var y1    = move['from']['y'];
-    var x2    = move['to']['x'];
-    var y2    = move['to']['y'];
     var black = move['black'];
+    var from  = move['from'];
+    var stand = move['stand'];
+    var to    = move['to'];
 
-    if (x1) {
-      this.cellSet(x1, y1, move['from']['piece'], black);
+    if (stand) {
+      this.standTrash(stand['stand'], black);
+      this.cellSet(to['x'], to['y'], stand['piece'], !black);
     } else {
-      this.standSet(move['from']['piece'], black);
+      this.cellTrash(to['x'], to['y']);
     }
 
-    if (move['stand']) {
-      this.cellSet(x2, y2, move['stand']['piece'], !black);
-      this.standTrash(move['stand']['stand'], black);
+    if (from['x']) {
+      this.cellSet(from['x'], from['y'], from['piece'], black);
     } else {
-      this.cellTrash(x2, y2);
+      this.standSet(from['piece'], black);
     }
 
     return this;
