@@ -51,7 +51,11 @@ var moveNext = function(kifu, config) {
 
   var suffix = config['suffix'];
   $('#jsb_moves_'+suffix).val(kifu.step);
-  $('#jsb_comment_'+suffix).text(move['comment']);
+  if (move['comment']) {
+    $('#jsb_comment_'+suffix).text(move['comment']);
+  } else {
+    $('#jsb_comment_'+suffix).text('');
+  }
 };
 
 var movePrev = function(kifu, config) {
@@ -79,7 +83,14 @@ var movePrev = function(kifu, config) {
     pieceRemove(to['x'], to['y'], config);
   }
 
-  $('#jsb_moves_'+config['suffix']).val(kifu.step);
+  var move_prev = kifu.moves.get(kifu.step);
+  var suffix = config['suffix'];
+  $('#jsb_moves_'+suffix).val(kifu.step);
+  if (move_prev['comment']) {
+    $('#jsb_comment_'+suffix).text(move_prev['comment']);
+  } else {
+    $('#jsb_comment_'+suffix).text('');
+  }
 };
 
 var moveStringsSet = function(moves, suffix) {
