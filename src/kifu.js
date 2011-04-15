@@ -79,18 +79,38 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 }
 
 Kifu.prototype.extend({
-  first: function() {
+  moveFirst: function() {
     this.black = this.info['player_start'] == 'black';
     this.board = this.board_init.clone();
     this.step  = 0;
     return this;
   },
 
-  last: function() {
+  moveLast: function() {
     do {
       var step = this.step;
-      this.next();
+      this.moveNext();
     } while(step != this.step);
+  },
+
+  moveNext: function() {
+    var move = this.moves.get(this.step+1);
+    if (move && move['type'] == 'move') {
+      this.board.move(move);
+      this.black = !move['black'];
+      this.step++;
+    }
+    return move;
+  },
+
+  movePrev: function() {
+    var move = this.moves.get(this.step);
+    if (move && move['type'] == 'move') {
+      this.board.moveReverse(move);
+      this.black = move['black'];
+      this.step--
+    }
+    return move;
   },
 
   moveStrings: function() {
@@ -103,16 +123,6 @@ Kifu.prototype.extend({
       }
     }
     return result;
-  },
-
-  next: function() {
-    var move = this.moves.get(this.step+1);
-    if (move && move['type'] == 'move') {
-      this.board.move(move);
-      this.black = !move['black'];
-      this.step++;
-    }
-    return move;
   },
 
   parse: function(format) {
@@ -188,16 +198,6 @@ Kifu.prototype.extend({
     }
 
     return this;
-  },
-
-  prev: function() {
-    var move = this.moves.get(this.step);
-    if (move && move['type'] == 'move') {
-      this.board.moveReverse(move);
-      this.black = move['black'];
-      this.step--
-    }
-    return move;
   },
 
   source: function(source) {

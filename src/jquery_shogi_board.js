@@ -30,7 +30,7 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var moveNext = function() {
-    var move = kifu.next();
+    var move = kifu.moveNext();
     if (!move || move['type'] != 'move') {
       return;
     }
@@ -63,7 +63,7 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var movePrev = function() {
-    var move = kifu.prev();
+    var move = kifu.movePrev();
     if (!move || move['type'] != 'move') {
       return;
     }
@@ -159,12 +159,12 @@ $.fn.shogiBoard = function(kifu, options) {
     });
 
     $('#jsb_first_'+suffix).click(function() {
-      kifu.first();
+      kifu.moveFirst();
       return boardSet(kifu.board_init.board);
     });
 
     $('#jsb_last_'+suffix).click(function() {
-      kifu.last();
+      kifu.moveLast();
       return boardSet(kifu.board.board);
     });
   };

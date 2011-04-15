@@ -91,7 +91,7 @@ test('initialization', 9, function() {
   same(kifu.moves,      Kifu.Move(),  'source moves');
 });
 
-test('next, prev', 31, function() {
+test('moveNext, movePrev', 31, function() {
   var kifu = Kifu('V2.2');
   kifu.board_init.hirate();
   kifu.parse('csa');
@@ -107,7 +107,7 @@ test('next, prev', 31, function() {
   board.move(move);
   black = false;
   step  = 1;
-  same(kifu.next(), move,  '1st move');
+  same(kifu.moveNext(), move,  '1st move');
   same(kifu.black,  black, '1st black');
   same(kifu.board,  board, '1st board');
   same(kifu.moves,  moves, '1st moves');
@@ -118,7 +118,7 @@ test('next, prev', 31, function() {
   board.move(move);
   black = true;
   step  = 2;
-  same(kifu.next(), move,  '2nd move');
+  same(kifu.moveNext(), move,  '2nd move');
   same(kifu.black,  black, '2nd black');
   same(kifu.board,  board, '2nd board');
   same(kifu.moves,  moves, '2nd moves');
@@ -127,7 +127,7 @@ test('next, prev', 31, function() {
   // 3rd move
   var move = moves.get(3);
   same(move,        undefined, '3rd move undefined');
-  same(kifu.next(), move,      '3rd move');
+  same(kifu.moveNext(), move,      '3rd move');
   same(kifu.black,  black,     '3rd black');
   same(kifu.board,  board,     '3rd board');
   same(kifu.moves,  moves,     '3rd moves');
@@ -138,7 +138,7 @@ test('next, prev', 31, function() {
   board.moveReverse(move);
   black = false;
   step  = 1;
-  same(kifu.prev(), move,  '2nd perv move');
+  same(kifu.movePrev(), move,  '2nd perv move');
   same(kifu.black,  black, '2nd perv black');
   same(kifu.board,  board, '2nd perv board');
   same(kifu.moves,  moves, '2nd perv moves');
@@ -149,7 +149,7 @@ test('next, prev', 31, function() {
   board.moveReverse(move);
   black = true;
   step  = 0;
-  same(kifu.prev(), move,  '1st perv move');
+  same(kifu.movePrev(), move,  '1st perv move');
   same(kifu.black,  black, '1st perv black');
   same(kifu.board,  board, '1st perv board');
   same(kifu.moves,  moves, '1st perv moves');
@@ -157,7 +157,7 @@ test('next, prev', 31, function() {
 
   // init prev
   var move = moves.get(0);
-  same(kifu.prev(), move,  'init perv move');
+  same(kifu.movePrev(), move,  'init perv move');
   same(kifu.black,  black, 'init perv black');
   same(kifu.board,  board, 'init perv board');
   same(kifu.moves,  moves, 'init perv moves');
