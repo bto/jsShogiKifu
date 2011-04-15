@@ -10,15 +10,10 @@ $.fn.shogiBoard = function(kifu, options) {
   /*
    * functions
    */
-  var boardCell = function(x, y) {
-    return $('#jsb_'+x+'_'+y+'_'+config['suffix']);
-  };
-
   var boardSet = function(board) {
-    var suffix = config['suffix'];
     for (var x = 1; x <= 9; x++) {
       for (var y = 1; y <= 9; y++) {
-        var cell  = boardCell(x, y).empty();
+        var cell  = jsbElementBoardCell(x, y).empty();
         var piece = board[x][y];
         if (piece) {
           cell.append(pieceImgTag(piece['piece'], piece['black']));
@@ -27,6 +22,20 @@ $.fn.shogiBoard = function(kifu, options) {
         }
       }
     }
+  };
+
+  var jsbElementBoardCell = function(x, y) {
+    return jsbElementById(x+'_'+y);
+  };
+
+  var jsbElementById = function(id) {
+    return $('#jsb_' + id + '_' + config['suffix']);
+  };
+
+  var jsbElementStand = function(black, piece) {
+    var player = black ? 'black' : 'white';
+    piece = piece.toLowerCase();
+    return jsbElementById('stand_' + player + '_' + piece);
   };
 
   var moveNext = function() {
@@ -53,12 +62,11 @@ $.fn.shogiBoard = function(kifu, options) {
       standSet(stand['stand'], black);
     }
 
-    var suffix = config['suffix'];
-    $('#jsb_moves_'+suffix).val(kifu.step);
+    moveStringSelect();
     if (move['comment']) {
-      $('#jsb_comment_'+suffix).text(move['comment']);
+      jsbElementById('comment').text(move['comment']);
     } else {
-      $('#jsb_comment_'+suffix).text('');
+      jsbElementById('comment').text('');
     }
   };
 
@@ -88,18 +96,24 @@ $.fn.shogiBoard = function(kifu, options) {
     }
 
     var move_prev = kifu.moves.get(kifu.step);
-    var suffix = config['suffix'];
-    $('#jsb_moves_'+suffix).val(kifu.step);
+    moveStringSelect();
     if (move_prev['comment']) {
-      $('#jsb_comment_'+suffix).text(move_prev['comment']);
+      jsbElementById('comment').text(move_prev['comment']);
     } else {
-      $('#jsb_comment_'+suffix).text('');
+      jsbElementById('comment').text('');
     }
+  };
+
+  var moveStringSelect = function(step) {
+    if (!step) {
+      step = kifu.step;
+    }
+    jsbElementById('moves').val(step);
   };
 
   var moveStringsSet = function() {
     var moves = kifu.moves.moves;
-    var ele = $('#jsb_moves_'+config['suffix']);
+    var ele   = jsbElementById('moves');
     for (var i in moves) {
       var move = moves[i];
       if (move['str']) {
@@ -119,51 +133,42 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var pieceRemove = function(x, y) {
-    return boardCell(x, y).empty().append('&nbsp;');
+    return jsbElementBoardCell(x, y).empty().append('&nbsp;');
   };
 
   var pieceSet = function(x, y, piece, black) {
-    return boardCell(x, y).empty().append(pieceImgTag(piece, black));
+    return jsbElementBoardCell(x, y).empty().append(pieceImgTag(piece, black));
   };
 
   var playerSet = function() {
-    var info   = kifu.info;
-    var suffix = config['suffix'];
-    $('#jsb_player_black_'+suffix).empty().append('▲'+info['player_black']);
-    $('#jsb_player_white_'+suffix).empty().append('▽'+info['player_white']);
-  };
-
-  var standCell = function(black, piece) {
-    var player = black ? 'black' : 'white';
-    piece = piece.toLowerCase();
-    return $('#jsb_stand_'+player+'_'+piece+'_'+config['suffix']);
+    var info = kifu.info;
+    jsbElementById('player_black').empty().append('▲'+info['player_black'])
+    jsbElementById('player_white').empty().append('▲'+info['player_white'])
   };
 
   var standRemove = function(piece, black) {
-    standCell(black, piece).find('img').last().remove();
+    jsbElementStand(black, piece).find('img').last().remove();
   };
 
   var standSet = function(piece, black) {
-    standCell(black, piece).append(pieceImgTag(piece, black));
+    jsbElementStand(black, piece).append(pieceImgTag(piece, black));
   };
 
   var registerFunctions = function() {
-    var suffix = config['suffix'];
-
-    $('#jsb_next_'+suffix).click(function() {
+    jsbElementById('next').click(function() {
       return moveNext();
     });
 
-    $('#jsb_prev_'+suffix).click(function() {
+    jsbElementById('prev').click(function() {
       return movePrev();
     });
 
-    $('#jsb_first_'+suffix).click(function() {
+    jsbElementById('first').click(function() {
       kifu.moveFirst();
       return boardSet(kifu.board_init.board);
     });
 
-    $('#jsb_last_'+suffix).click(function() {
+    jsbElementById('last').click(function() {
       kifu.moveLast();
       return boardSet(kifu.board.board);
     });
