@@ -11,6 +11,9 @@ $.fn.shogiBoard = function(kifu, options) {
    * functions
    */
   var boardSet = function(board) {
+    var stand = board.stand;
+    var board = board.board;
+
     for (var x = 1; x <= 9; x++) {
       for (var y = 1; y <= 9; y++) {
         var cell  = jsbElementBoardCell(x, y).empty();
@@ -19,6 +22,17 @@ $.fn.shogiBoard = function(kifu, options) {
           cell.append(pieceImgTag(piece['piece'], piece['black']));
         } else {
           cell.append('&nbsp;');
+        }
+      }
+    }
+
+    for (var player in stand) {
+      var player_stand = stand[player];
+      standRemoveAll(player);
+      for (var piece in player_stand) {
+        var l = player_stand[piece];
+        for (var i = 0; i < l; i++) {
+          standSet(player, piece);
         }
       }
     }
@@ -33,9 +47,18 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var jsbElementStand = function(black, piece) {
-    var player = black ? 'black' : 'white';
-    piece = piece.toLowerCase();
-    return jsbElementById('stand_' + player + '_' + piece);
+    if (typeof black == 'string') {
+      var player = black;
+    } else {
+      var player = black ? 'black' : 'white';
+    }
+
+    var id = 'stand_' + player;
+
+    if (piece) {
+      id = id + '_' + piece.toLowerCase();
+    }
+    return jsbElementById(id);
   };
 
   var moveNext = function() {
@@ -51,7 +74,7 @@ $.fn.shogiBoard = function(kifu, options) {
     var stand = move['stand'];
 
     if (from['x'] == 0) {
-      standRemove(piece, black);
+      standRemove(black, piece);
     } else {
       pieceRemove(from['x'], from['y']);
     }
@@ -59,7 +82,7 @@ $.fn.shogiBoard = function(kifu, options) {
     pieceSet(to['x'], to['y'], piece, black);
 
     if (stand) {
-      standSet(stand['stand'], black);
+      standSet(black, stand['stand']);
     }
 
     moveStringSelect();
@@ -85,12 +108,12 @@ $.fn.shogiBoard = function(kifu, options) {
     if (from['x']) {
       pieceSet(from['x'], from['y'], from['piece'], black);
     } else {
-      standSet(from['piece'], black);
+      standSet(black, from['piece']);
     }
 
     if (stand) {
       pieceSet(to['x'], to['y'], stand['piece'], !black);
-      standRemove(stand['stand'], black);
+      standRemove(black, stand['stand']);
     } else {
       pieceRemove(to['x'], to['y']);
     }
@@ -123,6 +146,10 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var pieceImgTag = function(piece, black) {
+    if (typeof black == 'string') {
+      black = black == 'black';
+    }
+
     var name = piece.toLowerCase();
     if (!black) {
       name += '_r';
@@ -146,11 +173,15 @@ $.fn.shogiBoard = function(kifu, options) {
     jsbElementById('player_white').empty().append('▲'+info['player_white'])
   };
 
-  var standRemove = function(piece, black) {
+  var standRemove = function(black, piece) {
     jsbElementStand(black, piece).find('img').last().remove();
   };
 
-  var standSet = function(piece, black) {
+  var standRemoveAll = function(black) {
+    jsbElementStand(black).find('img').remove();
+  };
+
+  var standSet = function(black, piece) {
     jsbElementStand(black, piece).append(pieceImgTag(piece, black));
   };
 
@@ -165,12 +196,12 @@ $.fn.shogiBoard = function(kifu, options) {
 
     jsbElementById('first').click(function() {
       kifu.moveFirst();
-      return boardSet(kifu.board_init.board);
+      return boardSet(kifu.board_init);
     });
 
     jsbElementById('last').click(function() {
       kifu.moveLast();
-      return boardSet(kifu.board.board);
+      return boardSet(kifu.board);
     });
   };
 
@@ -204,7 +235,7 @@ $.fn.shogiBoard = function(kifu, options) {
     var suffix = config['suffix'];
 
     config['this'].append(source.replace(/%suffix%/g, suffix));
-    boardSet(kifu.board_init.board);
+    boardSet(kifu.board_init);
     playerSet();
     registerFunctions();
     moveStringsSet();
