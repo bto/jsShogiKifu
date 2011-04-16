@@ -125,6 +125,13 @@ Kifu.prototype.extend({
     return result;
   },
 
+  moveTo: function(step) {
+    this.moveFirst();
+    while (step != this.step) {
+      this.moveNext();
+    }
+  },
+
   parse: function(format) {
     if (format) {
       this.info['format'] = format;

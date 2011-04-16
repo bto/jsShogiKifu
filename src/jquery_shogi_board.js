@@ -147,6 +147,15 @@ $.fn.shogiBoard = function(kifu, options) {
         ele.append($('<option>').attr({value: i}).text(i+' '+move['str']));
       }
     }
+
+    ele.click(function() {
+      return moveTo($(this).val());
+    });
+  };
+
+  var moveTo = function(num) {
+    kifu.moveTo(num);
+    return boardSet();
   };
 
   var pieceImgTag = function(piece, black) {
