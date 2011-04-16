@@ -183,7 +183,7 @@ $.fn.shogiBoard = function(kifu, options) {
   var playerSet = function() {
     var info = kifu.info;
     jsbElementById('player_black').empty().append('▲'+info['player_black'])
-    jsbElementById('player_white').empty().append('▲'+info['player_white'])
+    jsbElementById('player_white').empty().append('▽'+info['player_white'])
   };
 
   var standRemove = function(black, piece) {
