@@ -10,9 +10,9 @@ $.fn.shogiBoard = function(kifu, options) {
   /*
    * functions
    */
-  var boardSet = function(board) {
-    var stand = board.stand;
-    var board = board.board;
+  var boardSet = function() {
+    var board = kifu.board.board;
+    var stand = kifu.board.stand;
 
     for (var x = 1; x <= 9; x++) {
       for (var y = 1; y <= 9; y++) {
@@ -36,9 +36,13 @@ $.fn.shogiBoard = function(kifu, options) {
         }
       }
     }
+
+    moveStringSelect();
+    commentSet();
   };
 
-  var commentSet = function(comment) {
+  var commentSet = function() {
+    var comment = kifu.moves.get(kifu.step)['comment'];
     if (comment) {
       jsbElementById('comment').text(comment);
     } else {
@@ -95,7 +99,7 @@ $.fn.shogiBoard = function(kifu, options) {
     }
 
     moveStringSelect();
-    commentSet(move['comment']);
+    commentSet();
   };
 
   var movePrev = function() {
@@ -124,7 +128,7 @@ $.fn.shogiBoard = function(kifu, options) {
     }
 
     moveStringSelect();
-    commentSet(kifu.moves.get(kifu.step)['comment']);
+    commentSet();
   };
 
   var moveStringSelect = function(step) {
@@ -196,12 +200,12 @@ $.fn.shogiBoard = function(kifu, options) {
 
     jsbElementById('first').click(function() {
       kifu.moveFirst();
-      return boardSet(kifu.board_init);
+      return boardSet();
     });
 
     jsbElementById('last').click(function() {
       kifu.moveLast();
-      return boardSet(kifu.board);
+      return boardSet();
     });
   };
 
@@ -235,7 +239,7 @@ $.fn.shogiBoard = function(kifu, options) {
     var suffix = config['suffix'];
 
     config['this'].append(source.replace(/%suffix%/g, suffix));
-    boardSet(kifu.board_init);
+    boardSet();
     playerSet();
     registerFunctions();
     moveStringsSet();
