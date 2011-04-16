@@ -38,6 +38,15 @@ $.fn.shogiBoard = function(kifu, options) {
     }
   };
 
+  var commentSet = function(comment) {
+    if (comment) {
+      jsbElementById('comment').text(comment);
+    } else {
+      jsbElementById('comment').text('');
+    }
+    return true;
+  };
+
   var jsbElementBoardCell = function(x, y) {
     return jsbElementById(x+'_'+y);
   };
@@ -86,11 +95,7 @@ $.fn.shogiBoard = function(kifu, options) {
     }
 
     moveStringSelect();
-    if (move['comment']) {
-      jsbElementById('comment').text(move['comment']);
-    } else {
-      jsbElementById('comment').text('');
-    }
+    commentSet(move['comment']);
   };
 
   var movePrev = function() {
@@ -118,13 +123,8 @@ $.fn.shogiBoard = function(kifu, options) {
       pieceRemove(to['x'], to['y']);
     }
 
-    var move_prev = kifu.moves.get(kifu.step);
     moveStringSelect();
-    if (move_prev['comment']) {
-      jsbElementById('comment').text(move_prev['comment']);
-    } else {
-      jsbElementById('comment').text('');
-    }
+    commentSet(kifu.moves.get(kifu.step)['comment']);
   };
 
   var moveStringSelect = function(step) {
