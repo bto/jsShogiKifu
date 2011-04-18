@@ -170,7 +170,7 @@ $.fn.shogiBoard = function(kifu, options) {
     if (!black) {
       name += '_r';
     }
-    var image_url = config['url_prefix'] + '/images/' + name + '.png';
+    var image_url = config['url_images'] + '/' + name + '.png';
 
     return '<img src="' + image_url + '" />';
   };
@@ -234,6 +234,10 @@ $.fn.shogiBoard = function(kifu, options) {
 
   if (!config['url_html']) {
     config['url_html'] = config['url_prefix'] + '/' + 'jquery_shogi_board.html';
+  }
+
+  if (!config['url_images']) {
+    config['url_images'] = config['url_prefix'] + '/' + 'images';
   }
 
   config['this'] = this;

@@ -43,11 +43,13 @@ V2.2
 <script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
 <script><!--
   Kifu.ajax({url: './081217-h.csa'}, 'csa', function(kifu) {
-    $('#board_csa').shogiBoard(kifu);
+    var options = {url_images: '../src/images'};
+    $('#board_csa').shogiBoard(kifu, options);
   });
 
   Kifu.ajax({url: './081217-h.kif'}, 'kif', function(kifu) {
-    $('#board_kif').shogiBoard(kifu);
+    var options = {url_images: '../src/images'};
+    $('#board_kif').shogiBoard(kifu, options);
   });
 --></script>
 </body>
