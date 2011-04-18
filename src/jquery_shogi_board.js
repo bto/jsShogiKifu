@@ -1,5 +1,8 @@
 /*
  * jQuery ShogiBoard plugin
+ *
+ * Copyright 2011, Masato Bito
+ * Licensed under the MIT license.
  */
 (function($) {
 

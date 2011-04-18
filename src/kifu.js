@@ -1,5 +1,8 @@
 /*
  * Kifu.js
+ *
+ * Copyright 2011, Masato Bito
+ * Licensed under the MIT license.
  */
 (function(window) {
 
