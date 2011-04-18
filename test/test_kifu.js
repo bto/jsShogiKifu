@@ -5,15 +5,16 @@ module('Kifu');
 
 test('ajax', 2, function() {
   stop(1000);
+  var csa_file = '081217-h.csa';
 
   var source;
-  jQuery.ajax({dataType: 'text', type: 'GET', url: 'csa1.txt',
+  jQuery.ajax({dataType: 'text', type: 'GET', url: csa_file,
     success: function(s) {
       source = s;
     }
   });
 
-  Kifu.ajax({url: 'csa1.txt'}, 'csa', function(kifu) {
+  Kifu.ajax({url: csa_file}, 'csa', function(kifu) {
     start();
 
     var info = kifu.info;
