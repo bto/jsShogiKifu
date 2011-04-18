@@ -54,6 +54,14 @@ $.fn.shogiBoard = function(kifu, options) {
     return true;
   };
 
+  var initialize = function(source) {
+    config['this'].append(source.replace(/%suffix%/g, config['suffix']));
+    boardSet();
+    playerSet();
+    registerFunctions();
+    moveStringsSet();
+  };
+
   var jsbElementBoardCell = function(x, y) {
     return jsbElementById(x+'_'+y);
   };
@@ -232,10 +240,6 @@ $.fn.shogiBoard = function(kifu, options) {
     $.extend(config, options);
   }
 
-  if (!config['url_html']) {
-    config['url_html'] = config['url_prefix'] + '/' + 'jquery_shogi_board.html';
-  }
-
   if (!config['url_images']) {
     config['url_images'] = config['url_prefix'] + '/' + 'images';
   }
@@ -245,23 +249,265 @@ $.fn.shogiBoard = function(kifu, options) {
   _suffix++;
   config['suffix'] = _suffix;
 
-  var ajax_opts = {};
-  ajax_opts['dataType'] = 'text';
-  ajax_opts['type']     = 'GET';
-  ajax_opts['url']      = config['url_html'];
-  ajax_opts['success']  = function(source) {
-    var info   = kifu.info;
-    var moves  = kifu.moves;
-    var suffix = config['suffix'];
-
-    config['this'].append(source.replace(/%suffix%/g, suffix));
-    boardSet();
-    playerSet();
-    registerFunctions();
-    moveStringsSet();
+  if (config['url_template']) {
+    var ajax_opts = {};
+    ajax_opts['dataType'] = 'text';
+    ajax_opts['type']     = 'GET';
+    ajax_opts['url']      = config['url_template'];
+    ajax_opts['success']  = initialize;
+    return $.ajax(ajax_opts);
+  } else {
+    return initialize(_html);
   };
-  return $.ajax(ajax_opts);
 };
+
+
+var _html = '\
+<style>\
+.jsb_contents {\
+  border-collapse: collapse;\
+  border-spacing: 0;\
+  margin:  0;\
+  padding: 0;\
+}\
+\
+  .jsb_header {\
+    border-collapse: collapse;\
+    border-spacing: 0;\
+    margin:  0;\
+    padding: 0;\
+    width: 100%;\
+  }\
+\
+    .jsb_player_black {\
+      text-align: right;\
+    }\
+\
+    .jsb_player_white {\
+      text-align: left;\
+    }\
+\
+    .jsb_controller {\
+      text-align: center;\
+    }\
+\
+  .jsb_moves {\
+    width:  100px;\
+    height: 100%;\
+  }\
+    .jsb_moves select {\
+      width:  100%;\
+      height: 100%;\
+    }\
+\
+  .jsb_board_contents {\
+    border-collapse: collapse;\
+    border-spacing: 0;\
+    margin:  0;\
+    padding: 0;\
+  }\
+\
+    .jsb_stand {\
+      width: 60px;\
+    }\
+\
+    .jsb_board {\
+      border-collapse: separate;\
+      border-spacing: 0;\
+      margin:  0;\
+      padding: 0;\
+    }\
+      .jsb_board td {\
+        text-align: center;\
+	vertical-align: center;\
+        border: 1px #000000 solid;\
+        height: 30px;\
+        width:  30px;\
+      }\
+\
+  .jsb_comment {\
+    width:  400px;\
+    height: 100%;\
+  }\
+    .jsb_comment textarea {\
+      width:  100%;\
+      height: 100%;\
+    }\
+</style>\
+\
+\
+<table class="jsb_contents">\
+<tr>\
+  <td></td>\
+  <td><table class="jsb_header"><tr>\
+    <th id="jsb_player_white_%suffix%" class="jsb_player_white"></th>\
+    <td clsss="jsb_controller">\
+      <input id="jsb_first_%suffix%" type="button" value="&lt;&lt;" />\
+      <input id="jsb_prev_%suffix%"  type="button" value="&lt;" />\
+      <input id="jsb_next_%suffix%"  type="button" value="&gt;" />\
+      <input id="jsb_last_%suffix%"  type="button" value="&gt;&gt;" />\
+    </td>\
+    <th id="jsb_player_black_%suffix%" class="jsb_player_black"></th>\
+  </tr></table></td>\
+  <td></td>\
+</tr>\
+\
+<tr>\
+  <td class="jsb_moves">\
+    <select id="jsb_moves_%suffix%" size="10">\
+      <option value="0">開始局面</option>\
+    </select>\
+  </td>\
+  <td><table class="jsb_board_contents"><tr>\
+    <td id="jsb_stand_white_%suffix%" class="jsb_stand">\
+      <span id="jsb_stand_white_fu_%suffix%"></span>\
+      <span id="jsb_stand_white_ky_%suffix%"></span>\
+      <span id="jsb_stand_white_ke_%suffix%"></span>\
+      <span id="jsb_stand_white_gi_%suffix%"></span>\
+      <span id="jsb_stand_white_ki_%suffix%"></span>\
+      <span id="jsb_stand_white_ka_%suffix%"></span>\
+      <span id="jsb_stand_white_hi_%suffix%"></span>\
+    </td>\
+    <td>\
+      <table class="jsb_board">\
+      <tr>\
+        <th>9</th>\
+        <th>8</th>\
+        <th>7</th>\
+        <th>6</th>\
+        <th>5</th>\
+        <th>4</th>\
+        <th>3</th>\
+        <th>2</th>\
+        <th>1</th>\
+        <th></th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_1_%suffix%"></td>\
+        <td id="jsb_8_1_%suffix%"></td>\
+        <td id="jsb_7_1_%suffix%"></td>\
+        <td id="jsb_6_1_%suffix%"></td>\
+        <td id="jsb_5_1_%suffix%"></td>\
+        <td id="jsb_4_1_%suffix%"></td>\
+        <td id="jsb_3_1_%suffix%"></td>\
+        <td id="jsb_2_1_%suffix%"></td>\
+        <td id="jsb_1_1_%suffix%"></td>\
+        <th>一</th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_2_%suffix%"></td>\
+        <td id="jsb_8_2_%suffix%"></td>\
+        <td id="jsb_7_2_%suffix%"></td>\
+        <td id="jsb_6_2_%suffix%"></td>\
+        <td id="jsb_5_2_%suffix%"></td>\
+        <td id="jsb_4_2_%suffix%"></td>\
+        <td id="jsb_3_2_%suffix%"></td>\
+        <td id="jsb_2_2_%suffix%"></td>\
+        <td id="jsb_1_2_%suffix%"></td>\
+        <th>二</th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_3_%suffix%"></td>\
+        <td id="jsb_8_3_%suffix%"></td>\
+        <td id="jsb_7_3_%suffix%"></td>\
+        <td id="jsb_6_3_%suffix%"></td>\
+        <td id="jsb_5_3_%suffix%"></td>\
+        <td id="jsb_4_3_%suffix%"></td>\
+        <td id="jsb_3_3_%suffix%"></td>\
+        <td id="jsb_2_3_%suffix%"></td>\
+        <td id="jsb_1_3_%suffix%"></td>\
+        <th>三</th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_4_%suffix%"></td>\
+        <td id="jsb_8_4_%suffix%"></td>\
+        <td id="jsb_7_4_%suffix%"></td>\
+        <td id="jsb_6_4_%suffix%"></td>\
+        <td id="jsb_5_4_%suffix%"></td>\
+        <td id="jsb_4_4_%suffix%"></td>\
+        <td id="jsb_3_4_%suffix%"></td>\
+        <td id="jsb_2_4_%suffix%"></td>\
+        <td id="jsb_1_4_%suffix%"></td>\
+        <th>四</th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_5_%suffix%"></td>\
+        <td id="jsb_8_5_%suffix%"></td>\
+        <td id="jsb_7_5_%suffix%"></td>\
+        <td id="jsb_6_5_%suffix%"></td>\
+        <td id="jsb_5_5_%suffix%"></td>\
+        <td id="jsb_4_5_%suffix%"></td>\
+        <td id="jsb_3_5_%suffix%"></td>\
+        <td id="jsb_2_5_%suffix%"></td>\
+        <td id="jsb_1_5_%suffix%"></td>\
+        <th>五</th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_6_%suffix%"></td>\
+        <td id="jsb_8_6_%suffix%"></td>\
+        <td id="jsb_7_6_%suffix%"></td>\
+        <td id="jsb_6_6_%suffix%"></td>\
+        <td id="jsb_5_6_%suffix%"></td>\
+        <td id="jsb_4_6_%suffix%"></td>\
+        <td id="jsb_3_6_%suffix%"></td>\
+        <td id="jsb_2_6_%suffix%"></td>\
+        <td id="jsb_1_6_%suffix%"></td>\
+        <th>六</th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_7_%suffix%"></td>\
+        <td id="jsb_8_7_%suffix%"></td>\
+        <td id="jsb_7_7_%suffix%"></td>\
+        <td id="jsb_6_7_%suffix%"></td>\
+        <td id="jsb_5_7_%suffix%"></td>\
+        <td id="jsb_4_7_%suffix%"></td>\
+        <td id="jsb_3_7_%suffix%"></td>\
+        <td id="jsb_2_7_%suffix%"></td>\
+        <td id="jsb_1_7_%suffix%"></td>\
+        <th>七</th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_8_%suffix%"></td>\
+        <td id="jsb_8_8_%suffix%"></td>\
+        <td id="jsb_7_8_%suffix%"></td>\
+        <td id="jsb_6_8_%suffix%"></td>\
+        <td id="jsb_5_8_%suffix%"></td>\
+        <td id="jsb_4_8_%suffix%"></td>\
+        <td id="jsb_3_8_%suffix%"></td>\
+        <td id="jsb_2_8_%suffix%"></td>\
+        <td id="jsb_1_8_%suffix%"></td>\
+        <th>八</th>\
+      </tr>\
+      <tr>\
+        <td id="jsb_9_9_%suffix%"></td>\
+        <td id="jsb_8_9_%suffix%"></td>\
+        <td id="jsb_7_9_%suffix%"></td>\
+        <td id="jsb_6_9_%suffix%"></td>\
+        <td id="jsb_5_9_%suffix%"></td>\
+        <td id="jsb_4_9_%suffix%"></td>\
+        <td id="jsb_3_9_%suffix%"></td>\
+        <td id="jsb_2_9_%suffix%"></td>\
+        <td id="jsb_1_9_%suffix%"></td>\
+        <th>九</th>\
+      </tr>\
+      </table>\
+    </td>\
+    <td id="jsb_stand_black_%suffix%" class="jsb_stand">\
+      <span id="jsb_stand_black_hi_%suffix%"></span>\
+      <span id="jsb_stand_black_ka_%suffix%"></span>\
+      <span id="jsb_stand_black_ki_%suffix%"></span>\
+      <span id="jsb_stand_black_gi_%suffix%"></span>\
+      <span id="jsb_stand_black_ke_%suffix%"></span>\
+      <span id="jsb_stand_black_ky_%suffix%"></span>\
+      <span id="jsb_stand_black_fu_%suffix%"></span>\
+    </td>\
+  </tr></table></td>\
+  <td class="jsb_comment">\
+    <textarea id="jsb_comment_%suffix%"></textarea>\
+  </td>\
+</tr>\
+</table>\
+';
 
 
 })(jQuery);
