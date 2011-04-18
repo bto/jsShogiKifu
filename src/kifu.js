@@ -114,10 +114,10 @@ Kifu.prototype.extend({
   },
 
   moveStrings: function() {
-    var result = [];
-    var moves = this.moves.moves;
-    for (var i in moves) {
-      var move = moves[i];
+    var result       = [];
+    var move_records = this.moves.records;
+    for (var i in move_records) {
+      var move = move_records[i];
       if (move['str']) {
         result.push(move['str']);
       }
@@ -150,11 +150,11 @@ Kifu.prototype.extend({
   },
 
   prepare: function() {
-    var black = this.info['player_start'] == 'black';
-    var suite = this.suite_init.clone();
-    var moves = this.moves.moves;
-    for (var i in moves) {
-      var m = moves[i];
+    var black        = this.info['player_start'] == 'black';
+    var suite        = this.suite_init.clone();
+    var move_records = this.moves.records;
+    for (var i in move_records) {
+      var m = move_records[i];
       if (!m || m['type'] != 'move') continue;
       var move_prev = move;
       var move      = m;
@@ -178,10 +178,6 @@ Kifu.prototype.extend({
         to['y'] = move_prev['to']['y'];
       }
 
-      if (!to['y']) {
-        console.log(this.moves);
-        console.log(move);
-      }
       var cell = suite.board[to['x']][to['y']];
       if (cell) {
         move['stand'] = {
@@ -295,7 +291,7 @@ Kifu.Move.extend = Kifu.Move.prototype.extend = Kifu.extend;
 
 Kifu.Move.prototype.extend({
   addComment: function(comment) {
-    var move = this.moves[this.moves.length-1];
+    var move = this.records[this.records.length-1];
     move['comment'] = (move['comment'] || '') + comment + "\n";
     return this;
   },
@@ -312,7 +308,7 @@ Kifu.Move.prototype.extend({
   },
 
   addPeriod: function(period) {
-    this.moves[this.moves.length-1]['period'] = period;
+    this.records[this.records.length-1]['period'] = period;
     return this;
   },
 
@@ -327,27 +323,27 @@ Kifu.Move.prototype.extend({
 
   clone: function() {
     var obj = new Kifu.Move;
-    obj.moves = Kifu.clone(this.moves);
+    obj.records = Kifu.clone(this.records);
     return obj;
   },
 
   get: function(step) {
-    return this.moves[step];
+    return this.records[step];
   },
 
   newMove: function() {
-    var move = this.moves[this.moves.length-1];
+    var move = this.records[this.records.length-1];
     if (move['type']) {
-      this.moves.push({});
-      move = this.moves[this.moves.length-1];
+      this.records.push({});
+      move = this.records[this.records.length-1];
     }
     return move;
   },
 
   setMove: function(num, from, to, piece, options) {
-    var moves = this.moves;
-    moves[num] = moves[num] || {};
-    var move = moves[num];
+    var records = this.records;
+    records[num] = records[num] || {};
+    var move = records[num];
     move['from'] = {x: from[0], y: from[1]};
     move['to']   = {piece: piece, x: to[0], y: to[1]};
     move['type'] = 'move';
@@ -360,7 +356,7 @@ Kifu.Move.prototype.extend({
 
 Kifu.Move.extend({
   initialize: function() {
-    this.moves = [{type: 'init'}];
+    this.records = [{type: 'init'}];
   }
 });
 

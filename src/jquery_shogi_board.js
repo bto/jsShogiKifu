@@ -139,10 +139,10 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var moveStringsSet = function() {
-    var moves = kifu.moves.moves;
-    var ele   = jsbElementById('moves');
-    for (var i in moves) {
-      var move = moves[i];
+    var move_records = kifu.moves.records;
+    var ele          = jsbElementById('moves');
+    for (var i in move_records) {
+      var move = move_records[i];
       if (move['str']) {
         ele.append($('<option>').attr({value: i}).text(i+' '+move['str']));
       }
