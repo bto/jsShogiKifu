@@ -178,7 +178,7 @@ $.fn.shogiBoard = function(kifu, options) {
     if (!black) {
       name += '_r';
     }
-    var image_url = config['url_images'] + '/' + name + '.png';
+    var image_url = config['images_url'] + '/' + name + '.png';
 
     return '<img src="' + image_url + '" />';
   };
@@ -240,8 +240,8 @@ $.fn.shogiBoard = function(kifu, options) {
     $.extend(config, options);
   }
 
-  if (!config['url_images']) {
-    config['url_images'] = config['url_prefix'] + '/' + 'images';
+  if (!config['images_url']) {
+    config['images_url'] = config['url_prefix'] + '/' + 'images';
   }
 
   config['this'] = this;
@@ -249,13 +249,17 @@ $.fn.shogiBoard = function(kifu, options) {
   _suffix++;
   config['suffix'] = _suffix;
 
-  if (config['url_template']) {
+  if (config['template_id']) {
+    initialize($('#'+config['template_id']).html());
+  } else if (config['template_url']) {
     var ajax_opts = {};
     ajax_opts['dataType'] = 'text';
     ajax_opts['type']     = 'GET';
-    ajax_opts['url']      = config['url_template'];
+    ajax_opts['url']      = config['template_url'];
     ajax_opts['success']  = initialize;
     $.ajax(ajax_opts);
+  } else if (config['template_src']) {
+    initialize(config['template_src']);
   } else {
     initialize(_html);
   };

@@ -44,16 +44,15 @@ V2.2
 <script><!--
   Kifu.ajax({url: './081217-h.csa'}, 'csa', function(kifu) {
     var options = {
-      url_images:   '../src/images',
-      url_template: './jquery_shogi_board.html'};
-    var options = {url_images:   '../src/images'};
+      images_url:   '../src/images',
+      template_url: './jquery_shogi_board.html'};
     $('#board_csa').shogiBoard(kifu, options);
   });
 
   Kifu.ajax({url: './081217-h.kif'}, 'kif', function(kifu) {
     var options = {
-      url_images:   '../src/images',
-      url_template: './jquery_shogi_board.html'};
+      images_url:   '../src/images',
+      template_url: './jquery_shogi_board.html'};
     $('#board_kif').shogiBoard(kifu, options);
   });
 --></script>
