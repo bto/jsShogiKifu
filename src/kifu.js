@@ -619,8 +619,8 @@ Kifu.Csa.prototype.extend({
     } else if (line == '-') {
       kifu.info['player_start'] = 'white';
       return true;
-    } else if (line.substr(0, 3) == "'* ") {
-      kifu['moves'].addComment(line.substr(3));
+    } else if (line.substr(0, 2) == "'*") {
+      kifu['moves'].addComment(line.substr(2));
       return true;
     }
 

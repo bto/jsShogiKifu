@@ -249,15 +249,15 @@ test('parse start player', 5, function() {
 test('parse moves', 20, function() {
   var moves = Kifu.Move();
 
-  // '* comment1'
+  // '*comment1'
   moves.addComment('comment1');
-  var line = "'* comment1";
+  var line = "'*comment1";
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
 
-  // '* comment2'
+  // '*comment2'
   moves.addComment('comment2');
-  var line = "'* comment2";
+  var line = "'*comment2";
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
 
@@ -273,9 +273,9 @@ test('parse moves', 20, function() {
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
 
-  // '* comment3'
+  // '*comment3'
   moves.addComment('comment3');
-  var line = "'* comment3";
+  var line = "'*comment3";
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
 
