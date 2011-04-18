@@ -561,6 +561,19 @@ Kifu.Move.prototype.extend({
       move = this.moves[this.moves.length-1];
     }
     return move;
+  },
+
+  setMove: function(num, from, to, piece, options) {
+    var moves = this.moves;
+    moves[num] = moves[num] || {};
+    var move = moves[num];
+    move['from'] = {x: from[0], y: from[1]};
+    move['to']   = {piece: piece, x: to[0], y: to[1]};
+    move['type'] = 'move';
+    for (var property in options) {
+      move[property] = options[property];
+    }
+    return this;
   }
 });
 
@@ -790,7 +803,7 @@ var kifu_map = {
   '銀成': 'NG',
   '角成': 'UM',
   '飛成': 'RY',
-  'と金': 'TO',
+  'と':   'TO',
   '成香': 'NY',
   '成桂': 'NK',
   '成銀': 'NG',
@@ -816,10 +829,9 @@ Kifu.Kif = {
       return true;
     }
 
-    if (line.match(/^\s+([0-9]+)\s+(.+)\s+\((.*)\)$/)) {
+    if (line.match(/^\s+([0-9]+)\s+(.+)(\s+.*)?$/)) {
       var num  = parseInt(RegExp.$1);
       var move = Kifu.Kif.strip(RegExp.$2);
-      var time = Kifu.Kif.strip(RegExp.$3);
 
       if (move == '投了') {
         kifu['moves'].addSpecial('TORYO');
@@ -837,7 +849,7 @@ Kifu.Kif = {
         var from  = [0, 0];
         var str   = move;
       }
-      kifu['moves'].addMove(from, to, piece, {str: str});
+      kifu['moves'].setMove(num, from, to, piece, {str: str});
 
       return true;
     }
