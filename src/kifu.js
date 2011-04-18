@@ -138,7 +138,8 @@ Kifu.prototype.extend({
     }
 
     var klass = Kifu.capitalize(this.info['format']);
-    Kifu[klass].parse(this);
+    this.parser = Kifu[klass](this);
+    this.parser.parse();
     this.prepare();
 
     this.black = this.info['player_start'] == 'black';
@@ -177,6 +178,10 @@ Kifu.prototype.extend({
         to['y'] = move_prev['to']['y'];
       }
 
+      if (!to['y']) {
+        console.log(this.moves);
+        console.log(move);
+      }
       var cell = board.board[to['x']][to['y']];
       if (cell) {
         move['stand'] = {
@@ -594,18 +599,23 @@ window.Kifu = Kifu;
  * Kifu.Csa Object
  */
 (function(Kifu) {
-Kifu.Csa = {
-  parse: function(kifu) {
-    var lines = Kifu.Csa.toLines(kifu.info['source']);
+Kifu.Csa = (function(kifu) { return new Kifu.Csa.initialize(kifu); });
+Kifu.Csa.extend = Kifu.Csa.prototype.extend = Kifu.extend;
+
+Kifu.Csa.prototype.extend({
+  parse: function() {
+    var lines = this.toLines(this.kifu.info['source']);
     for (var i in lines) {
       var line = lines[i];
-      Kifu.Csa.parseByLine(line, kifu);
+      this.parseByLine(line);
     }
 
-    return kifu;
+    return this;
   },
 
-  parseByLine: function(line, kifu) {
+  parseByLine: function(line) {
+    var kifu = this.kifu;
+
     if (line == '+') {
       kifu.info['player_start'] = 'black';
       return true;
@@ -758,7 +768,15 @@ Kifu.Csa = {
     }
     return result;
   }
-};
+});
+
+Kifu.Csa.extend({
+  initialize: function(kifu) {
+    this.kifu = kifu;
+  }
+});
+
+Kifu.Csa.initialize.prototype = Kifu.Csa.prototype
 })(Kifu);
 
 
@@ -766,7 +784,6 @@ Kifu.Csa = {
  * Kifu.Kif Object
  */
 (function(Kifu) {
-
 var kifu_map = {
   '同':   0,
   '　':   0,
@@ -811,27 +828,32 @@ var kifu_map = {
   '龍':   'RY'
 };
 
-Kifu.Kif = {
-  parse: function(kifu) {
-    var lines = Kifu.Kif.toLines(kifu.info['source']);
+Kifu.Kif = (function(kifu) { return new Kifu.Kif.initialize(kifu); });
+Kifu.Kif.extend = Kifu.Kif.prototype.extend = Kifu.extend;
+
+Kifu.Kif.prototype.extend({
+  parse: function() {
+    var lines = this.toLines(this.kifu.info['source']);
     for (var i in lines) {
       var line = lines[i];
-      Kifu.Kif.parseByLine(line, kifu);
+      this.parseByLine(line);
     }
 
-    return kifu;
+    return this;
   },
 
-  parseByLine: function(line, kifu) {
+  parseByLine: function(line) {
+    var kifu = this.kifu;
+
     switch (line.charAt(0)) {
     case '*':
       kifu['moves'].addComment(line.substr(1));
       return true;
     }
 
-    if (line.match(/^\s+([0-9]+)\s+(.+)(\s+.*)?$/)) {
+    if (line.match(/^ *([0-9]+) ([^ ]+)/)) {
       var num  = parseInt(RegExp.$1);
-      var move = Kifu.Kif.strip(RegExp.$2);
+      var move = this.strip(RegExp.$2);
 
       if (move == '投了') {
         kifu['moves'].addSpecial('TORYO');
@@ -856,7 +878,7 @@ Kifu.Kif = {
 
     if (line.match(/(.+)：(.+)/)) {
       var key   = RegExp.$1;
-      var value = Kifu.Kif.strip(RegExp.$2);
+      var value = this.strip(RegExp.$2);
 
       switch (key) {
       case '対局ID':
@@ -865,11 +887,11 @@ Kifu.Kif = {
         return true;
 
       case '開始日時':
-        kifu.info['start_time'] = Kifu.Kif.toDate(value);
+        kifu.info['start_time'] = this.toDate(value);
         return true;
 
       case '終了日時':
-        kifu.info['end_time'] = Kifu.Kif.toDate(value);
+        kifu.info['end_time'] = this.toDate(value);
         return true;
 
       case '表題':
@@ -953,7 +975,15 @@ Kifu.Kif = {
     }
     return result;
   }
-};
+});
+
+Kifu.Kif.extend({
+  initialize: function(kifu) {
+    this.kifu = kifu;
+  }
+});
+
+Kifu.Kif.initialize.prototype = Kifu.Kif.prototype
 })(Kifu);
 
 /* vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2: */
