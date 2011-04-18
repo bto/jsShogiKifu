@@ -849,6 +849,10 @@ Kifu.Kif.prototype.extend({
     }
 
     if (line.match(/^ *([0-9]+) ([^ ]+)/)) {
+      if (this._henka) {
+        return true;
+      }
+
       var num  = parseInt(RegExp.$1);
       var move = this.strip(RegExp.$2);
 
@@ -938,6 +942,10 @@ Kifu.Kif.prototype.extend({
 
       case '後手':
         kifu.info['player_white'] = value;
+        return true;
+
+      case '変化':
+        this._henka = true;
         return true;
 
       default:
