@@ -70,7 +70,7 @@ test('initialization', 9, function() {
   // simple initialization
   var kifu = Kifu();
   var info = {player_start: 'black'};
-  same(kifu.board_init, Kifu.Board(), 'simple board_init');
+  same(kifu.suite_init, Kifu.Suite(), 'simple suite_init');
   same(kifu.info,       info,         'simple info');
   same(kifu.moves,      Kifu.Move(),  'simple moves');
 
@@ -78,7 +78,7 @@ test('initialization', 9, function() {
   var source = 'V2.2';
   info['source'] = source;
   var kifu = Kifu(source);
-  same(kifu.board_init, Kifu.Board(), 'source board_init');
+  same(kifu.suite_init, Kifu.Suite(), 'source suite_init');
   same(kifu.info,       info,         'source info');
   same(kifu.moves,      Kifu.Move(),  'source moves');
 
@@ -86,103 +86,103 @@ test('initialization', 9, function() {
   info['format']  = 'csa';
   info['version'] = '2.2';
   var kifu = Kifu(source, 'csa');
-  same(kifu.board_init, Kifu.Board(), 'source board_init');
+  same(kifu.suite_init, Kifu.Suite(), 'source suite_init');
   same(kifu.info,       info,         'source info');
   same(kifu.moves,      Kifu.Move(),  'source moves');
 });
 
 test('moveNext, movePrev', 31, function() {
   var kifu = Kifu('V2.2');
-  kifu.board_init.hirate();
+  kifu.suite_init.hirate();
   kifu.parse('csa');
   kifu.moves.addMove([2, 7], [2, 6], 'FU', {black: true});
   kifu.moves.addMove([3, 3], [3, 4], 'FU', {black: false});
   var black = kifu.black;
-  var board = kifu.board.clone();
   var moves = kifu.moves.clone();
   var step  = kifu.step;
+  var suite = kifu.suite.clone();
 
   // 1st move
   var move = moves.get(1);
-  board.move(move);
+  suite.move(move);
   black = false;
   step  = 1;
   same(kifu.moveNext(), move,  '1st move');
   same(kifu.black,  black, '1st black');
-  same(kifu.board,  board, '1st board');
   same(kifu.moves,  moves, '1st moves');
   same(kifu.step,   step,  '1st step');
+  same(kifu.suite,  suite, '1st suite');
 
   // 2nd move
   var move = moves.get(2);
-  board.move(move);
+  suite.move(move);
   black = true;
   step  = 2;
   same(kifu.moveNext(), move,  '2nd move');
   same(kifu.black,  black, '2nd black');
-  same(kifu.board,  board, '2nd board');
   same(kifu.moves,  moves, '2nd moves');
   same(kifu.step,   step,  '2nd step');
+  same(kifu.suite,  suite, '2nd suite');
 
   // 3rd move
   var move = moves.get(3);
   same(move,        undefined, '3rd move undefined');
   same(kifu.moveNext(), move,      '3rd move');
   same(kifu.black,  black,     '3rd black');
-  same(kifu.board,  board,     '3rd board');
   same(kifu.moves,  moves,     '3rd moves');
   same(kifu.step,   step,      '3rd step');
+  same(kifu.suite,  suite,     '3rd suite');
 
   // 2nd prev
   var move = moves.get(2);
-  board.moveReverse(move);
+  suite.moveReverse(move);
   black = false;
   step  = 1;
   same(kifu.movePrev(), move,  '2nd perv move');
   same(kifu.black,  black, '2nd perv black');
-  same(kifu.board,  board, '2nd perv board');
   same(kifu.moves,  moves, '2nd perv moves');
   same(kifu.step,   step,  '2nd perv step');
+  same(kifu.suite,  suite, '2nd perv suite');
 
   // 1st prev
   var move = moves.get(1);
-  board.moveReverse(move);
+  suite.moveReverse(move);
   black = true;
   step  = 0;
   same(kifu.movePrev(), move,  '1st perv move');
   same(kifu.black,  black, '1st perv black');
-  same(kifu.board,  board, '1st perv board');
   same(kifu.moves,  moves, '1st perv moves');
   same(kifu.step,   step,  '1st perv step');
+  same(kifu.suite,  suite, '1st perv suite');
 
   // init prev
   var move = moves.get(0);
   same(kifu.movePrev(), move,  'init perv move');
   same(kifu.black,  black, 'init perv black');
-  same(kifu.board,  board, 'init perv board');
   same(kifu.moves,  moves, 'init perv moves');
   same(kifu.step,   step,  'init perv step');
+  same(kifu.suite,  suite, 'init perv suite');
 });
 
 test('parse', 7, function() {
-  var board = Kifu.Board();
   var info  = {
     format: 'csa', player_start: 'black', source: 'V2.2', version: '2.2'};
+  var kifu  = Kifu('V2.2');
   var moves = Kifu.Move();
-  var kifu = Kifu('V2.2');
+  var suite = Kifu.Suite();
   ok(kifu.parse('csa'), 'parse');
   same(kifu.black,      true,  'black');
-  same(kifu.board,      board, 'board');
-  same(kifu.board_init, board, 'board_init');
   same(kifu.info,       info,  'info');
   same(kifu.moves,      moves, 'moves');
   same(kifu.step,       0,     'step');
+  same(kifu.suite,      suite, 'suite');
+  same(kifu.suite_init, suite, 'suite_init');
 });
 
 test('prepare', 10, function() {
   var kifu  = Kifu();
   var moves = Kifu.Move();
-  kifu.board_init.hirate();
+  kifu.suite_init.hirate();
 
   // -3334FU
   kifu.moves.addMove([3, 3], [3, 4], 'FU', {black: false, str: '34foo'});

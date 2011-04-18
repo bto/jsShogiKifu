@@ -11,8 +11,8 @@ $.fn.shogiBoard = function(kifu, options) {
    * functions
    */
   var boardSet = function() {
-    var board = kifu.board.board;
-    var stand = kifu.board.stand;
+    var board = kifu.suite.board;
+    var stand = kifu.suite.stand;
 
     for (var x = 1; x <= 9; x++) {
       for (var y = 1; y <= 9; y++) {

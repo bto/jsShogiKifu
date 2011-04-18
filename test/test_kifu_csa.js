@@ -100,57 +100,57 @@ test('parse info', 18, function() {
 });
 
 test('parse initial board hirate', 4, function() {
-  var board = Kifu.Board().hirate();
+  var suite = Kifu.Suite().hirate();
 
   // hirate
   var line = 'PI';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // hirate komaochi
-  parser.kifu.board_init = Kifu.Board();
-  board.cellRemove(8, 2, 'HI');
-  board.cellRemove(2, 2, 'KA');
+  parser.kifu.suite_init = Kifu.Suite();
+  suite.cellRemove(8, 2, 'HI');
+  suite.cellRemove(2, 2, 'KA');
   var line = 'PI82HI22KA';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 });
 
 test('parse initial board all', 16, function() {
-  var board = Kifu.Board();
+  var suite = Kifu.Suite();
 
   // 1st line
-  board.cellDeploy(9, 1, 'KY', false);
-  board.cellDeploy(8, 1, 'KE', false);
-  board.cellDeploy(7, 1, 'GI', false);
-  board.cellDeploy(6, 1, 'KI', false);
-  board.cellDeploy(5, 1, 'OU', false);
-  board.cellDeploy(4, 1, 'KI', false);
-  board.cellDeploy(3, 1, 'GI', false);
-  board.cellDeploy(2, 1, 'KE', false);
+  suite.cellDeploy(9, 1, 'KY', false);
+  suite.cellDeploy(8, 1, 'KE', false);
+  suite.cellDeploy(7, 1, 'GI', false);
+  suite.cellDeploy(6, 1, 'KI', false);
+  suite.cellDeploy(5, 1, 'OU', false);
+  suite.cellDeploy(4, 1, 'KI', false);
+  suite.cellDeploy(3, 1, 'GI', false);
+  suite.cellDeploy(2, 1, 'KE', false);
   var line = 'P1-KY-KE-GI-KI-OU-KI-GI-KE * ';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // 2nd line
-  board.cellDeploy(8, 2, 'HI', false);
+  suite.cellDeploy(8, 2, 'HI', false);
   var line = 'P2 * -HI *  *  *  *  *  *  * ';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // 3rd line
-  board.cellDeploy(9, 3, 'FU', false);
-  board.cellDeploy(8, 3, 'FU', false);
-  board.cellDeploy(7, 3, 'FU', false);
-  board.cellDeploy(6, 3, 'FU', false);
-  board.cellDeploy(5, 3, 'FU', false);
-  board.cellDeploy(4, 3, 'FU', false);
-  board.cellDeploy(3, 3, 'FU', false);
-  board.cellDeploy(2, 3, 'FU', false);
-  board.cellDeploy(1, 3, 'FU', false);
+  suite.cellDeploy(9, 3, 'FU', false);
+  suite.cellDeploy(8, 3, 'FU', false);
+  suite.cellDeploy(7, 3, 'FU', false);
+  suite.cellDeploy(6, 3, 'FU', false);
+  suite.cellDeploy(5, 3, 'FU', false);
+  suite.cellDeploy(4, 3, 'FU', false);
+  suite.cellDeploy(3, 3, 'FU', false);
+  suite.cellDeploy(2, 3, 'FU', false);
+  suite.cellDeploy(1, 3, 'FU', false);
   var line = 'P3-FU-FU-FU-FU-FU-FU-FU-FU-FU';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // 4-6 line
   var line = 'P4 *  *  *  *  *  *  *  *  * ';
@@ -159,74 +159,74 @@ test('parse initial board all', 16, function() {
   ok(parser.parseByLine(line), line);
   var line = 'P6 *  *  *  *  *  *  *  *  * ';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // 7th line
-  board.cellDeploy(9, 7, 'FU', true);
-  board.cellDeploy(8, 7, 'FU', true);
-  board.cellDeploy(7, 7, 'FU', true);
-  board.cellDeploy(6, 7, 'FU', true);
-  board.cellDeploy(5, 7, 'FU', true);
-  board.cellDeploy(4, 7, 'FU', true);
-  board.cellDeploy(3, 7, 'FU', true);
-  board.cellDeploy(2, 7, 'FU', true);
-  board.cellDeploy(1, 7, 'FU', true);
+  suite.cellDeploy(9, 7, 'FU', true);
+  suite.cellDeploy(8, 7, 'FU', true);
+  suite.cellDeploy(7, 7, 'FU', true);
+  suite.cellDeploy(6, 7, 'FU', true);
+  suite.cellDeploy(5, 7, 'FU', true);
+  suite.cellDeploy(4, 7, 'FU', true);
+  suite.cellDeploy(3, 7, 'FU', true);
+  suite.cellDeploy(2, 7, 'FU', true);
+  suite.cellDeploy(1, 7, 'FU', true);
   var line = 'P7+FU+FU+FU+FU+FU+FU+FU+FU+FU';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // 8th line
-  board.cellDeploy(8, 8, 'KA', true);
-  board.cellDeploy(2, 8, 'HI', true);
+  suite.cellDeploy(8, 8, 'KA', true);
+  suite.cellDeploy(2, 8, 'HI', true);
   var line = 'P8 * +KA *  *  *  *  * +HI * ';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // 9th line
-  board.cellDeploy(9, 9, 'KY', true);
-  board.cellDeploy(8, 9, 'KE', true);
-  board.cellDeploy(7, 9, 'GI', true);
-  board.cellDeploy(6, 9, 'KI', true);
-  board.cellDeploy(5, 9, 'OU', true);
-  board.cellDeploy(4, 9, 'KI', true);
-  board.cellDeploy(3, 9, 'GI', true);
-  board.cellDeploy(2, 9, 'KE', true);
-  board.cellDeploy(1, 9, 'KY', true);
+  suite.cellDeploy(9, 9, 'KY', true);
+  suite.cellDeploy(8, 9, 'KE', true);
+  suite.cellDeploy(7, 9, 'GI', true);
+  suite.cellDeploy(6, 9, 'KI', true);
+  suite.cellDeploy(5, 9, 'OU', true);
+  suite.cellDeploy(4, 9, 'KI', true);
+  suite.cellDeploy(3, 9, 'GI', true);
+  suite.cellDeploy(2, 9, 'KE', true);
+  suite.cellDeploy(1, 9, 'KY', true);
   var line = 'P9+KY+KE+GI+KI+OU+KI+GI+KE+KY';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 });
 
 test('parse initial board each', 8, function() {
-  var board = Kifu.Board();
+  var suite = Kifu.Suite();
 
   // P+63RY00KI
-  board.cellDeploy(6, 3, 'RY', true);
-  board.standDeploy('KI', true);
+  suite.cellDeploy(6, 3, 'RY', true);
+  suite.standDeploy('KI', true);
   var line = 'P+63RY00KI';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // P+00KI
-  board.standDeploy('KI', true);
+  suite.standDeploy('KI', true);
   var line = 'P+00KI';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // P-42OU33GI22KI23FU
-  board.cellDeploy(4, 2, 'OU', false);
-  board.cellDeploy(3, 3, 'GI', false);
-  board.cellDeploy(2, 2, 'KI', false);
-  board.cellDeploy(2, 3, 'FU', false);
+  suite.cellDeploy(4, 2, 'OU', false);
+  suite.cellDeploy(3, 3, 'GI', false);
+  suite.cellDeploy(2, 2, 'KI', false);
+  suite.cellDeploy(2, 3, 'FU', false);
   var line = 'P-42OU33GI22KI23FU';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 
   // P-00AL
-  board.standDeploy('AL', false);
+  suite.standDeploy('AL', false);
   var line = 'P-00AL';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.board_init, board, line+' board');
+  same(parser.kifu.suite_init, suite, line+' suite');
 });
 
 test('parse start player', 5, function() {
@@ -362,7 +362,7 @@ T6\n\
 ";
 
   var kifu  = Kifu();
-  var board = kifu.board_init;
+  var suite = kifu.suite_init;
   var info  = kifu.info;
   var moves = kifu.moves;
   info['source']       = source;
@@ -376,7 +376,7 @@ T6\n\
   info['time_limit']   = {allotted: 25, extra: 0};
   info['opening']      = 'YAGURA';
   info['player_start'] = 'black';
-  board.hirate();
+  suite.hirate();
   moves.addMove([2, 7], [2, 6], 'FU', {black: true});
   moves.addPeriod(12);
   moves.addMove([3, 3], [3, 4], 'FU', {black: false});

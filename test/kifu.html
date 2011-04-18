@@ -5,12 +5,18 @@
 </head>
 
 <body>
-<span id="board"></span>
+<h2>CSAサンプル</h2>
+<span id="board_csa"></span>
 <br />
 <br />
 <br />
 <br />
-<span id="board2"></span>
+<h2>KIFサンプル</h2>
+<span id="board_kif"></span>
+<br />
+<br />
+<br />
+<br />
 
 
 <h1 id="qunit-header">QUnit Test Suite</h1>
@@ -29,19 +35,19 @@ V2.2
 <script type="text/javascript" src="qunit/qunit/qunit.js"></script>
 
 <script type="text/javascript" charset="UTF-8" src="../src/kifu.js"></script>
-<script type="text/javascript" charset="UTF-8" src="test_kifu_board.js"></script>
 <script type="text/javascript" charset="UTF-8" src="test_kifu_move.js"></script>
+<script type="text/javascript" charset="UTF-8" src="test_kifu_suite.js"></script>
 <script type="text/javascript" charset="UTF-8" src="test_kifu_csa.js"></script>
 <script type="text/javascript" charset="UTF-8" src="test_kifu_kif.js"></script>
 <script type="text/javascript" charset="UTF-8" src="test_kifu.js"></script>
 <script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
 <script><!--
   Kifu.ajax({url: './csa1.txt'}, 'csa', function(kifu) {
-    $('#board').shogiBoard(kifu);
+    $('#board_csa').shogiBoard(kifu);
   });
 
   Kifu.ajax({url: './ryuou20101014.kif'}, 'kif', function(kifu) {
-    $('#board2').shogiBoard(kifu);
+    $('#board_kif').shogiBoard(kifu);
   });
 --></script>
 </body>
