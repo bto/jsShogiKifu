@@ -255,10 +255,12 @@ $.fn.shogiBoard = function(kifu, options) {
     ajax_opts['type']     = 'GET';
     ajax_opts['url']      = config['url_template'];
     ajax_opts['success']  = initialize;
-    return $.ajax(ajax_opts);
+    $.ajax(ajax_opts);
   } else {
-    return initialize(_html);
+    initialize(_html);
   };
+
+  return this;
 };
 
 
