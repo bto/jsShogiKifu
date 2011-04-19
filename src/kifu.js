@@ -266,6 +266,10 @@ Kifu.extend({
     return jQuery.ajax(options);
   },
 
+  ajaxLoad: function(url, format, func_obj) {
+    return Kifu.ajax({url: url}, format, func_obj);
+  },
+
   capitalize: function(str) {
     return str.charAt(0).toUpperCase() + str.substr(1);
   },
