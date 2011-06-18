@@ -43,7 +43,7 @@ var detectBrowser = function() {
   else {
     return 'Unknown';
   }
-}
+};
 
 var SurmiseBrowser = detectBrowser();
 SurmiseBrowser = 'IE9';
@@ -100,7 +100,7 @@ $.fn.shogiBoard = function(kifu, options) {
 	return parseInt(r[0], 10);
     else
       return null;
-  }
+  };
 
   var initialize = function(source) {
     var contents_id = '#jsb_contents_' + config['suffix'];
@@ -312,7 +312,7 @@ $.fn.shogiBoard = function(kifu, options) {
       }
       return config['images_url'] + '/' + name + '.png';
     }
-  }
+  };
 
   var cellImgTag = function(piece, black) {
     var image_url = pieceImgUrl(piece, black);
@@ -339,12 +339,12 @@ $.fn.shogiBoard = function(kifu, options) {
     if (lastMoveCell) $(lastMoveCell).css('background', 'transparent');
     $(cell).css('background', color);
     lastMoveCell = cell;
-  }
+  };
 
   var lastMoveClear = function() {
     if (lastMoveCell) $(lastMoveCell).css('background', 'transparent');
     lastMoveCell = null;
-  }
+  };
 
   var setCurrToLastMove = function() {
     var curr = kifu.currMove();
@@ -355,7 +355,7 @@ $.fn.shogiBoard = function(kifu, options) {
     else {
       lastMoveClear();
     }
-  }
+  };
 
   var playerSet = function() {
     var info = kifu.info;
@@ -699,4 +699,8 @@ var _html = '\
 
 })(jQuery);
 
-/* vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2: */
+// Local variables:
+// indent-tabs-mode: nil
+// js2-basic-offset: 2
+// end:
+// vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:
