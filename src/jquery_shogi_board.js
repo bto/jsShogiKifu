@@ -316,9 +316,9 @@ $.fn.shogiBoard = function(kifu, options) {
 
   var cellImgTag = function(piece, black) {
     var image_url = pieceImgUrl(piece, black);
-      return $('<img />').attr({src: image_url}).
-                          width(config['piece_image_width']).
-                          height(config['piece_image_height']);
+    return $('<img />').attr({src: image_url}).
+                        width(config['piece_image_width']).
+                        height(config['piece_image_height']);
   };
 
   var cellClear = function(x, y) {
