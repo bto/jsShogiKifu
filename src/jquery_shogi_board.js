@@ -159,7 +159,7 @@ $.fn.shogiBoard = function(kifu, options) {
       }
     }
 
-    ele.click(function() {
+    ele.change(function() {
       return moveTo($(this).val());
     });
   };
