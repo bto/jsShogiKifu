@@ -4,6 +4,8 @@
  * Copyright 2011, Masato Bito
  * Licensed under the MIT license.
  *
+ * 2011/06/09: Support mate problem.  (Kosako)
+ * 2011/06/09: Support handicap game. (Kosako)
  * 2011/06/04: Add another ryu-kanji to kifu_map. (Kosako)
  * 2011/06/01: Add last-move highlight function. (Kosako)
  *
@@ -452,6 +454,45 @@ Kifu.Suite.prototype.extend({
     return obj;
   },
 
+  setup: function(handicap) {
+    if (handicap == 'Other') return this;
+    this.hirate();
+    if (handicap == 'Even' || handicap == null) return this;
+
+    switch (handicap) {
+    case 'Lance':
+	this.cellRemove(1, 1, 'KY');
+	break;
+    case 'Right_Lance':
+	this.cellRemove(9, 1, 'KY');
+	break;
+    case 'Bishop':
+	this.cellRemove(2, 2, 'KA');
+	break;
+    case 'Rook_and_Lance':
+	this.cellRemove(1, 1, 'KY');
+    case 'Rook':
+	this.cellRemove(8, 2, 'HI');
+	break;
+
+    case 'Six_Drops':
+	this.cellRemove(2, 1, 'KE');
+	this.cellRemove(8, 1, 'KE');
+    case 'Four_Drops':
+	this.cellRemove(1, 1, 'KY');
+	this.cellRemove(9, 1, 'KY');
+    case 'Two_Drops':
+	this.cellRemove(8, 2, 'HI');
+	this.cellRemove(2, 2, 'KA');
+	break;
+
+    default:
+	alert('Invalid handicap: ' + this.handicap);
+	break;
+    }
+    return this;
+  },
+
   hirate: function() {
     this.cellDeploy(1, 9, 'KY', true);
     this.cellDeploy(2, 9, 'KE', true);
@@ -526,6 +567,23 @@ Kifu.Suite.prototype.extend({
       this.standSet(from['piece'], black);
     }
 
+    return this;
+  },
+
+  standDeployN: function(piece, black, n) {
+    var player = black ? 'black' : 'white';
+    var stand  = this.stand[player];
+    var pieces = this.pieces;
+
+    if (pieces[piece] >= n) {
+      var stand = this.stand[player];
+      stand[piece] = stand[piece] || 0;
+      stand[piece] += n;
+      pieces[piece] -= n;
+    }
+    else {
+      return false;
+    }
     return this;
   },
 
@@ -849,17 +907,68 @@ var kifu_map = {
   '竜':   'RY'
 };
 
+var BoardPieceMap = {
+  '歩': 'FU',
+  '香': 'KY',
+  '桂': 'KE',
+  '銀': 'GI',
+  '金': 'KI',
+  '角': 'KA',
+  '飛': 'HI',
+  '王': 'OU',
+  '玉': 'OU',
+  'と': 'TO',
+  '杏': 'NY',
+  '圭': 'NK',
+  '全': 'NG',
+  '馬': 'UM',
+  '龍': 'RY',
+  '竜': 'RY'
+};
+
+var KanjiNumberMap = {
+  '一':   1,
+  '二':   2,
+  '三':   3,
+  '四':   4,
+  '五':   5,
+  '六':   6,
+  '七':   7,
+  '八':   8,
+  '九':   9,
+  '十':  10
+};
+
+var HandicapNameMap = {
+  '平手': 'Even',
+  '香落ち': 'Lance',
+  '右香落ち': 'Right_Lance',
+  '角落ち': 'Bishop',
+  '飛車落ち': 'Rook',
+  '飛香落ち': 'Rook_and_Lance',
+  '二枚落ち': 'Two_Drops',
+  '四枚落ち': 'Four_Drops',
+  '六枚落ち': 'Six_Drops',
+  'その他': 'Other'
+};
+
 Kifu.Kif = (function(kifu) { return new Kifu.Kif.initialize(kifu); });
 Kifu.Kif.extend = Kifu.Kif.prototype.extend = Kifu.extend;
 
 Kifu.Kif.prototype.extend({
   parse: function() {
     var lines = this.toLines(this.kifu.info['source']);
+    this.board_setup = false;
+    this.setup_line  = null;
+    this.handicap    = 'Even';
     for (var i in lines) {
       var line = lines[i];
       this.parseByLine(line);
     }
 
+    if (this.handicap != null && this.handicap != 'Even') {
+      this.kifu.info['player_start'] = 'white';
+    }
     return this;
   },
 
@@ -873,6 +982,15 @@ Kifu.Kif.prototype.extend({
     }
 
     if (line.match(/^ *([0-9]+) ([^ ]+)/)) {
+      if (! this.board_setup) {
+	if (this.handicap == null)
+          kifu.suite_init.setup('Even');
+	else
+          kifu.suite_init.setup(this.handicap);
+
+	this.board_setup = true;
+      }
+
       if (this._henka) {
         return true;
       }
@@ -882,6 +1000,10 @@ Kifu.Kif.prototype.extend({
 
       if (move == '投了') {
         kifu['moves'].addSpecial('TORYO');
+        return true;
+      }
+      else if (move.match(/詰み?$/)) {
+        kifu['moves'].addSpecial('MATE');
         return true;
       }
 
@@ -952,21 +1074,27 @@ Kifu.Kif.prototype.extend({
         return true;
 
       case '手合割':
-        switch (value) {
-        case '平手':
-        default:
-          kifu.suite_init.hirate();
-          break;
-        }
-        return true;
+	this.handicap = HandicapNameMap[value];
+        if (this.handicap) return true;
+        else return false;
 
       case '先手':
+      case '下手':
         kifu.info['player_black'] = value;
         return true;
 
       case '後手':
+      case '上手':
         kifu.info['player_white'] = value;
         return true;
+
+      case '先手の持駒':
+      case '下手の持駒':
+	return this.parseStand(value, true);
+
+      case '後手の持駒':
+      case '上手の持駒':
+	return this.parseStand(value, false);
 
       case '変化':
         this._henka = true;
@@ -979,7 +1107,83 @@ Kifu.Kif.prototype.extend({
       }
     }
 
+    if (! this.board_setup) {
+	if (line.match(/^\s+９ ８ ７ ６ ５ ４ ３ ２ １/)) {
+        this.setup_line = 0;
+        return true;
+      }
+      else if (line.match(/^\+---------------------------\+/)) {
+	if (this.setup_line == 0) {
+	  this.setup_line = 1;
+          return true;
+	}
+	else if (this.setup_line == 10) {
+	  this.board_setup = true;
+          return true;
+	}
+        else {
+	  return false;
+	}
+      }
+      else if (line.match(/^\|.+\|/)) {
+	var y = this.setup_line;
+	if (y > 0 && y < 10) {
+	  for (var i = 0; i < 9; i++) {
+	    var c  = line.substr(i*2+1, 1);
+	    var pc = line.substr(i*2+2, 1);
+            if (pc == '・') continue;
+            var is_black = (c == ' ');
+            var piece = BoardPieceMap[pc];
+            var x = 9 - i;
+            kifu.suite_init.cellDeploy(x, y, piece, is_black);
+	  }
+	  this.setup_line++;
+	}
+      }
+    }
+
     return false;
+  },
+
+  parseStand: function(str, black) {
+    if (str == 'なし') {
+      return true;
+    }
+
+    var list = str.replace(/^[\s　]+/, '').replace(/[\s　]+$/, '').split(/[\s　]+/);
+    for (var i in list) {
+      var s = list[i];
+      var pc = s.substr(0, 1);
+      var kn = s.substr(1);
+      var piece = BoardPieceMap[pc];
+      if (! piece) return false;
+      n = this.parseKansuuchi(kn);
+      if (n == false) return false;
+      else if (n == null) n = 1;
+
+      this.kifu.suite_init.standDeployN(piece, black, n);
+    }
+    return true;
+  },
+
+  parseKansuuchi: function(str) {
+    if (! str || str.length == 0) return null;
+
+    var n = 0;
+    for (var i = 0; i < str.length; i++) {
+      var s = str.substr(i, 1);
+      var d = KanjiNumberMap[s];
+      if (d == null) return false;
+      if (d == 10) {
+	if (n == 0) n = 10;
+	else n = n * 10;
+      }
+      else {
+        n = n + d;
+      }
+    }
+
+    return n;
   },
 
   strip: function(str) {

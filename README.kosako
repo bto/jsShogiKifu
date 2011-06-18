@@ -1,4 +1,4 @@
-2011/06/04  K.Kosako
+2011/06/09  K.Kosako
 
 JavaScriptで動作する将棋棋譜ビューワ
 http://blog.bz2.jp/archives/2011/04/javascript-6.html
@@ -16,7 +16,11 @@ http://blog.bz2.jp/archives/2011/04/javascript-6.html
 7. サイズの異なる盤面を一つのページに表示可能
    (test/sample_multi.html)
 8. 手順一覧選択リストで、コメント付きの指し手には'*'マークを表示
-9. KIFファイルの記述が'龍'ではなく'竜'の場合にも対応
+9. KIF形式の記述が'龍'ではなく'竜'の場合にも対応
+10. KIF形式の詰将棋に対応
+    (test/sample_mate.html)
+11. KIF形式の駒落ちに対応
+12. KIF形式の初期局面指定に対応
 
 
 -- 指定方法 --
@@ -61,15 +65,6 @@ board_cell_width, board_cell_heightで指定。px単位の指定する。
 5. 初期表示局面を指定可能
 move_toで局面の手数を指定する。
 最終局面の場合は、'last'と指定することもできる。
-
-
-
--- ToDo --
-* 初期局面を指定したkifファイルに対応
-  (詰将棋のため)
-* 手順一覧選択リストのインデントを調整
-  (今はFirefoxの場合しかうまくいかない)
-* 一手進めたときの駒音機能
 
 
 //END

@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen">
+</head>
+
+<body>
+<h2>jsShogiKifu(KK版) 20x20 Handicap サンプル</h2>
+<span id="board_kif"></span>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../src/kifu.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
+<script><!--
+  Kifu.ajax({url: '../kif/handicap_test.kif.txt'}, 'kif', function(kifu) {
+    var options = {
+      template_url: './jquery_shogi_board2.html',
+      images_url: '../koma/plain20x20',
+      piece_image_width:  '20px',
+      piece_image_height: '20px',
+      board_cell_width:   '24px',
+      board_cell_height:  '28px'
+    };
+    $('#board_kif').shogiBoard(kifu, options);
+  });
+--></script>
+</body>
+</html>
