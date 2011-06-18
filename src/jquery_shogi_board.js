@@ -241,7 +241,7 @@ $.fn.shogiBoard = function(kifu, options) {
   var moveStringsSet = function() {
     var move_records = kifu.moves.records;
     var ele          = jsbElementById('moves');
-    var nsp;
+    var nsp, mark;
     if (SurmiseBrowser == 'Firefox') {
       for (var i in move_records) {
         var move = move_records[i];
