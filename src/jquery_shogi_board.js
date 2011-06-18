@@ -11,7 +11,6 @@
  */
 (function($) {
 
-var SPACE_IMAGE_URL = './space.gif';
 var _suffix = 0;
 
 var detectBrowser = function() {
@@ -52,18 +51,28 @@ $.fn.shogiBoard = function(kifu, options) {
   /*
    * functions
    */
+  var render;
+
+  var cellPieceSet = function(x, y, piece, black) {
+    var black_p = typeof black == 'string' ? black == 'black' : black;
+    render(jsbElementBoardCell(x, y), piece, black_p);
+  };
+
+  var cellClear = function(x, y) {
+    cellPieceSet(x, y, null, null);
+  };
+
   var boardSet = function() {
     var board = kifu.suite.board;
     var stand = kifu.suite.stand;
 
     for (var x = 1; x <= 9; x++) {
       for (var y = 1; y <= 9; y++) {
-        var cell  = jsbElementBoardCell(x, y);
         var piece = board[x][y];
         if (piece) {
-          cell.html(cellImgTag(piece['piece'], piece['black']));
+          cellPieceSet(x, y, piece['piece'], piece['black']);
         } else {
-          cell.html(cellImgTag(null));
+          cellClear(x, y);
         }
       }
     }
@@ -114,8 +123,8 @@ $.fn.shogiBoard = function(kifu, options) {
       $(contents_id + ' .jsb_board td').height(config['board_cell_height']);
     }
 
-    if (config['piece_image_width']) {
-      var width = getNumberPart(config['piece_image_width']);
+    if (config['piece_width']) {
+      var width = getNumberPart(config['piece_width']);
       if (width) {
         width = width * 2 + 5;
         $(contents_id + ' .jsb_stand').width(width + 'px');
@@ -158,10 +167,11 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var jsbElementStand = function(black, piece) {
+    var player;
     if (typeof black == 'string') {
-      var player = black;
+      player = black;
     } else {
-      var player = black ? 'black' : 'white';
+      player = black ? 'black' : 'white';
     }
 
     var id = 'stand_' + player;
@@ -288,47 +298,6 @@ $.fn.shogiBoard = function(kifu, options) {
     return boardSet();
   };
 
-  var pieceImgUrl = function(piece, black) {
-    if (! piece) {
-      return SPACE_IMAGE_URL;
-    }
-    else {
-      if (typeof black == 'string') {
-        black = black == 'black';
-      }
-      var name = piece.toLowerCase();
-      if (name == 'ou') {
-	  if (black) {
-	    name = config['black_king'];
-	  }
-	  else {
-	    name = config['white_king'] + '_r';
-	  }
-      }
-      else {
-        if (!black) {
-          name += '_r';
-        }
-      }
-      return config['images_url'] + '/' + name + '.png';
-    }
-  };
-
-  var cellImgTag = function(piece, black) {
-    var image_url = pieceImgUrl(piece, black);
-    return $('<img />').attr({src: image_url}).
-                        width(config['piece_image_width']).
-                        height(config['piece_image_height']);
-  };
-
-  var cellClear = function(x, y) {
-    return $('img', jsbElementBoardCell(x, y)).attr('src', SPACE_IMAGE_URL);
-  };
-
-  var cellPieceSet = function(x, y, piece, black) {
-    return $('img', jsbElementBoardCell(x, y)).attr('src', pieceImgUrl(piece, black));
-  };
-
   var lastMoveCell = null;
 
   var lastMoveSet = function(x, y) {
@@ -364,15 +333,16 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var standRemove = function(black, piece) {
-    jsbElementStand(black, piece).find('img').last().remove();
+    jsbElementStand(black, piece).find('.jsb_stand_piece').last().remove();
   };
 
   var standRemoveAll = function(black) {
-    jsbElementStand(black).find('img').remove();
+    jsbElementStand(black).find('.jsb_stand_piece').remove();
   };
 
   var standSet = function(black, piece) {
-    jsbElementStand(black, piece).append(cellImgTag(piece, black));
+    var black_p = typeof black == 'string' ? black == 'black' : black;
+    render($('<span class="jsb_stand_piece" />').appendTo(jsbElementStand(black, piece)), piece, black_p);
   };
 
   var registerFunctions = function() {
@@ -395,6 +365,93 @@ $.fn.shogiBoard = function(kifu, options) {
     });
   };
 
+  var imageRenderer =
+    function(images_url) {
+      var SPACE_IMAGE_URL = './space.gif';
+      var pieceImgUrl = function(piece, black_p) {
+        if (! piece) {
+          return SPACE_IMAGE_URL;
+        }
+        else {
+          var name = piece.toLowerCase();
+          if (name == 'ou') {
+	    if (black_p) {
+	      name = config['black_king'];
+	    }
+	    else {
+	      name = config['white_king'] + '_r';
+	    }
+          }
+          else {
+            if (!black_p) {
+              name += '_r';
+            }
+          }
+          return images_url + '/' + name + '.png';
+        }
+      };
+      return function(cell, piece, black_p) {
+        var image_url = pieceImgUrl(piece, black_p);
+        var img = $('img', cell);
+        if (img.length == 0) {
+          img = $('<img />').width(config['piece_width']).
+            height(config['piece_height']).
+            appendTo(cell);
+        }
+        img.attr('src', image_url);
+      };
+    };
+
+  var textRenderer =
+    function(fontsize) {
+      if ($('style.jsb_style_text_renderer').length == 0) {
+        $('head :first').before($('<style class="jsb_style_text_renderer" type="text/css">\n\
+.jsb_text_piece {\n\
+  display: block;\n\
+  font-family: sans-serif;\n\
+  line-height: 1.0;\n\
+}\n\
+.jsb_text_piece_white {\n\
+  -webkit-transform: rotate(180deg);\n\
+  -moz-transform: rotate(180deg);\n\
+  -ms-transform: rotate(180deg);\n\
+  -o-transform: rotate(180deg);\n\
+  transform: rotate(180deg);\n\
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);\n\
+}\n\
+</style>'));
+      }
+      var pieceToString = {
+        FU: '歩',
+        KY: '香',
+        KE: '桂',
+        GI: '銀',
+        KI: '金',
+        KA: '角',
+        HI: '飛',
+        OU: '王',
+        TO: 'と',
+        NY: '杏',
+        NK: '圭',
+        NG: '全',
+        UM: '馬',
+        RY: '竜'
+      };
+
+      return function(cell, piece, black_p) {
+        cell.empty();
+        if (piece) {
+          var text = pieceToString[piece];
+          $('<span class="jsb_text_piece" />').
+            addClass(black_p ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
+            text(text).
+            css({'font-size': fontsize}).
+            appendTo(cell);
+        } else if ($.browser.msie && parseInt($.browser.version) < 9) {
+          cell.append('&nbsp;')
+        }
+      };
+    };
 
   /*
    * main
@@ -404,15 +461,19 @@ $.fn.shogiBoard = function(kifu, options) {
     black_king: 'jewel_king',
     white_king: 'king',
     highlight_last_move: '#BDB76B',
-    piece_image_width:  '25px',
-    piece_image_height: '25px'
+    piece_width:  '25px',
+    piece_height: '25px',
+    renderer: 'image'
   };
   if (options) {
     $.extend(config, options);
   }
 
-  if (!config['images_url']) {
-    config['images_url'] = config['url_prefix'] + '/' + 'images';
+  if (config['piece_image_width']) {
+    config['piece_width'] = config['piece_image_width'];
+  }
+  if (config['piece_image_height']) {
+    config['piece_height'] = config['piece_image_height'];
   }
 
   config['this'] = this;
@@ -434,6 +495,16 @@ $.fn.shogiBoard = function(kifu, options) {
   } else {
     initialize(_html);
   };
+
+  render = config['renderer'];
+  switch (render) {
+  case 'image':
+    render = imageRenderer(config['images_url'] || config['url_prefix'] + '/' + 'images');
+    break;
+  case 'text':
+    render = textRenderer(config['piece_width']);
+    break;
+  }
 
   return this;
 };
@@ -503,6 +574,7 @@ var _html = '\
       border-spacing: 0;\
       margin:  0;\
       padding: 0;\
+      empty-cells: show;\
     }\
       .jsb_board td {\
         text-align: center;\
