@@ -3,10 +3,15 @@
  *
  * Copyright 2011, Masato Bito
  * Licensed under the MIT license.
+ *
+ * 2011/06/03: Add move_to config option. (Kosako)
+ * 2011/06/01: Add last-move highlight function. (Kosako)
+ * 2011/06/01: Use space.gif for empty cell.     (Kosako)
+ *
  */
 (function($) {
 
-
+var SPACE_IMAGE_URL = './space.gif';
 var _suffix = 0;
 
 $.fn.shogiBoard = function(kifu, options) {
@@ -22,9 +27,9 @@ $.fn.shogiBoard = function(kifu, options) {
         var cell  = jsbElementBoardCell(x, y).empty();
         var piece = board[x][y];
         if (piece) {
-          cell.append(pieceImgTag(piece['piece'], piece['black']));
+          cell.append(cellImgTag(piece['piece'], piece['black']));
         } else {
-          cell.append('&nbsp;');
+          cell.append(cellImgTag(null));
         }
       }
     }
@@ -40,6 +45,7 @@ $.fn.shogiBoard = function(kifu, options) {
       }
     }
 
+    setCurrToLastMove();
     moveStringSelect();
     commentSet();
   };
@@ -54,12 +60,59 @@ $.fn.shogiBoard = function(kifu, options) {
     return true;
   };
 
+  var getNumberPart = function(s) {
+    var r = s.match(/\d+/);
+    if (r && r[0].length > 0)
+	return parseInt(r[0], 10);
+    else
+      return null;
+  }
+
   var initialize = function(source) {
+    var contents_id = '#jsb_contents_' + config['suffix'];
+
     config['this'].append(source.replace(/%suffix%/g, config['suffix']));
+
+    if (config['board_cell_width']) {
+      $(contents_id + ' .jsb_board td').width(config['board_cell_width']);
+    }
+    if (config['board_cell_height']) {
+      $(contents_id + ' .jsb_board td').height(config['board_cell_height']);
+    }
+
+    if (config['piece_image_width']) {
+      var width = getNumberPart(config['piece_image_width']);
+      if (width) {
+        width = width * 2 + 5;
+        $(contents_id + ' .jsb_stand').width(width + 'px');
+      }
+    }
+    else if (config['board_cell_width']) {
+      var width = getNumberPart(config['board_cell_width']);
+      if (width) {
+	  width = (width - 4) * 2 + 5;
+        $(contents_id + ' .jsb_stand').width(width + 'px');
+      }
+    }
+
     boardSet();
     playerSet();
     registerFunctions();
     moveStringsSet();
+
+    if (config['move_to']) {
+      var m = config['move_to'];
+      var len = kifu.moves.getLastMoveNum();
+      if (m == 'last' || m > len) m = len;
+
+      moveTo(m);
+      var list_box = jsbElementById('moves');
+      var sh = $(list_box).attr('scrollHeight');
+      var h  = $(list_box).height();
+      var top = parseInt(sh * m / len + 0.5, 10);
+      if (top > sh - h)  top = sh - h;
+      $(list_box).attr('scrollTop', top);
+    }
   };
 
   var jsbElementBoardCell = function(x, y) {
@@ -100,15 +153,16 @@ $.fn.shogiBoard = function(kifu, options) {
     if (from['x'] == 0) {
       standRemove(black, piece);
     } else {
-      pieceRemove(from['x'], from['y']);
+      cellClear(from['x'], from['y']);
     }
 
-    pieceSet(to['x'], to['y'], piece, black);
+    cellPieceSet(to['x'], to['y'], piece, black);
 
     if (stand) {
       standSet(black, stand['stand']);
     }
 
+    lastMoveSet(to['x'], to['y']);
     moveStringSelect();
     commentSet();
   };
@@ -126,18 +180,19 @@ $.fn.shogiBoard = function(kifu, options) {
     var stand = move['stand'];
 
     if (from['x']) {
-      pieceSet(from['x'], from['y'], from['piece'], black);
+      cellPieceSet(from['x'], from['y'], from['piece'], black);
     } else {
       standSet(black, from['piece']);
     }
 
     if (stand) {
-      pieceSet(to['x'], to['y'], stand['piece'], !black);
+      cellPieceSet(to['x'], to['y'], stand['piece'], !black);
       standRemove(black, stand['stand']);
     } else {
-      pieceRemove(to['x'], to['y']);
+      cellClear(to['x'], to['y']);
     }
 
+    setCurrToLastMove();
     moveStringSelect();
     commentSet();
   };
@@ -152,10 +207,23 @@ $.fn.shogiBoard = function(kifu, options) {
   var moveStringsSet = function() {
     var move_records = kifu.moves.records;
     var ele          = jsbElementById('moves');
+    var nsp;
     for (var i in move_records) {
       var move = move_records[i];
       if (move['str']) {
-        ele.append($('<option>').attr({value: i}).text(i+' '+move['str']));
+        if (i > 99) nsp = 0.5;
+        else if (i > 9) nsp = 1.0;
+        else nsp = 1.5;
+        if (move['comment'] && move['comment'].length > 0) {
+          nsp -= 0.5;
+	  mark = '*';
+        }
+        else {
+          mark = '';
+        }
+        ele.append($('<option>').attr({value: i}).
+	      html(mark + '<span style="margin-left:' + nsp + 'em">' + i + ' '
+                   + move['str'] + '</span>'));
       }
     }
 
@@ -169,27 +237,73 @@ $.fn.shogiBoard = function(kifu, options) {
     return boardSet();
   };
 
-  var pieceImgTag = function(piece, black) {
-    if (typeof black == 'string') {
-      black = black == 'black';
+  var pieceImgUrl = function(piece, black) {
+    if (! piece) {
+      return SPACE_IMAGE_URL;
     }
-
-    var name = piece.toLowerCase();
-    if (!black) {
-      name += '_r';
+    else {
+      if (typeof black == 'string') {
+        black = black == 'black';
+      }
+      var name = piece.toLowerCase();
+      if (name == 'ou') {
+	  if (black) {
+	    name = config['black_king'];
+	  }
+	  else {
+	    name = config['white_king'] + '_r';
+	  }
+      }
+      else {
+        if (!black) {
+          name += '_r';
+        }
+      }
+      return config['images_url'] + '/' + name + '.png';
     }
-    var image_url = config['images_url'] + '/' + name + '.png';
+  }
 
-    return '<img src="' + image_url + '" />';
+  var cellImgTag = function(piece, black) {
+    var image_url = pieceImgUrl(piece, black);
+    return '<img src="' + image_url + '" width="' + config['piece_image_width'] +
+             '" height="' + config['piece_image_height'] + '"/>';
   };
 
-  var pieceRemove = function(x, y) {
-    return jsbElementBoardCell(x, y).empty().append('&nbsp;');
+  var cellClear = function(x, y) {
+    return $('img', jsbElementBoardCell(x, y)).attr('src', SPACE_IMAGE_URL);
   };
 
-  var pieceSet = function(x, y, piece, black) {
-    return jsbElementBoardCell(x, y).empty().append(pieceImgTag(piece, black));
+  var cellPieceSet = function(x, y, piece, black) {
+    return $('img', jsbElementBoardCell(x, y)).attr('src', pieceImgUrl(piece, black));
   };
+
+  var lastMoveCell = null;
+
+  var lastMoveSet = function(x, y) {
+    var color = config['highlight_last_move'];
+    var cell = jsbElementBoardCell(x, y);
+    if (! color) return ;
+    if (cell == lastMoveCell) return ;
+    if (lastMoveCell) $(lastMoveCell).css('background', 'transparent');
+    $(cell).css('background', color);
+    lastMoveCell = cell;
+  }
+
+  var lastMoveClear = function() {
+    if (lastMoveCell) $(lastMoveCell).css('background', 'transparent');
+    lastMoveCell = null;
+  }
+
+  var setCurrToLastMove = function() {
+    var curr = kifu.currMove();
+    if (curr) {
+      var to = curr['to'];
+      lastMoveSet(to['x'], to['y']);
+    }
+    else {
+      lastMoveClear();
+    }
+  }
 
   var playerSet = function() {
     var info = kifu.info;
@@ -206,7 +320,7 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var standSet = function(black, piece) {
-    jsbElementStand(black, piece).append(pieceImgTag(piece, black));
+    jsbElementStand(black, piece).append(cellImgTag(piece, black));
   };
 
   var registerFunctions = function() {
@@ -234,7 +348,12 @@ $.fn.shogiBoard = function(kifu, options) {
    * main
    */
   var config = {
-    url_prefix: '.'
+    url_prefix: '.',
+    black_king: 'jewel_king',
+    white_king: 'king',
+    highlight_last_move: '#BDB76B',
+    piece_image_width:  '25px',
+    piece_image_height: '25px'
   };
   if (options) {
     $.extend(config, options);
@@ -313,6 +432,16 @@ var _html = '\
     padding: 0;\
   }\
 \
+  .jsb_board_file_num {\
+    font-size: x-small;\
+    color: gray;\
+  }\
+\
+  .jsb_board_rank_num {\
+    font-size: x-small;\
+    color: gray;\
+  }\
+\
     .jsb_stand {\
       width: 60px;\
     }\
@@ -342,7 +471,7 @@ var _html = '\
 </style>\
 \
 \
-<table class="jsb_contents">\
+<table class="jsb_contents" id="jsb_contents_%suffix%">\
 <tr>\
   <td></td>\
   <td><table class="jsb_header"><tr>\
@@ -377,15 +506,15 @@ var _html = '\
     <td>\
       <table class="jsb_board">\
       <tr>\
-        <th>9</th>\
-        <th>8</th>\
-        <th>7</th>\
-        <th>6</th>\
-        <th>5</th>\
-        <th>4</th>\
-        <th>3</th>\
-        <th>2</th>\
-        <th>1</th>\
+        <th class="jsb_board_file_num">9</th>\
+        <th class="jsb_board_file_num">8</th>\
+        <th class="jsb_board_file_num">7</th>\
+        <th class="jsb_board_file_num">6</th>\
+        <th class="jsb_board_file_num">5</th>\
+        <th class="jsb_board_file_num">4</th>\
+        <th class="jsb_board_file_num">3</th>\
+        <th class="jsb_board_file_num">2</th>\
+        <th class="jsb_board_file_num">1</th>\
         <th></th>\
       </tr>\
       <tr>\
@@ -398,7 +527,7 @@ var _html = '\
         <td id="jsb_3_1_%suffix%"></td>\
         <td id="jsb_2_1_%suffix%"></td>\
         <td id="jsb_1_1_%suffix%"></td>\
-        <th>一</th>\
+        <th class="jsb_board_rank_num">一</th>\
       </tr>\
       <tr>\
         <td id="jsb_9_2_%suffix%"></td>\
@@ -410,7 +539,7 @@ var _html = '\
         <td id="jsb_3_2_%suffix%"></td>\
         <td id="jsb_2_2_%suffix%"></td>\
         <td id="jsb_1_2_%suffix%"></td>\
-        <th>二</th>\
+        <th class="jsb_board_rank_num">二</th>\
       </tr>\
       <tr>\
         <td id="jsb_9_3_%suffix%"></td>\
@@ -422,7 +551,7 @@ var _html = '\
         <td id="jsb_3_3_%suffix%"></td>\
         <td id="jsb_2_3_%suffix%"></td>\
         <td id="jsb_1_3_%suffix%"></td>\
-        <th>三</th>\
+        <th class="jsb_board_rank_num">三</th>\
       </tr>\
       <tr>\
         <td id="jsb_9_4_%suffix%"></td>\
@@ -434,7 +563,7 @@ var _html = '\
         <td id="jsb_3_4_%suffix%"></td>\
         <td id="jsb_2_4_%suffix%"></td>\
         <td id="jsb_1_4_%suffix%"></td>\
-        <th>四</th>\
+        <th class="jsb_board_rank_num">四</th>\
       </tr>\
       <tr>\
         <td id="jsb_9_5_%suffix%"></td>\
@@ -446,7 +575,7 @@ var _html = '\
         <td id="jsb_3_5_%suffix%"></td>\
         <td id="jsb_2_5_%suffix%"></td>\
         <td id="jsb_1_5_%suffix%"></td>\
-        <th>五</th>\
+        <th class="jsb_board_rank_num">五</th>\
       </tr>\
       <tr>\
         <td id="jsb_9_6_%suffix%"></td>\
@@ -458,7 +587,7 @@ var _html = '\
         <td id="jsb_3_6_%suffix%"></td>\
         <td id="jsb_2_6_%suffix%"></td>\
         <td id="jsb_1_6_%suffix%"></td>\
-        <th>六</th>\
+        <th class="jsb_board_rank_num">六</th>\
       </tr>\
       <tr>\
         <td id="jsb_9_7_%suffix%"></td>\
@@ -470,7 +599,7 @@ var _html = '\
         <td id="jsb_3_7_%suffix%"></td>\
         <td id="jsb_2_7_%suffix%"></td>\
         <td id="jsb_1_7_%suffix%"></td>\
-        <th>七</th>\
+        <th class="jsb_board_rank_num">七</th>\
       </tr>\
       <tr>\
         <td id="jsb_9_8_%suffix%"></td>\
@@ -482,7 +611,7 @@ var _html = '\
         <td id="jsb_3_8_%suffix%"></td>\
         <td id="jsb_2_8_%suffix%"></td>\
         <td id="jsb_1_8_%suffix%"></td>\
-        <th>八</th>\
+        <th class="jsb_board_rank_num">八</th>\
       </tr>\
       <tr>\
         <td id="jsb_9_9_%suffix%"></td>\
@@ -494,7 +623,7 @@ var _html = '\
         <td id="jsb_3_9_%suffix%"></td>\
         <td id="jsb_2_9_%suffix%"></td>\
         <td id="jsb_1_9_%suffix%"></td>\
-        <th>九</th>\
+        <th class="jsb_board_rank_num">九</th>\
       </tr>\
       </table>\
     </td>\

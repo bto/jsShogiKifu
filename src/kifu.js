@@ -3,6 +3,10 @@
  *
  * Copyright 2011, Masato Bito
  * Licensed under the MIT license.
+ *
+ * 2011/06/04: Add another ryu-kanji to kifu_map. (Kosako)
+ * 2011/06/01: Add last-move highlight function. (Kosako)
+ *
  */
 (function(window) {
 
@@ -114,6 +118,12 @@ Kifu.prototype.extend({
       this.step--
     }
     return move;
+  },
+
+  currMove: function() {
+    var move = this.moves.get(this.step);
+    if (move && move['type'] == 'move') return move;
+    return null;
   },
 
   moveStrings: function() {
@@ -332,6 +342,16 @@ Kifu.Move.prototype.extend({
 
   get: function(step) {
     return this.records[step];
+  },
+
+  getLastMoveNum: function() {
+    var move;
+    var len = this.records.length;
+    if (len <= 1) return 0;
+
+    move = this.records[len - 1];
+    if (move['type'] != 'move') len -= 1; // ignore 'TORYO'
+    return len - 1;   // ignore 'init'
   },
 
   newMove: function() {
@@ -825,7 +845,8 @@ var kifu_map = {
   '成桂': 'NK',
   '成銀': 'NG',
   '馬':   'UM',
-  '龍':   'RY'
+  '龍':   'RY',
+  '竜':   'RY'
 };
 
 Kifu.Kif = (function(kifu) { return new Kifu.Kif.initialize(kifu); });
@@ -847,7 +868,7 @@ Kifu.Kif.prototype.extend({
 
     switch (line.charAt(0)) {
     case '*':
-      kifu['moves'].addComment(line.substr(1));
+      if (line.length > 1) kifu['moves'].addComment(line.substr(1));
       return true;
     }
 

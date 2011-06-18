@@ -1,0 +1,75 @@
+2011/06/04  K.Kosako
+
+JavaScriptで動作する将棋棋譜ビューワ
+http://blog.bz2.jp/archives/2011/04/javascript-6.html
+の改造版です。
+
+-- 改造内容 --
+1. 各局面の最終着手を強調表示可能
+2. 駒画像の表示サイズを指定可能
+3. 枡のサイズを指定可能
+4. 先手、後手それぞれに対して、王と玉を指定可能
+   (駒画像が用意されている場合)
+5. 初期表示局面を指定可能
+6. 6種類のサイズの駒画像を追加
+   (文字表示だけで、駒の形ではない単純なもの)
+7. サイズの異なる盤面を一つのページに表示可能
+   (test/sample_multi.html)
+8. 手順一覧選択リストで、コメント付きの指し手には'*'マークを表示
+9. KIFファイルの記述が'龍'ではなく'竜'の場合にも対応
+
+
+-- 指定方法 --
+shogiBoard()関数のoptions引数の中の項目として指定。
+
+  Kifu.ajax({url: '......'}, 'kif', function(kifu) {
+    var options = {
+      template_url: './jquery_shogi_board2.html',
+      black_king: 'jewel_king',
+      white_king: 'king',
+      images_url: '../koma/plain20x20',
+      highlight_last_move: '#D8BFD8',
+      piece_image_width:  '20px',
+      piece_image_height: '20px',
+      board_cell_width:   '24px',
+      board_cell_height:  '28px',
+      move_to: 36
+    };
+    $(element).shogiBoard(kifu, options);
+  });
+
+1. 最終着手強調表示
+highlight_last_moveの値で色を指定。
+この指定がないデフォルトでも強調表示されるようになっているので、
+強調表示をしたくないときには、highlight_last_move: nullとする。
+
+2. 駒画像の表示サイズ
+piece_image_width, piece_image_heightで指定。px単位の指定する。
+実際の画像サイズと異なっていても良い。
+指定しない場合の動作については、チェックしていない。
+
+3. 枡のサイズ
+board_cell_width, board_cell_heightで指定。px単位の指定する。
+指定しない場合の動作については、チェックしていない。
+
+4. 王と玉を指定
+先手に対してはblack_king、後手に対してはwhite_kingで指定。
+玉にするときは'jewel_king'、王にするときは'king'とする。
+指定しない時のデフォルトでは、先手が玉、後手が王。
+(王と玉で違う駒画像が用意されている場合)
+
+5. 初期表示局面を指定可能
+move_toで局面の手数を指定する。
+最終局面の場合は、'last'と指定することもできる。
+
+
+
+-- ToDo --
+* 初期局面を指定したkifファイルに対応
+  (詰将棋のため)
+* 手順一覧選択リストのインデントを調整
+  (今はFirefoxの場合しかうまくいかない)
+* 一手進めたときの駒音機能
+
+
+//END

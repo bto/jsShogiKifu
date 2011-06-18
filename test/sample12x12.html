@@ -1,0 +1,31 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen">
+</head>
+
+<body>
+<h2>jsShogiKifu(KK版) 12x12 サンプル</h2>
+<span id="board_kif"></span>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../src/kifu.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
+<script><!--
+  Kifu.ajax({url: '../kif/amano-koike.19910315.kif.txt'}, 'kif', function(kifu) {
+    var options = {
+      template_url: './jquery_shogi_board_min.html',
+      black_king: 'jewel_king',
+      white_king: 'jewel_king',
+      images_url: '../koma/plain12x12',
+      highlight_last_move: '#D8BFD8',
+      piece_image_width:  '12px',
+      piece_image_height: '12px',
+      board_cell_width:   '16px',
+      board_cell_height:  '20px'
+    };
+    $('#board_kif').shogiBoard(kifu, options);
+  });
+--></script>
+</body>
+</html>
