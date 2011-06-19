@@ -333,16 +333,23 @@ $.fn.shogiBoard = function(kifu, options) {
   };
 
   var standRemove = function(black, piece) {
-    jsbElementStand(black, piece).find('.jsb_stand_piece').last().remove();
+    var black_p = typeof black == 'string' ? black == 'black' : black;
+    jsbElementStand(black, piece).
+      jsbSetNumber(function() { return this.jsbGetNumber() - 1; }).
+      each(function() { render($(this), piece, black_p); });
   };
 
   var standRemoveAll = function(black) {
-    jsbElementStand(black).find('.jsb_stand_piece').remove();
+    for (var piece in Kifu.Suite.standEmpty()) {
+      jsbElementStand(black, piece).jsbSetStand().jsbSetNumber(0).empty();
+    }
   };
 
   var standSet = function(black, piece) {
     var black_p = typeof black == 'string' ? black == 'black' : black;
-    render($('<span class="jsb_stand_piece" />').appendTo(jsbElementStand(black, piece)), piece, black_p);
+    render(jsbElementStand(black, piece).
+           jsbSetNumber(function() { return this.jsbGetNumber() + 1; }),
+           piece, black_p);
   };
 
   var registerFunctions = function() {
@@ -390,15 +397,27 @@ $.fn.shogiBoard = function(kifu, options) {
           return images_url + '/' + name + '.png';
         }
       };
-      return function(cell, piece, black_p) {
+      var createImage = function(piece, black_p) {
         var image_url = pieceImgUrl(piece, black_p);
-        var img = $('img', cell);
-        if (img.length == 0) {
-          img = $('<img />').width(config['piece_width']).
-            height(config['piece_height']).
-            appendTo(cell);
+        return $('<img />').attr('src', image_url).
+          width(config['piece_width']).
+          height(config['piece_height']);
+      };
+      return function(cell, piece, black_p) {
+        if (cell.jsbIsStand()) {
+          var diff = cell.jsbGetNumber() - cell.children().length;
+          if (diff > 0) {
+            while (diff-- > 0) {
+              cell.append(createImage(piece, black_p));
+            }
+          } else if (0 > diff) {
+            while (0 > diff++) {
+              cell.children(':last').remove();
+            }
+          }
+        } else {
+          cell.html(createImage(piece, black_p));
         }
-        img.attr('src', image_url);
       };
     };
 
@@ -438,17 +457,31 @@ $.fn.shogiBoard = function(kifu, options) {
         RY: '竜'
       };
 
-      return function(cell, piece, black_p) {
-        cell.empty();
+      var createPiece = function(piece, black_p) {
         if (piece) {
           var text = pieceToString[piece];
-          $('<span class="jsb_text_piece" />').
+          return $('<div class="jsb_text_piece" />').
             addClass(black_p ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
             text(text).
-            css({'font-size': fontsize}).
-            appendTo(cell);
-        } else if ($.browser.msie && parseInt($.browser.version) < 9) {
-          cell.append('&nbsp;')
+            css({'font-size': fontsize});
+        }
+        return null;
+      };
+
+      return function(cell, piece, black_p) {
+        if (cell.jsbIsStand()) {
+          var diff = cell.jsbGetNumber() - cell.children().length;
+          if (diff > 0) {
+            while (diff-- > 0) {
+              cell.append(createPiece(piece, black_p));
+            }
+          } else if (0 > diff) {
+            while (0 > diff++) {
+              cell.children(':last').remove();
+            }
+          }
+        } else {
+          cell.html(createPiece(piece, black_p));
         }
       };
     };
@@ -509,6 +542,26 @@ $.fn.shogiBoard = function(kifu, options) {
   return this;
 };
 
+$.fn.extend({
+  jsbSetStand: function() {
+    return this.addClass('jsb_stand_piece');
+  },
+  jsbIsStand: function() {
+    return this.hasClass('jsb_stand_piece');
+  },
+  jsbGetNumber: function() {
+    return parseInt(this.attr('data-number') || '0');
+  },
+  jsbSetNumber: function(number_or_fn) {
+    var number;
+    if (typeof number_or_fn == 'function') {
+      number = number_or_fn.apply(this, []);
+    } else {
+      number = parseInt(number_or_fn);
+    }
+    return this.attr('data-number', '' + number);
+  }
+});
 
 var _html = '\
 <style>\
