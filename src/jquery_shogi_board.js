@@ -460,6 +460,8 @@ $.fn.shogiBoard = function(kifu, options) {
       var createPiece = function(piece, black_p) {
         if (piece) {
           var text = pieceToString[piece];
+          if (piece == 'OU' && config[black_p ? 'black_king' : 'white_king'] == 'jewel_king')
+            text = '玉';
           return $('<div class="jsb_text_piece" />').
             addClass(black_p ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
             text(text).
