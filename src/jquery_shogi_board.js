@@ -13,13 +13,15 @@
 
 var _suffix = 0;
 
+$.fn.shogiBoard = function(initial_kifu, options) {
+  var kifu;
+  var render;
+  var initialized = false;
+  var loaded = false;
 
-$.fn.shogiBoard = function(kifu, options) {
   /*
    * functions
    */
-  var render;
-
   var cellPieceSet = function(x, y, piece, black) {
     var black_p = typeof black == 'string' ? black == 'black' : black;
     render(jsbElementBoardCell(x, y), piece, black_p);
@@ -105,6 +107,19 @@ $.fn.shogiBoard = function(kifu, options) {
       }
     }
 
+    initialized = true;
+
+    if (initial_kifu)
+      load(initial_kifu);
+  };
+
+  var load = function(new_kifu) {
+    if (!initialized) {
+      initial_kifu = new_kifu;
+      return;
+    }
+
+    kifu = new_kifu;
     boardSet();
     playerSet();
     registerFunctions();
@@ -466,6 +481,16 @@ $.fn.shogiBoard = function(kifu, options) {
   _suffix++;
   config['suffix'] = _suffix;
 
+  render = config['renderer'];
+  switch (render) {
+  case 'image':
+    render = imageRenderer(config['images_url'] || config['url_prefix'] + '/' + 'images');
+    break;
+  case 'text':
+    render = textRenderer(config['piece_width']);
+    break;
+  }
+
   if (config['template_id']) {
     initialize($('#'+config['template_id']).html());
   } else if (config['template_url']) {
@@ -479,17 +504,9 @@ $.fn.shogiBoard = function(kifu, options) {
     initialize(config['template_src']);
   } else {
     initialize(_html);
-  };
-
-  render = config['renderer'];
-  switch (render) {
-  case 'image':
-    render = imageRenderer(config['images_url'] || config['url_prefix'] + '/' + 'images');
-    break;
-  case 'text':
-    render = textRenderer(config['piece_width']);
-    break;
   }
+
+  this.loadKifu = load;
 
   return this;
 };
