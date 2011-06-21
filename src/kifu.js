@@ -1023,7 +1023,7 @@ Kifu.Kif.prototype.extend({
       return true;
     }
 
-    if (line.match(/(.+)：(.+)/)) {
+    if (line.match(/^(.+?)：(.+)/)) {
       var key   = RegExp.$1;
       var value = this.strip(RegExp.$2);
 
