@@ -13,39 +13,6 @@
 
 var _suffix = 0;
 
-var detectBrowser = function() {
-  if (! jQuery.support.checkOn && jQuery.support.checkClone) {
-    return 'ChromeOrSafari';
-  }
-  else if(jQuery.support.checkOn && jQuery.support.noCloneEvent && window.globalStorage) {
-    return 'Firefox';
-  }
-  else if(jQuery.support.checkOn && jQuery.support.noCloneEvente && !window.globalStorage) {
-    return 'Opera';
-  }
-  else if(! jQuery.support.noCloneEvent && jQuery.support.opacity) {
-    return 'IE9';
-  }
-  else if(! jQuery.support.opacity) {
-    if (! jQuery.support.style) {
-      if (typeof document.documentElement.style.maxHeight != "undefined") {
-        return 'IE7';
-      }
-      else {
-	return 'IE6';
-      }
-    }
-    else {
-      return 'IE8';
-    }
-  }
-  else {
-    return 'Unknown';
-  }
-};
-
-var SurmiseBrowser = detectBrowser();
-SurmiseBrowser = 'IE9';
 
 $.fn.shogiBoard = function(kifu, options) {
   /*
@@ -252,39 +219,22 @@ $.fn.shogiBoard = function(kifu, options) {
     var move_records = kifu.moves.records;
     var ele          = jsbElementById('moves');
     var nsp, mark;
-    if (SurmiseBrowser == 'Firefox') {
-      for (var i in move_records) {
-        var move = move_records[i];
-        if (move['str']) {
-          if (i > 99) nsp = 0.5;
-          else if (i > 9) nsp = 1.0;
-          else nsp = 1.5;
-          if (move['comment'] && move['comment'].length > 0) {
-            nsp -= 0.5;
+    for (var i in move_records) {
+      var move = move_records[i];
+      if (move['str']) {
+        var comment = move.comment;
+        if (comment && comment.length > 0) {
+          if (comment.indexOf('※') >= 0) 
+	    mark = '#';
+          else
 	    mark = '*';
-          }
-          else {
-            mark = '';
-          }
-          ele.append($('<option>').attr({value: i}).
-	        html(mark + '<span style="margin-left:' + nsp + 'em">' + i + ' '
-                     + move['str'] + '</span>'));
+        } else {
+          mark = "\u00a0";
         }
-      }
-    }
-    else {
-      for (var i in move_records) {
-        var move = move_records[i];
-        if (move['str']) {
-          if (move['comment'] && move['comment'].length > 0) {
-	    mark = '*';
-          }
-          else {
-            mark = '';
-          }
-          ele.append($('<option>').attr({value: i}).
-	        html(mark + ' ' + i + ' ' + move['str']));
-	}
+        var sp = i < 10 ? "\u00a0\u00a0" : i < 100 ? "\u00a0" : '';
+        var turn = move.black ? '▲' : '△';
+        ele.append($('<option>').attr({value: i}).
+	           text(mark + ' ' + sp + i + '.' + ' ' + turn + move['str']));
       }
     }
 
