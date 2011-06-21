@@ -227,7 +227,9 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     if (!step) {
       step = kifu.step;
     }
-    jsbElementById('moves').val(step);
+    var ele = jsbElementById('moves').val(step);
+    if (ele.selectmenu)
+      ele.selectmenu('refresh');
   };
 
   var moveStringsSet = function() {
@@ -253,6 +255,8 @@ $.fn.shogiBoard = function(initial_kifu, options) {
       }
     }
 
+    if (ele.selectmenu)
+      ele.selectmenu('refresh', true);
     ele.change(function() {
       return moveTo($(this).val());
     });
@@ -318,20 +322,23 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   };
 
   var registerFunctions = function() {
-    jsbElementById('next').click(function() {
+    if (!$.fn.tap)
+      $.fn.tap = $.fn.click;
+
+    jsbElementById('next').tap(function() {
       return moveNext();
     });
 
-    jsbElementById('prev').click(function() {
+    jsbElementById('prev').tap(function() {
       return movePrev();
     });
 
-    jsbElementById('first').click(function() {
+    jsbElementById('first').tap(function() {
       kifu.moveFirst();
       return boardSet();
     });
 
-    jsbElementById('last').click(function() {
+    jsbElementById('last').tap(function() {
       kifu.moveLast();
       return boardSet();
     });
