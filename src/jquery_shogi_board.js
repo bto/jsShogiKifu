@@ -80,10 +80,10 @@ $.fn.shogiBoard = function(initial_kifu, options) {
       return null;
   };
 
-  var initialize = function(source) {
+  var initialize = function(template) {
     var contents_id = '#jsb_contents_' + config['suffix'];
 
-    config['this'].append(source.replace(/%suffix%/g, config['suffix']));
+    config['this'].append(template.replace(/%suffix%/g, config['suffix']));
 
     if (config['board_cell_width']) {
       $(contents_id + ' .jsb_board td').width(config['board_cell_width']);
