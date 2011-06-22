@@ -250,7 +250,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
         }
         var sp = i < 10 ? "\u00a0\u00a0" : i < 100 ? "\u00a0" : '';
         var turn = move.black ? '▲' : '△';
-        ele.append($('<option>').attr({value: i}).
+        ele.append($('<option>', {value: i}).
 	           text(mark + ' ' + sp + i + '.' + ' ' + turn + move['str']));
       }
     }
@@ -371,7 +371,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
       };
       var createImage = function(piece, black_p) {
         var image_url = pieceImgUrl(piece, black_p);
-        return $('<img />').attr('src', image_url).
+        return $('<img>', {src: image_url}).
           width(config['piece_width']).
           height(config['piece_height']);
       };
@@ -434,7 +434,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
           var text = pieceToString[piece];
           if (piece == 'OU' && config[black_p ? 'black_king' : 'white_king'] == 'jewel_king')
             text = '玉';
-          return $('<div class="jsb_text_piece" />').
+          return $('<div class="jsb_text_piece">').
             addClass(black_p ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
             text(text).
             css({'font-size': fontsize});
