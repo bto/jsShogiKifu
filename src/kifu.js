@@ -102,6 +102,13 @@ Kifu.prototype.extend({
     } while(step != this.step);
   },
 
+  hasNext: function() {
+    var move = this.moves.get(this.step+1);
+    if (move && move.type == 'move')
+      return true;
+    return false;
+  },
+
   moveNext: function() {
     var move = this.moves.get(this.step+1);
     if (move && move.type == 'move') {
@@ -110,6 +117,15 @@ Kifu.prototype.extend({
       this.step++;
     }
     return move;
+  },
+
+  hasPrev: function() {
+    if (this.step > 0) {
+      var move = this.moves.get(this.step-1);
+      if (move && move.type == 'move')
+        return true;
+    }
+    return false;
   },
 
   movePrev: function() {
