@@ -324,25 +324,53 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   };
 
   var registerFunctions = function() {
-    if (!$.fn.tap)
-      $.fn.tap = $.fn.click;
+    var board = jsbElementById('contents').find('.jsb_board');
 
-    jsbElementById('next').tap(function() {
+    var tap;
+    if ($.fn.tap) {
+      tap = 'tap';
+
+      board.swipeleft(function() {
+        kifu.moveFirst();
+        boardSet();
+      }).swiperight(function() {
+        kifu.moveLast();
+        boardSet();
+      });
+    } else {
+      tap = 'click';
+    }
+
+    jsbElementById('next')[tap](function() {
       return moveNext();
     });
 
-    jsbElementById('prev').tap(function() {
+    jsbElementById('prev')[tap](function() {
       return movePrev();
     });
 
-    jsbElementById('first').tap(function() {
+    jsbElementById('first')[tap](function() {
       kifu.moveFirst();
       return boardSet();
     });
 
-    jsbElementById('last').tap(function() {
+    jsbElementById('last')[tap](function() {
       kifu.moveLast();
       return boardSet();
+    });
+
+    board[tap](function(ev) {
+      var x = ev.pageX, y = ev.pageY;
+      if (jsbElementById('9_1').position().top <= y &&
+          y <= jsbElementById('9_9').position().top + jsbElementById('9_9').height()) {
+        if (jsbElementById('9_1').position().left <= x &&
+            x <= jsbElementById('7_1').position().left + jsbElementById('7_1').width()) {
+          movePrev();
+        } else if (jsbElementById('3_1').position().left <= x &&
+                   x <= jsbElementById('1_1').position().left + jsbElementById('1_1').width()) {
+          moveNext();
+        }
+      }
     });
   };
 
