@@ -58,6 +58,10 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     }
 
     setCurrToLastMove();
+    updateNavigation();
+  };
+
+  var updateNavigation = function() {
     moveStringSelect();
     commentSet();
   };
@@ -189,8 +193,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     }
 
     lastMoveSet(to['x'], to['y']);
-    moveStringSelect();
-    commentSet();
+    updateNavigation();
   };
 
   var movePrev = function() {
@@ -219,8 +222,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     }
 
     setCurrToLastMove();
-    moveStringSelect();
-    commentSet();
+    updateNavigation();
   };
 
   var moveStringSelect = function(step) {
