@@ -488,7 +488,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
             });
         }
         return $('<div class="jsb_text_piece">').
-          html('&nbsp;').
+          html('<br>').
           css({
               width: config['board_cell_width'],
               'font-size': fontsize,
