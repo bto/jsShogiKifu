@@ -418,7 +418,21 @@ $.fn.shogiBoard = function(initial_kifu, options) {
             }
           }
         } else {
-          cell.html(createImage(piece, black_p));
+          var img = createImage(piece, black_p),
+              cw = config['board_cell_width'],
+              ch = config['board_cell_height'],
+              iw = img.width(),
+              ih = img.height(),
+              ml = Math.ceil((cw - iw) / 2),
+              mt = Math.ceil((ch - ih) / 2),
+              mr = cw - iw - ml,
+              mb = ch - ih - mt;
+          cell.html(img.css({
+              'margin-top':    mt,
+              'margin-bottom': mb,
+              'margin-left':   ml,
+              'margin-right':  mr,
+          }));
         }
       };
     };
@@ -430,7 +444,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
 .jsb_text_piece {\n\
   display: block;\n\
   font-family: sans-serif;\n\
-  line-height: 1.0;\n\
+  text-align: center;\n\
 }\n\
 .jsb_text_piece_white {\n\
   -webkit-transform: rotate(180deg);\n\
@@ -467,9 +481,19 @@ $.fn.shogiBoard = function(initial_kifu, options) {
           return $('<div class="jsb_text_piece">').
             addClass(black_p ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
             text(text).
-            css({'font-size': fontsize});
+            css({
+                width: config['board_cell_width'],
+                'font-size': fontsize,
+                'line-height': config['board_cell_height']
+            });
         }
-        return null;
+        return $('<div class="jsb_text_piece">').
+          html('&nbsp;').
+          css({
+              width: config['board_cell_width'],
+              'font-size': fontsize,
+              'line-height': config['board_cell_height']
+          });
       };
 
       return function(cell, piece, black_p) {
@@ -572,8 +596,6 @@ $.fn.extend({
 var _html = '\
 <style>\
 .jsb_contents {\
-  border-collapse: collapse;\
-  border-spacing: 0;\
   margin:  0;\
   padding: 0;\
 }\
@@ -629,16 +651,16 @@ var _html = '\
     }\
 \
     .jsb_board {\
-      border-collapse: separate;\
+      border-collapse: collapse;\
       border-spacing: 0;\
+      empty-cells: show;\
       margin:  0;\
       padding: 0;\
-      empty-cells: show;\
     }\
       .jsb_board td {\
         text-align: center;\
 	vertical-align: center;\
-        border: 1px #000000 solid;\
+        border: 2px #000000 solid;\
         height: 30px;\
         width:  30px;\
       }\
