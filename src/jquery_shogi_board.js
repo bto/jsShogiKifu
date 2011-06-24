@@ -659,10 +659,22 @@ var _html = '\
     }\
       .jsb_board td {\
         text-align: center;\
-	vertical-align: center;\
-        border: 2px #000000 solid;\
-        height: 30px;\
-        width:  30px;\
+        vertical-align: center;\
+        border-style: solid;\
+        border-color: #000000;\
+        border-width: 1px;\
+      }\
+      .jsb_board tr:nth-of-type(2) > td {\
+        border-top-width: 2px;\
+      }\
+      .jsb_board tr > td:last-of-type {\
+        border-right-width: 2px;\
+      }\
+      .jsb_board tr:last-of-type > td {\
+          border-bottom-width: 2px;\
+      }\
+      .jsb_board tr > td:first-of-type {\
+          border-left-width: 2px;\
       }\
 \
   .jsb_comment {\
