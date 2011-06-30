@@ -1016,11 +1016,18 @@ Kifu.Kif.prototype.extend({
       var num  = parseInt(RegExp.$1);
       var move = RegExp.$2;
 
-      if (move == '投了') {
+      switch (move) {
+      case '投了':
         kifu.moves.addSpecial('TORYO');
         return true;
+      case '千日手':
+        kifu.moves.addSpecial('SENNICHITE');
+        return true;
+      case '持将棋':
+        kifu.moves.addSpecial('JISHOGI');
+        return true;
       }
-      else if (move.match(/詰み?$/)) {
+      if (move.match(/詰み?$/)) {
         kifu.moves.addSpecial('MATE');
         return true;
       }
