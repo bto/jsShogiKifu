@@ -4,11 +4,6 @@
  * Copyright 2011, Masato Bito
  * Licensed under the MIT license.
  *
- * 2011/06/09: Support mate problem.  (Kosako)
- * 2011/06/09: Support handicap game. (Kosako)
- * 2011/06/04: Add another ryu-kanji to kifu_map. (Kosako)
- * 2011/06/01: Add last-move highlight function. (Kosako)
- *
  */
 (function(window) {
 
@@ -982,7 +977,7 @@ Kifu.Kif.prototype.extend({
       this.parseByLine(line);
     }
 
-    if (this.handicap != null && this.handicap != 'Even') {
+    if (this.handicap != 'Even' && ! this.player_start_setted) {
       this.kifu.info.player_start = 'white';
     }
     return this;
@@ -1130,6 +1125,20 @@ Kifu.Kif.prototype.extend({
         kifu.info.kif[key] = value;
         return true;
       }
+    }
+
+    switch (this.strip(line)) {
+    case '先手番':
+    case '下手番':
+      kifu.info.player_start = 'black';
+      kifu.info.player_start_setted = true;
+      return true;
+
+    case '上手番':
+    case '後手番':
+      kifu.info.player_start = 'white';
+      kifu.info.player_start_setted = true;
+      return true;
     }
 
     if (! this.board_setup) {
