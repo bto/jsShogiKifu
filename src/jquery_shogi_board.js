@@ -472,15 +472,40 @@ $.fn.shogiBoard = function(initial_kifu, options) {
         UM: '馬',
         RY: '竜'
       };
+      var numToKanji = function (n) {
+        switch (n) {
+        case 0: return '';
+        case 1: return '一';
+        case 2: return '二';
+        case 3: return '三';
+        case 4: return '四';
+        case 5: return '五';
+        case 6: return '六';
+        case 7: return '七';
+        case 8: return '八';
+        case 9: return '九';
+        case 10: return '十';
+        }
+        var me = argument.callee, q = Math.floor(n / 10);
+        return (q >= 1 ? me(q) : '') + me(10) + me(n % 10);
+      };
 
-      var createPiece = function(piece, black_p) {
+      var createPiece = function(piece, number, black_p) {
         if (piece) {
+          if (number == 0)
+            return '';
           var text = pieceToString[piece];
           if (piece == 'OU' && config[black_p ? 'black_king' : 'white_king'] == 'jewel_king')
             text = '玉';
+          var numPart = [];
+          if (number >= 2) {
+            $.each(numToKanji(number).split(''), function (i, v) {
+                     numPart.push(document.createElement('br'), document.createTextNode(v));
+                   });
+          }
           return $('<div class="jsb_text_piece">').
             addClass(black_p ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
-            text(text).
+            append(document.createTextNode(text), numPart).
             css({
                 width: config['board_cell_width'],
                 'font-size': fontsize,
@@ -498,18 +523,9 @@ $.fn.shogiBoard = function(initial_kifu, options) {
 
       return function(cell, piece, black_p) {
         if (cell.jsbIsStand()) {
-          var diff = cell.jsbGetNumber() - cell.children().length;
-          if (diff > 0) {
-            while (diff-- > 0) {
-              cell.append(createPiece(piece, black_p));
-            }
-          } else if (0 > diff) {
-            while (0 > diff++) {
-              cell.children(':last').remove();
-            }
-          }
+          cell.html(createPiece(piece, cell.jsbGetNumber(), black_p));
         } else {
-          cell.html(createPiece(piece, black_p));
+          cell.html(createPiece(piece, 1, black_p));
         }
       };
     };
