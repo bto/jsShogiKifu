@@ -1253,6 +1253,9 @@ Kifu.Kif.prototype.extend({
         delete info.handicap;
       } else {
         kifu.suite_init.setup(handicap);
+        if (handicap != 'Even') {
+          info.player_start = 'white';
+        }
       }
     }
   },
