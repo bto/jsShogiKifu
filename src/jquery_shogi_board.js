@@ -431,7 +431,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
               'margin-top':    mt,
               'margin-bottom': mb,
               'margin-left':   ml,
-              'margin-right':  mr,
+              'margin-right':  mr
           }));
         }
       };
