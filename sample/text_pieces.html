@@ -1,7 +1,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen">
 </head>
 
 <body>
@@ -21,7 +20,7 @@
 function make_kifu_12(kif_url, element) {
   Kifu.ajax({url: kif_url}, 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board_min.html',
+      template_url: 'templates/jquery_shogi_board_min.html',
       black_king: 'jewel_king',
       white_king: 'jewel_king',
       renderer: 'text',
@@ -37,7 +36,7 @@ function make_kifu_12(kif_url, element) {
 function make_kifu_16(kif_url, element) {
   Kifu.ajax({url: kif_url}, 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board_no_comment.html',
+      template_url: 'templates/jquery_shogi_board_no_comment.html',
       black_king: 'king',
       white_king: 'king',
       renderer: 'text',
@@ -54,7 +53,7 @@ function make_kifu_16(kif_url, element) {
 function make_kifu_20(kif_url, element) {
   Kifu.ajax({url: kif_url}, 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board2.html',
+      template_url: 'templates/jquery_shogi_board2.html',
       black_king: 'jewel_king',
       white_king: 'king',
       highlight_last_move: '#D8BFD8',
@@ -72,7 +71,7 @@ function make_kifu_20(kif_url, element) {
 function make_kifu_32(kif_url, element) {
   Kifu.ajax({url: kif_url}, 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board2.html',
+      template_url: 'templates/jquery_shogi_board2.html',
       black_king: 'king',
       white_king: 'jewel_king',
       renderer: 'text',
@@ -86,10 +85,10 @@ function make_kifu_32(kif_url, element) {
   });
 }
 
-make_kifu_12('../kif/sanza-soukei.16180811.kif.txt', '#board_kif_1');
-make_kifu_16('../kif/kaga-koike.19791103.kif.txt', '#board_kif_2');
-make_kifu_20('../kif/miyazaki-koike.19771120.kif.txt', '#board_kif_3');
-make_kifu_32('../kif/amano-koike.19910315.kif.txt', '#board_kif_4');
+make_kifu_12('kifu/sanza-soukei.16180811.kif.txt', '#board_kif_1');
+make_kifu_16('kifu/kaga-koike.19791103.kif.txt', '#board_kif_2');
+make_kifu_20('kifu/miyazaki-koike.19771120.kif.txt', '#board_kif_3');
+make_kifu_32('kifu/amano-koike.19910315.kif.txt', '#board_kif_4');
 
 --></script>
 </body>

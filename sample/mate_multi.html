@@ -1,7 +1,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen">
 </head>
 
 <body>
@@ -22,10 +21,10 @@
 function make_kifu_12(kif_url, element) {
   Kifu.ajax({url: kif_url}, 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board_mate_problem.html',
+      template_url: 'templates/jquery_shogi_board_mate_problem.html',
       black_king: 'jewel_king',
       white_king: 'jewel_king',
-      images_url: '../koma/plain12x12',
+      images_url: 'koma/plain12x12',
       piece_image_width:  '12px',
       piece_image_height: '12px',
       board_cell_width:   '16px',
@@ -38,10 +37,10 @@ function make_kifu_12(kif_url, element) {
 function make_kifu_16(kif_url, element) {
   Kifu.ajax({url: kif_url}, 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board_mate_problem.html',
+      template_url: 'templates/jquery_shogi_board_mate_problem.html',
       black_king: 'king',
       white_king: 'king',
-      images_url: '../koma/plain16x16',
+      images_url: 'koma/plain16x16',
       piece_image_width:  '16px',
       piece_image_height: '16px',
       board_cell_width:   '20px',
@@ -54,10 +53,10 @@ function make_kifu_16(kif_url, element) {
 function make_kifu_32(kif_url, element) {
   Kifu.ajax({url: kif_url}, 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board_mate_problem.html',
+      template_url: 'templates/jquery_shogi_board_mate_problem.html',
       black_king: 'king',
       white_king: 'jewel_king',
-      images_url: '../koma/plain32x32',
+      images_url: 'koma/plain32x32',
       piece_image_width:  '32px',
       piece_image_height: '32px',
       board_cell_width:   '36px',
@@ -67,9 +66,9 @@ function make_kifu_32(kif_url, element) {
   });
 }
 
-make_kifu_12('../kif/kk1983ss.kif.txt', '#board_kif_1');
-make_kifu_16('../kif/kk1p.kif.txt', '#board_kif_2');
-make_kifu_32('../kif/kk198212p.kif.txt', '#board_kif_3');
+make_kifu_12('kifu/kk1983ss.kif.txt', '#board_kif_1');
+make_kifu_16('kifu/kk1p.kif.txt', '#board_kif_2');
+make_kifu_32('kifu/kk198212p.kif.txt', '#board_kif_3');
 
 --></script>
 </body>

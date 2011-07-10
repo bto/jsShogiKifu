@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+
+<body>
+<h2>jsShogiKifu(KK版) 44x44 サンプル</h2>
+<span id="board_kif"></span>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../src/kifu.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
+<script><!--
+  Kifu.ajax({url: 'kifu/sanza-soukei.16180811.kif.txt'}, 'kif', function(kifu) {
+    var options = {
+      template_url: 'templates/jquery_shogi_board2.html',
+      images_url: 'koma/plain44x44',
+      piece_image_width:  '44px',
+      piece_image_height: '44px',
+      board_cell_width:   '48px',
+      board_cell_height:  '52px'
+    };
+    $('#board_kif').shogiBoard(kifu, options);
+  });
+--></script>
+</body>
+</html>

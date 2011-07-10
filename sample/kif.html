@@ -1,27 +1,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen">
 </head>
 
 <body>
-<h2>jsShogiKifu(KK版) 26x30 サンプル</h2>
+<h2>KIFサンプル</h2>
 <span id="board_kif"></span>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 <script type="text/javascript" charset="UTF-8" src="../src/kifu.js"></script>
 <script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
 <script><!--
-  Kifu.ajax({url: '../kif/sanza-soukei.16180811.kif.txt'}, 'kif', function(kifu) {
+  Kifu.ajaxLoad('kif/081217-h.kif', 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board2.html',
-      images_url: '../koma/plain26x30',
-      piece_image_width:  '26px',
-      piece_image_height: '30px',
-      board_cell_width:   '32px',
-      board_cell_height:  '36px',
-      move_to: 105
-    };
+      images_url:   '../src/images',
+      template_url: 'templates/jquery_shogi_board.html'};
     $('#board_kif').shogiBoard(kifu, options);
   });
 --></script>

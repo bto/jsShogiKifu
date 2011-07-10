@@ -1,7 +1,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen">
 </head>
 
 <body>
@@ -18,10 +17,10 @@
 <script type="text/javascript" charset="UTF-8" src="../src/kifu.js"></script>
 <script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
 <script><!--
-  Kifu.ajax({url: '../kif/amano-koike.19910315.kif.txt'}, 'kif', function(kifu) {
+  Kifu.ajax({url: 'kifu/amano-koike.19910315.kif.txt'}, 'kif', function(kifu) {
     var options = {
-      template_url: './jquery_shogi_board2.html',
-      images_url: '../koma/tenkoku',
+      template_url: 'templates/jquery_shogi_board2.html',
+      images_url: 'koma/tenkoku',
       piece_image_width:  '40px',
       piece_image_height: '44px',
       board_cell_width:   '44px',
