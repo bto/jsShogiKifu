@@ -1,85 +1,37 @@
-jsShogiKifu AM版
-================
+jsShogiKifu - Javascriptで動作する将棋棋譜解析&ビューワ
+=======================================================
 
-Masato Bitoさんによる[jsShogiKifu] (https://github.com/bto/jsShogiKifu)
-のforkです。K.Kosakoさんによる改修を取り込んでいます。（cf. `README.kosako`）
+Web上で将棋の棋譜を表示するビューワにはJavaやFlashで実装されたものがいくつか
+ありますが、Javaで作られたものは動作が遅く、Flashで作られたものはiPhoneで動作
+しないといった問題がありました。またJavascriptで実装されているものもありますが、
+特定のサイトでのみの動作を前提として実装されており、あまり汎用性の高い実装は
+ありませんでした。
 
-最新のソースコードは[GitHub上](https://github.com/knu/jsShogiKifu)にあります。
+jsShogiKifuはJavascriptで実装されているためiPhoneでも問題なく動作します。また
+汎用的に実装されているため、どのようなWebサイトにも簡単に組み込む事ができます。
+動作も軽く、表示のカスタマイズも簡単です。ライセンスはMITライセンスで公開
+されているため、商用非商用問わず自由に利用できます。
 
-K.Kosako版からの改修点
-----------------------
+最新のソースコードは[GitHub上](https://github.com/bto/jsShogiKifu)にあります。
 
-*   画像を使わないレンダリングをサポート。
+[knuさんのfork](https://github.com/bto/jsShogiKifu), [kkosさんのfork](https://github.com/kkos/jsShogiKifu)もご参照ください。
 
-    それに伴い `piece_image_width`/`piece_image_height` を
-    `piece_width`/`piece_height` に改名。（互換性のため古い名前も使用可能）
+特徴
+----
 
-*   レンダリングエンジンを選択またはユーザ定義可能。
+* Javascriptによる実装
+* 棋譜解析部とビューワを完全に分離
+  - デザインを簡単に変更可能
+* ライブラリ非依存
+  - 棋譜データ読み込みにajaxを使用する場合jQueryが必要
+  - 棋譜表示に付属のjQueryShogiBoardを使用する場合jQueryが必要
+* 名前空間を汚さない
+  - 他のライブラリと衝突することがない
+* 棋譜形式ごとに解析処理をモジュール化
+  - モジュールを追加するだけで新しい棋譜形式に対応可能
+  - 現在はkif, csa形式に対応
 
-    `shogiBoard()`関数のオプション項目`renderer`で関数を指定できる。
+参照
+----
 
-    -   `"image"`
-
-        画像でレンダリングを行う。規定値。
-
-    -   `"text"`
-
-        テキストでレンダリングを行う。現時点でIEでは正しく表示されない。
-
-    -   `function(cell, piece, black_p) {...}`
-
-        `cell`: jQueryオブジェクト, `piece`: 駒種, `black_p`: 先手かどうかのフラグ
-        を受け取り、描画を行うユーザ関数。
-
-        `piece`が空の場合は空の枡を描画する。
-
-        `cell.jsbIsStand()`が真の場合は駒種ごとの持ち駒エリア。
-        `cell.jsbGetNumber()`でその駒の枚数が得られる。
-        なお、持ち駒においては空の`piece`が渡されることはない。
-
-*   UIを改善。
-
-    盤上左右1/3領域をクリックすることで前後の指し手に移動可能。
-
-*   jQuery Mobile上での動作をサポート。
-
-    -   左右のスワイプによりそれぞれ最初、最後の局面へ移動。
-
-    -   指し手を示すselectボックスの状態更新通知を追加。
-
-To-Do's
--------
-
-*   レンダリングエンジンの改良。
-
-    -   テキスト版
-
-        -   「全」「圭」「杏」の代わりに「成銀」「成桂」「成香」と表示するオプションの追加。
-
-        -   成り駒にはそれ用のclassを振り、容易に赤く表示できるようにする。
-
-    -   画像版
-
-        -   持駒表示の改良。同種の駒は複数並べず、枚数を記したバッヂをオーバーレイ表示。
-            また、二枚の場合は数でなく重ねて表示するオプションなど。
-
-*   IE8/IE9での動作確認・対応。
-
-*   Androidブラウザでの動作確認・対応。
-
-*   棋譜の（手動・自動）更新への対応。
-
-非推奨事項
-----------
-
-*   盤面テンプレートの `template_url` によるURL指定
-
-    - ページロード後、動的にレンダリングを行うjQuery Mobileとの相性が悪い。
-      （ただし、jQuery Mobileが部分的な動的更新をサポートすれば話は変わる）
-
-<!--
-Local variables:
-mode: markdown
-coding: utf-8
-end:
--->
+[Javascriptで動作する将棋棋譜ビューワを作った](http://blog.bz2.jp/archives/2011/04/javascript-6.html)
