@@ -347,7 +347,7 @@ Kifu.Kif.prototype.extend({
       if (!piece || !num) {
         continue;
       }
-      suite_init.standDeployN(piece, black, num);
+      suite_init.standDeploy(piece, black, num);
     }
 
     return true;

@@ -94,35 +94,39 @@ Kifu.Suite.prototype.extend({
 
     switch (handicap) {
     case 'Lance':
-	this.cellRemove(1, 1, 'KY');
-	break;
+      this.cellRemove(1, 1, 'KY');
+      break;
+
     case 'Right_Lance':
-	this.cellRemove(9, 1, 'KY');
-	break;
+      this.cellRemove(9, 1, 'KY');
+      break;
+
     case 'Bishop':
-	this.cellRemove(2, 2, 'KA');
-	break;
+      this.cellRemove(2, 2, 'KA');
+      break;
+
     case 'Rook_and_Lance':
-	this.cellRemove(1, 1, 'KY');
+      this.cellRemove(1, 1, 'KY');
     case 'Rook':
-	this.cellRemove(8, 2, 'HI');
-	break;
+      this.cellRemove(8, 2, 'HI');
+      break;
 
     case 'Six_Drops':
-	this.cellRemove(2, 1, 'KE');
-	this.cellRemove(8, 1, 'KE');
+      this.cellRemove(2, 1, 'KE');
+      this.cellRemove(8, 1, 'KE');
     case 'Four_Drops':
-	this.cellRemove(1, 1, 'KY');
-	this.cellRemove(9, 1, 'KY');
+      this.cellRemove(1, 1, 'KY');
+      this.cellRemove(9, 1, 'KY');
     case 'Two_Drops':
-	this.cellRemove(8, 2, 'HI');
-	this.cellRemove(2, 2, 'KA');
-	break;
+      this.cellRemove(8, 2, 'HI');
+      this.cellRemove(2, 2, 'KA');
+      break;
 
     default:
-	alert('Invalid handicap: ' + this.handicap);
-	break;
+      alert('Invalid handicap: ' + this.handicap);
+      break;
     }
+
     return this;
   },
 
@@ -203,27 +207,12 @@ Kifu.Suite.prototype.extend({
     return this;
   },
 
-  standDeployN: function(piece, black, n) {
+  standDeploy: function(piece, black, num) {
     var player = black ? 'black' : 'white';
     var stand  = this.stand[player];
     var pieces = this.pieces;
 
-    if (pieces[piece] >= n) {
-      var stand = this.stand[player];
-      stand[piece] || (stand[piece] = 0);
-      stand[piece] += n;
-      pieces[piece] -= n;
-    }
-    else {
-      return false;
-    }
-    return this;
-  },
-
-  standDeploy: function(piece, black) {
-    var player = black ? 'black' : 'white';
-    var stand  = this.stand[player];
-    var pieces = this.pieces;
+    num = num || 1;
 
     if (piece == 'AL') {
       for (var p in pieces) {
@@ -234,12 +223,13 @@ Kifu.Suite.prototype.extend({
         stand[p] += pieces[p];
         pieces[p] = 0;
       }
-    } else if (pieces[piece]) {
-      this.standSet(piece, black);
-      pieces[piece]--;
+    } else if (pieces[piece] >= num) {
+      this.standSet(piece, black, num);
+      pieces[piece] -= num;
     } else {
       return false;
     }
+
     return this;
   },
 
@@ -251,11 +241,12 @@ Kifu.Suite.prototype.extend({
     return this;
   },
 
-  standSet: function(piece, black) {
+  standSet: function(piece, black, num) {
     var player = black ? 'black' : 'white';
     var stand = this.stand[player];
+    num = num || 1;
     stand[piece] || (stand[piece] = 0);
-    stand[piece]++;
+    stand[piece] += num;
     return this;
   },
 
