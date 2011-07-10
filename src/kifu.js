@@ -1218,7 +1218,7 @@ Kifu.Kif.prototype.extend({
     var list = str.split(/[\s　]+/);
     for (var i in list) {
       var value = list[i];
-      var piece = this.board_piece_map[value.substr(0, 1)];
+      var piece = board_piece_map[value.substr(0, 1)];
       var num   = this.parseKansuuchi(value.substr(1));
       if (!piece || !num) {
         continue;
