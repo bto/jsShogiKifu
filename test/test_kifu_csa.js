@@ -235,7 +235,7 @@ test('parse start player', 5, function() {
   // -
   info['player_start'] = 'white';
   var line = '-';
-  same(parser.kifu.info['player_start'], 'black', 'first status');
+  same(parser.kifu.info['player_start'], undefined, 'first status');
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 

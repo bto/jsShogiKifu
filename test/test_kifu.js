@@ -70,7 +70,7 @@ test('noConflict', 2, function() {
 test('initialization', 9, function() {
   // simple initialization
   var kifu = Kifu();
-  var info = {player_start: 'black'};
+  var info = {};
   same(kifu.suite_init, Kifu.Suite(), 'simple suite_init');
   same(kifu.info,       info,         'simple info');
   same(kifu.moves,      Kifu.Move(),  'simple moves');
@@ -84,8 +84,9 @@ test('initialization', 9, function() {
   same(kifu.moves,      Kifu.Move(),  'source moves');
 
   // initialization with source and format
-  info['format']  = 'csa';
-  info['version'] = '2.2';
+  info['format']       = 'csa';
+  info['player_start'] = 'black';
+  info['version']      = '2.2';
   var kifu = Kifu(source, 'csa');
   same(kifu.suite_init, Kifu.Suite(), 'source suite_init');
   same(kifu.info,       info,         'source info');

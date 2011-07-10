@@ -92,12 +92,10 @@ test('parse info', 26, function() {
 });
 
 test('parse initial board hirate', 2, function() {
-  var suite = Kifu.Suite().hirate();
-
   // 平手
   var line = '手合割：平手　　';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.suite_init, suite, line+' suite');
+  same(parser.kifu.info.handicap, 'Even', line+' suite');
 });
 
 test('parse moves', 16, function() {
