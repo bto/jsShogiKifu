@@ -176,7 +176,13 @@ Kifu.prototype.extend({
   },
 
   prepare: function() {
-    var black        = this.info.player_start == 'black';
+    var info = this.info;
+
+    if (!info.player_start) {
+      info.player_start = 'black';
+    }
+
+    var black        = info.player_start == 'black';
     var suite        = this.suite_init.clone();
     var move_records = this.moves.records;
     for (var i in move_records) {
@@ -245,7 +251,7 @@ Kifu.prototype.extend({
 Kifu.extend({
   initialize: function(source, format) {
     this.suite_init = Kifu.Suite();
-    this.info       = {player_start: 'black'};
+    this.info       = {};
     this.moves      = Kifu.Move();
 
     if (source) {
@@ -922,7 +928,7 @@ var kifu_map = {
   '竜':   'RY'
 };
 
-var BoardPieceMap = {
+var board_piece_map = {
   '歩': 'FU',
   '香': 'KY',
   '桂': 'KE',
@@ -941,7 +947,7 @@ var BoardPieceMap = {
   '竜': 'RY'
 };
 
-var KanjiNumberMap = {
+var kanji_number_map = {
   '一':   1,
   '二':   2,
   '三':   3,
@@ -954,17 +960,17 @@ var KanjiNumberMap = {
   '十':  10
 };
 
-var HandicapNameMap = {
-  '平手': 'Even',
-  '香落ち': 'Lance',
+var handicap_name_map = {
+  '平手':     'Even',
+  '香落ち':   'Lance',
   '右香落ち': 'Right_Lance',
-  '角落ち': 'Bishop',
+  '角落ち':   'Bishop',
   '飛車落ち': 'Rook',
   '飛香落ち': 'Rook_and_Lance',
   '二枚落ち': 'Two_Drops',
   '四枚落ち': 'Four_Drops',
   '六枚落ち': 'Six_Drops',
-  'その他': 'Other'
+  'その他':   'Other'
 };
 
 Kifu.Kif = (function(kifu) { return new Kifu.Kif.initialize(kifu); });
@@ -973,214 +979,234 @@ Kifu.Kif.extend = Kifu.Kif.prototype.extend = Kifu.extend;
 Kifu.Kif.prototype.extend({
   parse: function() {
     var lines = this.toLines(this.kifu.info.source);
-    this.board_setup = false;
-    this.setup_line  = null;
-    this.handicap    = 'Even';
     for (var i in lines) {
       var line = lines[i];
       this.parseByLine(line);
     }
 
-    if (this.handicap != 'Even' && ! this.player_start_setted) {
-      this.kifu.info.player_start = 'white';
-    }
+    this.prepare();
+
     return this;
   },
 
   parseByLine: function(line) {
-    var kifu = this.kifu;
+    if (this.parseByLineAsComment(line)) {
+      return true;
+    }
 
+    if (this.parseByLineAsInfo(line)) {
+      return true;
+    }
+
+    if (this.parseByLineAsInfo2(line)) {
+      return true;
+    }
+
+    if (this.parseByLineAsBoard(line)) {
+      return true;
+    }
+
+    if (this.parseByLineAsMove(line)) {
+      return true;
+    }
+
+    return false;
+  },
+
+  parseByLineAsBoard: function(line) {
+    if (!line.match(/^\|.+\|/)) {
+      return false;
+    }
+
+    this._board_setup = true;
+
+    var line = this.strip(line);
+    var y = this.parseKansuuchi(line.charAt(line.length-1));
+
+    var suite_init = this.kifu.suite_init;
+    for (var i = 0; i < 9; i++) {
+      var piece = board_piece_map[line.substr(i*2+2, 1)];
+      if (!piece) {
+        continue;
+      }
+
+      var is_black = !(line.substr(i*2+1, 1) == 'v');
+      var x        = 9 - i;
+      suite_init.cellDeploy(x, y, piece, is_black);
+    }
+
+    return true;
+  },
+
+  parseByLineAsComment: function(line) {
     switch (line.charAt(0)) {
     case '#':
       return true;
     case '*':
-      if (line.length > 1) kifu.moves.addComment(line.substr(1));
-      return true;
-    }
-
-    if (line.match(/^ *([0-9]+) ([^ ]+)/)) {
-      if (! this.board_setup) {
-	if (this.handicap == null)
-          kifu.suite_init.setup('Even');
-	else
-          kifu.suite_init.setup(this.handicap);
-
-	this.board_setup = true;
-      }
-
+      // 変化は未実装
       if (this._henka) {
         return true;
       }
+      if (line.length > 1) this.kifu.moves.addComment(line.substr(1));
+      return true;
+    }
+    return false;
+  },
 
-      var num  = parseInt(RegExp.$1);
-      var move = RegExp.$2;
+  parseByLineAsInfo: function(line) {
+    if (!line.match(/^(.+?)：(.+)/)) {
+      return false;
+    }
 
-      switch (move) {
-      case '投了':
-        kifu.moves.addSpecial('TORYO');
-        return true;
-      case '千日手':
-        kifu.moves.addSpecial('SENNICHITE');
-        return true;
-      case '持将棋':
-        kifu.moves.addSpecial('JISHOGI');
-        return true;
+    var info  = this.kifu.info;
+    var key   = RegExp.$1;
+    var value = this.strip(RegExp.$2);
+
+    switch (key) {
+    case '対局ID':
+      info.kif || (info.kif = {});
+      info.kif.id = parseInt(value);
+      return true;
+
+    case '開始日時':
+      info.start_time = this.toDate(value);
+      return true;
+
+    case '終了日時':
+      info.end_time = this.toDate(value);
+      return true;
+
+    case '表題':
+      info.title = value;
+      return true;
+
+    case '棋戦':
+      info.event = value;
+      return true;
+
+    case '持ち時間':
+      if (value.match(/([0-9]+)時間/)) {
+        info.time_limit || (info.time_limit = {});
+        info.time_limit.allotted = parseInt(RegExp.$1) * 60;
       }
-      if (move.match(/詰み?$/)) {
-        kifu.moves.addSpecial('MATE');
-        return true;
-      }
+      return true;
 
-      var to = [kifu_map[move.charAt(0)], kifu_map[move.charAt(1)]];
-      if (move.substr(2).match(/(.*)\(([1-9])([1-9])\)/)) {
-        var piece = kifu_map[RegExp.$1];
-        var from  = [parseInt(RegExp.$2), parseInt(RegExp.$3)];
-        move.match(/(.*)\(/);
-        var str   = RegExp.$1;
-      } else {
-        var piece = kifu_map[move.charAt(2)];
-        var from  = [0, 0];
-        var str   = move;
+    case '消費時間':
+      if (value.match(/[0-9]+▲([0-9]+)△([0-9]+)/)) {
+        info.time_consumed = {
+          black: parseInt(RegExp.$1),
+          white: parseInt(RegExp.$2)
+        };
       }
-      kifu.moves.setMove(num, from, to, piece, {str: str});
+      return true;
 
+    case '場所':
+      info.site = value;
+      return true;
+
+    case '戦型':
+      info.opening = value;
+      return true;
+
+    case '手合割':
+      info.handicap = handicap_name_map[value];
+      return true;
+
+    case '先手':
+    case '下手':
+      info.player_black = value;
+      return true;
+
+    case '後手':
+    case '上手':
+      info.player_white = value;
+      return true;
+
+    case '先手の持駒':
+    case '下手の持駒':
+      return this.parseStand(value, true);
+
+    case '後手の持駒':
+    case '上手の持駒':
+      return this.parseStand(value, false);
+
+    case '変化':
+      this._henka = true;
+      return true;
+
+    default:
+      info.kif || (info.kif = {});
+      info.kif[key] = value;
       return true;
     }
 
-    if (line.match(/^(.+?)：(.+)/)) {
-      var key   = RegExp.$1;
-      var value = this.strip(RegExp.$2);
+    return false;
+  },
 
-      switch (key) {
-      case '対局ID':
-        kifu.info.kif || (kifu.info.kif = {});
-        kifu.info.kif.id = parseInt(value);
-        return true;
-
-      case '開始日時':
-        kifu.info.start_time = this.toDate(value);
-        return true;
-
-      case '終了日時':
-        kifu.info.end_time = this.toDate(value);
-        return true;
-
-      case '表題':
-        kifu.info.title = value;
-        return true;
-
-      case '棋戦':
-        kifu.info.event = value;
-        return true;
-
-      case '持ち時間':
-        if (value.match(/([0-9]+)時間/)) {
-          kifu.info.time_limit || (kifu.info.time_limit = {});
-          kifu.info.time_limit.allotted = parseInt(RegExp.$1) * 60;
-        }
-        return true;
-
-      case '消費時間':
-        if (value.match(/[0-9]+▲([0-9]+)△([0-9]+)/)) {
-          kifu.info.time_consumed = {
-            black: parseInt(RegExp.$1),
-            white: parseInt(RegExp.$2)
-          };
-        }
-        return true;
-
-      case '場所':
-        kifu.info.site = value;
-        return true;
-
-      case '戦型':
-        kifu.info.opening = value;
-        return true;
-
-      case '手合割':
-	this.handicap = HandicapNameMap[value];
-        if (this.handicap) return true;
-        else return false;
-
-      case '先手':
-      case '下手':
-        kifu.info.player_black = value;
-        return true;
-
-      case '後手':
-      case '上手':
-        kifu.info.player_white = value;
-        return true;
-
-      case '先手の持駒':
-      case '下手の持駒':
-	return this.parseStand(value, true);
-
-      case '後手の持駒':
-      case '上手の持駒':
-	return this.parseStand(value, false);
-
-      case '変化':
-        this._henka = true;
-        return true;
-
-      default:
-        kifu.info.kif || (kifu.info.kif = {});
-        kifu.info.kif[key] = value;
-        return true;
-      }
-    }
+  parseByLineAsInfo2: function(line) {
+    var info = this.kifu.info;
 
     switch (this.strip(line)) {
     case '先手番':
     case '下手番':
-      kifu.info.player_start = 'black';
-      kifu.info.player_start_setted = true;
+      info.player_start = 'black';
       return true;
 
     case '上手番':
     case '後手番':
-      kifu.info.player_start = 'white';
-      kifu.info.player_start_setted = true;
+      info.player_start = 'white';
       return true;
     }
 
-    if (! this.board_setup) {
-	if (line.match(/^\s+９ ８ ７ ６ ５ ４ ３ ２ １/)) {
-        this.setup_line = 0;
-        return true;
-      }
-      else if (line.match(/^\+---------------------------\+/)) {
-	if (this.setup_line == 0) {
-	  this.setup_line = 1;
-          return true;
-	}
-	else if (this.setup_line == 10) {
-	  this.board_setup = true;
-          return true;
-	}
-        else {
-	  return false;
-	}
-      }
-      else if (line.match(/^\|.+\|/)) {
-	var y = this.setup_line;
-	if (y > 0 && y < 10) {
-	  for (var i = 0; i < 9; i++) {
-	    var c  = line.substr(i*2+1, 1);
-	    var pc = line.substr(i*2+2, 1);
-            if (pc == '・') continue;
-            var is_black = (c == ' ');
-            var piece = BoardPieceMap[pc];
-            var x = 9 - i;
-            kifu.suite_init.cellDeploy(x, y, piece, is_black);
-	  }
-	  this.setup_line++;
-	}
-      }
+    return false;
+  },
+
+  parseByLineAsMove: function(line) {
+    if (!line.match(/^ *([0-9]+) ([^ ]+)/)) {
+      return false;
     }
 
-    return false;
+    // 変化は未実装
+    if (this._henka) {
+      return true;
+    }
+
+    var num   = parseInt(RegExp.$1);
+    var move  = RegExp.$2;
+    var moves = this.kifu.moves;
+
+    switch (this.strip(move)) {
+    case '投了':
+      moves.addSpecial('TORYO');
+      return true;
+
+    case '千日手':
+      moves.addSpecial('SENNICHITE');
+      return true;
+
+    case '持将棋':
+      moves.addSpecial('JISHOGI');
+      return true;
+
+    case '詰み':
+      moves.addSpecial('TSUMI');
+      return true;
+    }
+
+    var to = [kifu_map[move.charAt(0)], kifu_map[move.charAt(1)]];
+    if (move.substr(2).match(/(.*)\(([1-9])([1-9])\)/)) {
+      var piece = kifu_map[RegExp.$1];
+      var from  = [parseInt(RegExp.$2), parseInt(RegExp.$3)];
+      move.match(/(.*)\(/);
+      var str   = RegExp.$1;
+    } else {
+      var piece = kifu_map[move.charAt(2)];
+      var from  = [0, 0];
+      var str   = move;
+    }
+    moves.setMove(num, from, to, piece, {str: str});
+
+    return true;
   },
 
   parseStand: function(str, black) {
@@ -1188,44 +1214,51 @@ Kifu.Kif.prototype.extend({
       return true;
     }
 
-    var list = str.replace(/^[\s　]+/, '').replace(/[\s　]+$/, '').split(/[\s　]+/);
+    var suite_init = this.kifu.suite_init;
+    var list = str.split(/[\s　]+/);
     for (var i in list) {
-      var s = list[i];
-      var pc = s.substr(0, 1);
-      var kn = s.substr(1);
-      var piece = BoardPieceMap[pc];
-      if (! piece) return false;
-      n = this.parseKansuuchi(kn);
-      if (n == false) return false;
-      else if (n == null) n = 1;
-
-      this.kifu.suite_init.standDeployN(piece, black, n);
+      var value = list[i];
+      var piece = this.board_piece_map[value.substr(0, 1)];
+      var num   = this.parseKansuuchi(value.substr(1));
+      if (!piece || !num) {
+        continue;
+      }
+      suite_init.standDeployN(piece, black, num);
     }
+
     return true;
   },
 
   parseKansuuchi: function(str) {
-    if (! str || str.length == 0) return null;
-
-    var n = 0;
-    for (var i = 0; i < str.length; i++) {
-      var s = str.substr(i, 1);
-      var d = KanjiNumberMap[s];
-      if (d == null) return false;
-      if (d == 10) {
-	if (n == 0) n = 10;
-	else n = n * 10;
-      }
-      else {
-        n = n + d;
-      }
+    var num = 0;
+    var l = str.length;
+    for (var i = 0; i < l; i++) {
+      num += kanji_number_map[str.substr(i, 1)];
     }
 
-    return n;
+    if (!num) {
+      num = 1;
+    }
+
+    return num;
+  },
+
+  prepare: function() {
+    var kifu = this.kifu;
+    var info = kifu.info;
+
+    var handicap = info.handicap;
+    if (handicap) {
+      if (this._board_setup) {
+        delete info.handicap;
+      } else {
+        kifu.suite_init.setup(handicap);
+      }
+    }
   },
 
   strip: function(str) {
-    return str.replace(/^\s+/, '').replace(/\s+$/, '');
+    return str.replace(/^[\s　]+/, '').replace(/[\s　]+$/, '');
   },
 
   toDate: function(str) {
