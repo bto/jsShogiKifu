@@ -5,7 +5,7 @@ module('Kifu');
 
 test('ajax', 2, function() {
   stop(1000);
-  var csa_file = '081217-h.csa';
+  var csa_file = 'test.csa';
 
   var source;
   jQuery.ajax({dataType: 'text', type: 'GET', url: csa_file,
