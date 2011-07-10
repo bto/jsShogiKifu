@@ -6,6 +6,10 @@
  *
  */
 (function(Kifu) {
+Kifu.Kif = (function(kifu) { return new Kifu.Kif.initialize(kifu); });
+Kifu.Kif.extend = Kifu.Kif.prototype.extend = Kifu.extend;
+
+
 var kifu_map = {
   '同':   0,
   '　':   0,
@@ -95,9 +99,6 @@ var handicap_name_map = {
   '六枚落ち': 'Six_Drops',
   'その他':   'Other'
 };
-
-Kifu.Kif = (function(kifu) { return new Kifu.Kif.initialize(kifu); });
-Kifu.Kif.extend = Kifu.Kif.prototype.extend = Kifu.extend;
 
 Kifu.Kif.prototype.extend({
   parse: function() {
@@ -412,6 +413,7 @@ Kifu.Kif.extend({
     this.kifu = kifu;
   }
 });
+
 
 Kifu.Kif.initialize.prototype = Kifu.Kif.prototype;
 })(Kifu);

@@ -11,7 +11,7 @@ Kifu.Suite.extend = Kifu.Suite.prototype.extend = Kifu.extend;
 
 
 var piece_map = {
-    FU: 'FU',
+  FU: 'FU',
   KY: 'KY',
   KE: 'KE',
   GI: 'GI',

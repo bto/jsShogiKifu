@@ -9,6 +9,7 @@
 Kifu.Csa = (function(kifu) { return new Kifu.Csa.initialize(kifu); });
 Kifu.Csa.extend = Kifu.Csa.prototype.extend = Kifu.extend;
 
+
 Kifu.Csa.prototype.extend({
   parse: function() {
     var lines = this.toLines(this.kifu.info.source);
@@ -182,6 +183,7 @@ Kifu.Csa.extend({
     this.kifu = kifu;
   }
 });
+
 
 Kifu.Csa.initialize.prototype = Kifu.Csa.prototype
 })(Kifu);

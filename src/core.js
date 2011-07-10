@@ -316,11 +316,9 @@ Kifu.extend({
   }
 });
 
+
 Kifu.initialize.prototype = Kifu.prototype;
-
 window.Kifu = Kifu;
-
-
 })(window);
 
 
