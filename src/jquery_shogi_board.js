@@ -287,7 +287,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   };
 
   var setCurrToLastMove = function() {
-    var curr = kifu.currMove();
+    var curr = kifu.moveCurrent();
     if (curr) {
       var to = curr['to'];
       lastMoveSet(to['x'], to['y']);

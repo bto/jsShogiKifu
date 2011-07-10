@@ -83,6 +83,12 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 };
 
 Kifu.prototype.extend({
+  moveCurrent: function() {
+    var move = this.moves.get(this.step);
+    if (move && move.type == 'move') return move;
+    return null;
+  },
+
   moveFirst: function() {
     this.black = this.info.player_start == 'black';
     this.step  = 0;
@@ -131,12 +137,6 @@ Kifu.prototype.extend({
       this.step--
     }
     return move;
-  },
-
-  currMove: function() {
-    var move = this.moves.get(this.step);
-    if (move && move.type == 'move') return move;
-    return null;
   },
 
   moveStrings: function() {
