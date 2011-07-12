@@ -13,7 +13,8 @@ Kifu.Csa.extend = Kifu.Csa.prototype.extend = Kifu.extend;
 Kifu.Csa.prototype.extend({
   parse: function() {
     var lines = this.toLines(this.kifu.info.source);
-    for (var i in lines) {
+    var l = lines.length;
+    for (var i = 0; i < l; i++) {
       var line = lines[i];
       this.parseByLine(line);
     }
