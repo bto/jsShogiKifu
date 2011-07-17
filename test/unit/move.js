@@ -51,22 +51,22 @@ test('addMove', 6, function() {
 
   // +2726FU
   var move = {
-    black: true,
-    from:  {             x: 2, y: 7},
-    to:    {piece: 'FU', x: 2, y: 6},
-    type:  'move'};
+    is_black: true,
+    from:     {             x: 2, y: 7},
+    to:       {piece: 'FU', x: 2, y: 6},
+    type:     'move'};
   records.push(move);
-  moves.addMove([2, 7], [2, 6], 'FU', {black: true});
+  moves.addMove([2, 7], [2, 6], 'FU', {is_black: true});
   same(moves.get(1), move, '+2726FU');
 
   // -2326FU
   var move = {
-    black: false,
-    from:  {             x: 2, y: 3},
-    to:    {piece: 'FU', x: 2, y: 6},
-    type:  'move'};
+    is_black: false,
+    from:     {             x: 2, y: 3},
+    to:       {piece: 'FU', x: 2, y: 6},
+    type:     'move'};
   records.push(move);
-  moves.addMove([2, 3], [2, 6], 'FU', {black: false});
+  moves.addMove([2, 3], [2, 6], 'FU', {is_black: false});
   same(moves.get(2), move, '-2326FU');
 
   // 2800HI
@@ -149,15 +149,15 @@ test('addSpecial', 4, function() {
   same(moves.get(1), move, 'TORYO');
 
   // +ILLEGAL_ACTION
-  var move = {black: true, type: 'ILLEGAL_ACTION'};
+  var move = {is_black: true, type: 'ILLEGAL_ACTION'};
   records.push(move);
-  moves.addSpecial('ILLEGAL_ACTION', {black: true});
+  moves.addSpecial('ILLEGAL_ACTION', {is_black: true});
   same(moves.get(2), move, '+ILLEGAL_ACTION');
 
   // -ILLEGAL_ACTION
-  var move = {black: false, type: 'ILLEGAL_ACTION'};
+  var move = {is_black: false, type: 'ILLEGAL_ACTION'};
   records.push(move);
-  moves.addSpecial('ILLEGAL_ACTION', {black: false});
+  moves.addSpecial('ILLEGAL_ACTION', {is_black: false});
   same(moves.get(3), move, '-ILLEGAL_ACTION');
 
   // check records

@@ -28,7 +28,7 @@ var piece_map = {
 };
 
 Kifu.Suite.prototype.extend({
-  cellDeploy: function(x, y, piece, black) {
+  cellDeploy: function(x, y, piece, is_black) {
     var pieces = this.pieces;
     if (this.board[x][y]) {
       return false;
@@ -37,7 +37,7 @@ Kifu.Suite.prototype.extend({
     if (!pieces[piece_org]) {
       return false;
     }
-    this.cellSet(x, y, piece, black);
+    this.cellSet(x, y, piece, is_black);
     pieces[piece_org]--;
     return this;
   },
@@ -58,8 +58,8 @@ Kifu.Suite.prototype.extend({
     return this;
   },
 
-  cellSet: function(x, y, piece, black) {
-    this.board[x][y] = {black: black, piece: piece};
+  cellSet: function(x, y, piece, is_black) {
+    this.board[x][y] = {is_black: is_black, piece: piece};
     return this;
   },
 
@@ -165,50 +165,50 @@ Kifu.Suite.prototype.extend({
   },
 
   move: function(move) {
-    var black = move.black;
-    var from  = move.from;
-    var stand = move.stand;
-    var to    = move.to;
+    var is_black = move.is_black;
+    var from     = move.from;
+    var stand    = move.stand;
+    var to       = move.to;
 
     if (from.x) {
       this.cellTrash(from.x, from.y);
     } else {
-      this.standTrash(from.piece, black);
+      this.standTrash(from.piece, is_black);
     }
 
-    this.cellSet(to.x, to.y, to.piece, black);
+    this.cellSet(to.x, to.y, to.piece, is_black);
 
     if (stand) {
-      this.standSet(stand.stand, black);
+      this.standSet(stand.stand, is_black);
     }
 
     return this;
   },
 
   moveReverse: function(move) {
-    var black = move.black;
-    var from  = move.from;
-    var stand = move.stand;
-    var to    = move.to;
+    var is_black = move.is_black;
+    var from     = move.from;
+    var stand    = move.stand;
+    var to       = move.to;
 
     if (stand) {
-      this.standTrash(stand.stand, black);
-      this.cellSet(to.x, to.y, stand.piece, !black);
+      this.standTrash(stand.stand, is_black);
+      this.cellSet(to.x, to.y, stand.piece, !is_black);
     } else {
       this.cellTrash(to.x, to.y);
     }
 
     if (from.x) {
-      this.cellSet(from.x, from.y, from.piece, black);
+      this.cellSet(from.x, from.y, from.piece, is_black);
     } else {
-      this.standSet(from.piece, black);
+      this.standSet(from.piece, is_black);
     }
 
     return this;
   },
 
-  standDeploy: function(piece, black, num) {
-    var player = black ? 'black' : 'white';
+  standDeploy: function(piece, is_black, num) {
+    var player = is_black ? 'black' : 'white';
     var stand  = this.stand[player];
     var pieces = this.pieces;
 
@@ -224,7 +224,7 @@ Kifu.Suite.prototype.extend({
         pieces[p] = 0;
       }
     } else if (pieces[piece] >= num) {
-      this.standSet(piece, black, num);
+      this.standSet(piece, is_black, num);
       pieces[piece] -= num;
     } else {
       return false;
@@ -233,16 +233,16 @@ Kifu.Suite.prototype.extend({
     return this;
   },
 
-  standRemove: function(piece, black) {
-    if (!this.standTrash(piece, black)) {
+  standRemove: function(piece, is_black) {
+    if (!this.standTrash(piece, is_black)) {
       return false;
     }
     this.pieces[piece]++;
     return this;
   },
 
-  standSet: function(piece, black, num) {
-    var player = black ? 'black' : 'white';
+  standSet: function(piece, is_black, num) {
+    var player = is_black ? 'black' : 'white';
     var stand = this.stand[player];
     num = num || 1;
     stand[piece] || (stand[piece] = 0);
@@ -250,8 +250,8 @@ Kifu.Suite.prototype.extend({
     return this;
   },
 
-  standTrash: function(piece, black) {
-    var player = black ? 'black' : 'white';
+  standTrash: function(piece, is_black) {
+    var player = is_black ? 'black' : 'white';
     var stand = this.stand[player];
     if (!stand[piece]) {
       return false;

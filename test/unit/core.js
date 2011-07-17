@@ -97,73 +97,73 @@ test('moveNext, movePrev', 31, function() {
   var kifu = Kifu('V2.2');
   kifu.suite_init.hirate();
   kifu.parse('csa');
-  kifu.moves.addMove([2, 7], [2, 6], 'FU', {black: true});
-  kifu.moves.addMove([3, 3], [3, 4], 'FU', {black: false});
-  var black = kifu.black;
-  var moves = kifu.moves.clone();
-  var step  = kifu.step;
-  var suite = kifu.suite.clone();
+  kifu.moves.addMove([2, 7], [2, 6], 'FU', {is_black: true});
+  kifu.moves.addMove([3, 3], [3, 4], 'FU', {is_black: false});
+  var is_black = kifu.is_black;
+  var moves    = kifu.moves.clone();
+  var step     = kifu.step;
+  var suite    = kifu.suite.clone();
 
   // 1st move
   var move = moves.get(1);
   suite.move(move);
-  black = false;
-  step  = 1;
-  same(kifu.moveNext(), move,  '1st move');
-  same(kifu.black,  black, '1st black');
-  same(kifu.moves,  moves, '1st moves');
-  same(kifu.step,   step,  '1st step');
-  same(kifu.suite,  suite, '1st suite');
+  is_black = false;
+  step     = 1;
+  same(kifu.moveNext(), move,     '1st move');
+  same(kifu.is_black,   is_black, '1st black');
+  same(kifu.moves,      moves,    '1st moves');
+  same(kifu.step,       step,     '1st step');
+  same(kifu.suite,      suite,    '1st suite');
 
   // 2nd move
   var move = moves.get(2);
   suite.move(move);
-  black = true;
-  step  = 2;
-  same(kifu.moveNext(), move,  '2nd move');
-  same(kifu.black,  black, '2nd black');
-  same(kifu.moves,  moves, '2nd moves');
-  same(kifu.step,   step,  '2nd step');
-  same(kifu.suite,  suite, '2nd suite');
+  is_black = true;
+  step     = 2;
+  same(kifu.moveNext(), move,     '2nd move');
+  same(kifu.is_black,   is_black, '2nd black');
+  same(kifu.moves,      moves,    '2nd moves');
+  same(kifu.step,       step,     '2nd step');
+  same(kifu.suite,      suite,    '2nd suite');
 
   // 3rd move
   var move = moves.get(3);
-  same(move,        undefined, '3rd move undefined');
+  same(move,            undefined, '3rd move undefined');
   same(kifu.moveNext(), move,      '3rd move');
-  same(kifu.black,  black,     '3rd black');
-  same(kifu.moves,  moves,     '3rd moves');
-  same(kifu.step,   step,      '3rd step');
-  same(kifu.suite,  suite,     '3rd suite');
+  same(kifu.is_black,   is_black,  '3rd black');
+  same(kifu.moves,      moves,     '3rd moves');
+  same(kifu.step,       step,      '3rd step');
+  same(kifu.suite,      suite,     '3rd suite');
 
   // 2nd prev
   var move = moves.get(2);
   suite.moveReverse(move);
-  black = false;
-  step  = 1;
-  same(kifu.movePrev(), move,  '2nd perv move');
-  same(kifu.black,  black, '2nd perv black');
-  same(kifu.moves,  moves, '2nd perv moves');
-  same(kifu.step,   step,  '2nd perv step');
-  same(kifu.suite,  suite, '2nd perv suite');
+  is_black = false;
+  step     = 1;
+  same(kifu.movePrev(), move,     '2nd perv move');
+  same(kifu.is_black,   is_black, '2nd perv black');
+  same(kifu.moves,      moves,    '2nd perv moves');
+  same(kifu.step,       step,     '2nd perv step');
+  same(kifu.suite,      suite,    '2nd perv suite');
 
   // 1st prev
   var move = moves.get(1);
   suite.moveReverse(move);
-  black = true;
-  step  = 0;
-  same(kifu.movePrev(), move,  '1st perv move');
-  same(kifu.black,  black, '1st perv black');
-  same(kifu.moves,  moves, '1st perv moves');
-  same(kifu.step,   step,  '1st perv step');
-  same(kifu.suite,  suite, '1st perv suite');
+  is_black = true;
+  step     = 0;
+  same(kifu.movePrev(), move,     '1st perv move');
+  same(kifu.is_black,   is_black, '1st perv black');
+  same(kifu.moves,      moves,    '1st perv moves');
+  same(kifu.step,       step,     '1st perv step');
+  same(kifu.suite,      suite,    '1st perv suite');
 
   // init prev
   var move = moves.get(0);
-  same(kifu.movePrev(), move,  'init perv move');
-  same(kifu.black,  black, 'init perv black');
-  same(kifu.moves,  moves, 'init perv moves');
-  same(kifu.step,   step,  'init perv step');
-  same(kifu.suite,  suite, 'init perv suite');
+  same(kifu.movePrev(), move,     'init perv move');
+  same(kifu.is_black,   is_black, 'init perv black');
+  same(kifu.moves,      moves,    'init perv moves');
+  same(kifu.step,       step,     'init perv step');
+  same(kifu.suite,      suite,    'init perv suite');
 });
 
 test('parse', 7, function() {
@@ -173,7 +173,7 @@ test('parse', 7, function() {
   var moves = Kifu.Move();
   var suite = Kifu.Suite();
   ok(kifu.parse('csa'), 'parse');
-  same(kifu.black,      true,  'black');
+  same(kifu.is_black,   true,  'is_black');
   same(kifu.info,       info,  'info');
   same(kifu.moves,      moves, 'moves');
   same(kifu.step,       0,     'step');
@@ -187,8 +187,8 @@ test('prepare', 10, function() {
   kifu.suite_init.hirate();
 
   // -3334FU
-  kifu.moves.addMove([3, 3], [3, 4], 'FU', {black: false, str: '34foo'});
-  moves.addMove([3, 3], [3, 4], 'FU', {black: false, str: '34foo'});
+  kifu.moves.addMove([3, 3], [3, 4], 'FU', {is_black: false, str: '34foo'});
+  moves.addMove([3, 3], [3, 4], 'FU', {is_black: false, str: '34foo'});
   var move = moves.get(1);
   move['from']['piece'] = 'FU';
   ok(kifu.prepare(), 'prepare');
@@ -198,7 +198,7 @@ test('prepare', 10, function() {
   kifu.moves.addMove([2, 8], [7, 8], 'HI');
   moves.addMove([2, 8], [7, 8], 'HI');
   var move = moves.get(2);
-  move['black']         = true;
+  move['is_black']      = true;
   move['from']['piece'] = 'HI';
   move['str']           = '７八飛';
   ok(kifu.prepare(), 'prepare');
@@ -208,7 +208,7 @@ test('prepare', 10, function() {
   kifu.moves.addMove([8, 1], [0, 0], 'NK');
   moves.addMove([8, 1], [0, 0], 'NK');
   var move = moves.get(3);
-  move['black']         = false;
+  move['is_black']      = false;
   move['from']['piece'] = 'KE';
   move['to']['x']       = 7;
   move['to']['y']       = 8;
@@ -221,7 +221,7 @@ test('prepare', 10, function() {
   kifu.moves.addMove([7, 9], [0, 0], 'GI');
   moves.addMove([7, 9], [0, 0], 'GI');
   var move = moves.get(4);
-  move['black']         = true;
+  move['is_black']      = true;
   move['from']['piece'] = 'GI';
   move['to']['x']       = 7;
   move['to']['y']       = 8;
@@ -234,7 +234,7 @@ test('prepare', 10, function() {
   kifu.moves.addMove([0, 0], [5, 5], 'KA');
   moves.addMove([0, 0], [5, 5], 'KA');
   var move = moves.get(5);
-  move['black']         = false;
+  move['is_black']      = false;
   move['from']['piece'] = 'KA';
   move['str']           = '５五角打';
   ok(kifu.prepare(), 'prepare');

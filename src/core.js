@@ -90,9 +90,9 @@ Kifu.prototype.extend({
   },
 
   moveFirst: function() {
-    this.black = this.info.player_start == 'black';
-    this.step  = 0;
-    this.suite = this.suite_init.clone();
+    this.is_black = this.info.player_start == 'black';
+    this.step     = 0;
+    this.suite    = this.suite_init.clone();
     return this;
   },
 
@@ -114,7 +114,7 @@ Kifu.prototype.extend({
     var move = this.moves.get(this.step+1);
     if (move && move.type == 'move') {
       this.suite.move(move);
-      this.black = !move.black;
+      this.is_black = !move.is_black;
       this.step++;
     }
     return move;
@@ -133,7 +133,7 @@ Kifu.prototype.extend({
     var move = this.moves.get(this.step);
     if (move && move.type == 'move') {
       this.suite.moveReverse(move);
-      this.black = move.black;
+      this.is_black = move.is_black;
       this.step--
     }
     return move;
@@ -175,10 +175,7 @@ Kifu.prototype.extend({
     this.parser.parse();
     this.prepare();
 
-    this.black = this.info.player_start == 'black';
-    this.step  = 0;
-    this.suite = this.suite_init.clone();
-
+    this.moveFirst();
     return this;
   },
 
@@ -189,7 +186,7 @@ Kifu.prototype.extend({
       info.player_start = 'black';
     }
 
-    var black        = info.player_start == 'black';
+    var is_black     = info.player_start == 'black';
     var suite        = this.suite_init.clone();
     var move_records = this.moves.records;
     for (var i in move_records) {
@@ -200,8 +197,8 @@ Kifu.prototype.extend({
       var from      = move.from;
       var to        = move.to;
 
-      if (typeof move.black == 'undefined') {
-        move.black = black;
+      if (typeof move.is_black == 'undefined') {
+        move.is_black = is_black;
       }
 
       if (!from.piece) {
@@ -241,7 +238,7 @@ Kifu.prototype.extend({
       }
 
       suite.move(move);
-      black = !move.black;
+      is_black = !move.is_black;
     }
 
     return this;

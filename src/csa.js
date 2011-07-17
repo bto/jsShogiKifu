@@ -33,7 +33,7 @@ Kifu.Csa.prototype.extend({
       for (var x = 9; 1 <= x; x--) {
         var cell = board[x][y];
         if (cell) {
-          result += (cell.black ? '+' : '-') + cell.piece;
+          result += (cell.is_black ? '+' : '-') + cell.piece;
         } else {
           result += ' * ';
         }
@@ -131,7 +131,7 @@ Kifu.Csa.prototype.extend({
       case 'move':
         var from   = record.from;
         var to     = record.to;
-        var player = record.black ? '+' : '-';
+        var player = record.is_black ? '+' : '-';
         result += player + from.x + from.y + to.x + to.y + to.piece + "\n";
         if (record.period) {
           result += 'T' + record.period + "\n";
@@ -246,7 +246,7 @@ Kifu.Csa.prototype.extend({
       switch (value.charAt(0)) {
       case '+':
       case '-':
-        options.black = value.charAt(0) == '+' ? true : false;
+        options.is_black = value.charAt(0) == '+' ? true : false;
         value = value.substr(1);
         break;
       }
@@ -256,11 +256,11 @@ Kifu.Csa.prototype.extend({
 
     case '+':
     case '-':
-      var from = [line.charAt(1)-'0', line.charAt(2)-'0'];
-      var to   = [line.charAt(3)-'0', line.charAt(4)-'0'];
-      var piece = line.substr(5, 2);
-      var black = line.charAt(0) == '+' ? true : false;
-      kifu.moves.addMove(from, to, piece, {black: black});
+      var from     = [line.charAt(1)-'0', line.charAt(2)-'0'];
+      var to       = [line.charAt(3)-'0', line.charAt(4)-'0'];
+      var piece    = line.substr(5, 2);
+      var is_black = line.charAt(0) == '+' ? true : false;
+      kifu.moves.addMove(from, to, piece, {is_black: is_black});
       return true;
 
     case 'N':
@@ -286,7 +286,7 @@ Kifu.Csa.prototype.extend({
 
       case '+':
       case '-':
-        var black = line.charAt(1) == '+';
+        var is_black = line.charAt(1) == '+';
         for (var i = 0; ; i++) {
           var p_info = line.substr(2+i*4, 4);
           if (p_info.length < 4) {
@@ -296,9 +296,9 @@ Kifu.Csa.prototype.extend({
           var y     = p_info.charAt(1) - '0';
           var piece = p_info.substr(2);
           if (x == 0 && y == 0) {
-            kifu.suite_init.standDeploy(piece, black);
+            kifu.suite_init.standDeploy(piece, is_black);
           } else {
-            kifu.suite_init.cellDeploy(x, y, piece, black);
+            kifu.suite_init.cellDeploy(x, y, piece, is_black);
           }
         }
         return true;
@@ -312,17 +312,17 @@ Kifu.Csa.prototype.extend({
           var p_info = line.substr(2+i*3, 3);
           switch (p_info.charAt(0)) {
           case '+':
-            var black = true;
+            var is_black = true;
             break;
           case '-':
-            var black = false;
+            var is_black = false;
             break;
           default:
             continue;
           }
           var x     = 9 - i;
           var piece = p_info.substr(1, 2);
-          kifu.suite_init.cellDeploy(x, y, piece, black);
+          kifu.suite_init.cellDeploy(x, y, piece, is_black);
         }
         return true;
       }

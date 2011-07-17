@@ -123,7 +123,7 @@ Kifu.Kif.prototype.extend({
       for (var x = 9; 1 <= x; x--) {
         var cell = board[x][y];
         if (cell) {
-          result += cell.black ? ' ' : 'v';
+          result += cell.is_black ? ' ' : 'v';
 
           var piece = cell.piece;
           for (var name in board_piece_map) {
@@ -605,7 +605,7 @@ Kifu.Kif.prototype.extend({
     return true;
   },
 
-  parseStand: function(str, black) {
+  parseStand: function(str, is_black) {
     if (str == 'なし') {
       return true;
     }
@@ -619,7 +619,7 @@ Kifu.Kif.prototype.extend({
       if (!piece || !num) {
         continue;
       }
-      suite_init.standDeploy(piece, black, num);
+      suite_init.standDeploy(piece, is_black, num);
     }
 
     return true;

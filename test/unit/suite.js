@@ -43,7 +43,7 @@ test('cellDeploy, cellRemove', 34, function() {
   var stand  = Kifu.clone(suite.stand);
 
   // deploy +18FU
-  board[1][8] = {black: true, piece: 'FU'};
+  board[1][8] = {is_black: true, piece: 'FU'};
   pieces['FU'] = 17;
   ok(suite.cellDeploy(1, 8, 'FU', true), 'deploy +18FU');
   same(suite.board,  board,  'deploy +18FU board');
@@ -51,7 +51,7 @@ test('cellDeploy, cellRemove', 34, function() {
   same(suite.stand,  stand,  'deploy +18FU stand');
 
   // deploy -73KA
-  board[7][3] = {black: false, piece: 'KA'};
+  board[7][3] = {is_black: false, piece: 'KA'};
   pieces['KA'] = 1;
   ok(suite.cellDeploy(7, 3, 'KA', false), 'deploy -73KA' );
   same(suite.board,  board,  'deploy -73KA board');
@@ -65,7 +65,7 @@ test('cellDeploy, cellRemove', 34, function() {
   same(suite.stand,  stand,  'deploy +73KA stand');
 
   // deploy +74UM: success, deploy +75KA: fail(lack of pieces)
-  board[7][4] = {black: true, piece: 'UM'};
+  board[7][4] = {is_black: true, piece: 'UM'};
   pieces['KA'] = 0;
   ok(suite.cellDeploy(7, 4, 'UM', true), 'deploy +74UM');
   same(suite.cellDeploy(7, 5, 'KA', false), false, 'deploy +75KA');
@@ -107,13 +107,13 @@ test('cellDeploy, cellRemove', 34, function() {
 
 test('cellGet, cellSet, cellTrash', 10, function() {
   // +26KY
-  var piece = {black: true, piece: 'KY'};
+  var piece = {is_black: true, piece: 'KY'};
   same(suite.cellGet(2, 6), null, 'get 26');
   ok(suite.cellSet(2, 6, 'KY', true), 'set +26KY');
   same(suite.cellGet(2, 6), piece, 'get 26');
 
   // -26HI
-  var piece = {black: false, piece: 'HI'};
+  var piece = {is_black: false, piece: 'HI'};
   ok(suite.cellSet(2, 6, 'HI', false), 'set -26HI');
   same(suite.cellGet(2, 6), piece, 'get 26');
   same(suite.cellTrash(2, 6, 'KA'), false, 'trash 26KA');
@@ -133,95 +133,95 @@ test('clone', 2, function() {
 test('hirate', 4, function() {
   var board = {
     1: {
-      1: {black: false, piece: 'KY'},
+      1: {is_black: false, piece: 'KY'},
       2: null,
-      3: {black: false, piece: 'FU'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
+      7: {is_black: true, piece: 'FU'},
       8: null,
-      9: {black: true, piece: 'KY'}},
+      9: {is_black: true, piece: 'KY'}},
     2: {
-      1: {black: false, piece: 'KE'},
-      2: {black: false, piece: 'KA'},
-      3: {black: false, piece: 'FU'},
+      1: {is_black: false, piece: 'KE'},
+      2: {is_black: false, piece: 'KA'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
-      8: {black: true, piece: 'HI'},
-      9: {black: true, piece: 'KE'}},
+      7: {is_black: true, piece: 'FU'},
+      8: {is_black: true, piece: 'HI'},
+      9: {is_black: true, piece: 'KE'}},
     3: {
-      1: {black: false, piece: 'GI'},
+      1: {is_black: false, piece: 'GI'},
       2: null,
-      3: {black: false, piece: 'FU'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
+      7: {is_black: true, piece: 'FU'},
       8: null,
-      9: {black: true, piece: 'GI'}},
+      9: {is_black: true, piece: 'GI'}},
     4: {
-      1: {black: false, piece: 'KI'},
+      1: {is_black: false, piece: 'KI'},
       2: null,
-      3: {black: false, piece: 'FU'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
+      7: {is_black: true, piece: 'FU'},
       8: null,
-      9: {black: true, piece: 'KI'}},
+      9: {is_black: true, piece: 'KI'}},
     5: {
-      1: {black: false, piece: 'OU'},
+      1: {is_black: false, piece: 'OU'},
       2: null,
-      3: {black: false, piece: 'FU'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
+      7: {is_black: true, piece: 'FU'},
       8: null,
-      9: {black: true, piece: 'OU'}},
+      9: {is_black: true, piece: 'OU'}},
     6: {
-      1: {black: false, piece: 'KI'},
+      1: {is_black: false, piece: 'KI'},
       2: null,
-      3: {black: false, piece: 'FU'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
+      7: {is_black: true, piece: 'FU'},
       8: null,
-      9: {black: true, piece: 'KI'}},
+      9: {is_black: true, piece: 'KI'}},
     7: {
-      1: {black: false, piece: 'GI'},
+      1: {is_black: false, piece: 'GI'},
       2: null,
-      3: {black: false, piece: 'FU'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
+      7: {is_black: true, piece: 'FU'},
       8: null,
-      9: {black: true, piece: 'GI'}},
+      9: {is_black: true, piece: 'GI'}},
     8: {
-      1: {black: false, piece: 'KE'},
-      2: {black: false, piece: 'HI'},
-      3: {black: false, piece: 'FU'},
+      1: {is_black: false, piece: 'KE'},
+      2: {is_black: false, piece: 'HI'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
-      8: {black: true, piece: 'KA'},
-      9: {black: true, piece: 'KE'}},
+      7: {is_black: true, piece: 'FU'},
+      8: {is_black: true, piece: 'KA'},
+      9: {is_black: true, piece: 'KE'}},
     9: {
-      1: {black: false, piece: 'KY'},
+      1: {is_black: false, piece: 'KY'},
       2: null,
-      3: {black: false, piece: 'FU'},
+      3: {is_black: false, piece: 'FU'},
       4: null,
       5: null,
       6: null,
-      7: {black: true, piece: 'FU'},
+      7: {is_black: true, piece: 'FU'},
       8: null,
-      9: {black: true, piece: 'KY'}}
+      9: {is_black: true, piece: 'KY'}}
   };
 
   var pieces = {
@@ -251,20 +251,20 @@ test('move, moveReverse', 32, function() {
 
   // +2726FU
   board[2][7] = null;
-  board[2][6] = {black: true, piece: 'FU'};
+  board[2][6] = {is_black: true, piece: 'FU'};
   states.push({
     title:  '+2726FU',
     board:  Kifu.clone(board),
     pieces: Kifu.clone(pieces),
     stand:  Kifu.clone(stand),
     move:   {
-      black: true,
-      from:  {piece: 'FU', x: 2, y: 7},
-      to:    {piece: 'FU', x: 2, y: 6}}});
+      is_black: true,
+      from:     {piece: 'FU', x: 2, y: 7},
+      to:       {piece: 'FU', x: 2, y: 6}}});
 
   // -8288RY
   board[8][2] = null;
-  board[8][8] = {black: false, piece: 'RY'};
+  board[8][8] = {is_black: false, piece: 'RY'};
   stand['white']['KA'] = 1;
   states.push({
     title:  '+8288RY',
@@ -272,14 +272,14 @@ test('move, moveReverse', 32, function() {
     pieces: Kifu.clone(pieces),
     stand:  Kifu.clone(stand),
     move:   {
-      black: false,
-      stand: {piece: 'KA', stand: 'KA'},
-      from:  {piece: 'HI', x: 8, y: 2},
+      is_black: false,
+      stand:    {piece: 'KA', stand: 'KA'},
+      from:     {piece: 'HI', x: 8, y: 2},
       to:    {piece: 'RY', x: 8, y: 8}}});
 
   // +7988GI
   board[7][9] = null;
-  board[8][8] = {black: true, piece: 'GI'};
+  board[8][8] = {is_black: true, piece: 'GI'};
   stand['black']['HI'] = 1;
   states.push({
     title:  '+7988GI',
@@ -287,13 +287,13 @@ test('move, moveReverse', 32, function() {
     pieces: Kifu.clone(pieces),
     stand:  Kifu.clone(stand),
     move:  {
-      black: true,
-      stand: {piece: 'RY', stand: 'HI'},
-      from:  {piece: 'GI', x: 7, y: 9},
-      to:    {piece: 'GI', x: 8, y: 8}}});
+      is_black: true,
+      stand:    {piece: 'RY', stand: 'HI'},
+      from:     {piece: 'GI', x: 7, y: 9},
+      to:       {piece: 'GI', x: 8, y: 8}}});
 
   // -0055KA
-  board[5][5] = {black: false, piece: 'KA'};
+  board[5][5] = {is_black: false, piece: 'KA'};
   stand['white']['KA'] = 0;
   states.push({
     title:  '-0055KA',
@@ -301,9 +301,9 @@ test('move, moveReverse', 32, function() {
     pieces: Kifu.clone(pieces),
     stand:  Kifu.clone(stand),
     move:   {
-      black: false,
-      from:  {piece: 'KA', x: 0, y: 0},
-      to:    {piece: 'KA', x: 5, y: 5}}});
+      is_black: false,
+      from:     {piece: 'KA', x: 0, y: 0},
+      to:       {piece: 'KA', x: 5, y: 5}}});
 
   for (var i in states) {
     var state = states[i];

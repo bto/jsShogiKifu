@@ -22,9 +22,9 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   /*
    * functions
    */
-  var cellPieceSet = function(x, y, piece, black) {
-    var black_p = typeof black == 'string' ? black == 'black' : black;
-    render(jsbElementBoardCell(x, y), piece, black_p);
+  var cellPieceSet = function(x, y, piece, is_black) {
+    is_black = typeof is_black == 'string' ? is_black == 'black' : is_black;
+    render(jsbElementBoardCell(x, y), piece, is_black);
   };
 
   var cellClear = function(x, y) {
@@ -39,7 +39,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
       for (var y = 1; y <= 9; y++) {
         var piece = board[x][y];
         if (piece) {
-          cellPieceSet(x, y, piece.piece, piece.black);
+          cellPieceSet(x, y, piece.piece, piece.is_black);
         } else {
           cellClear(x, y);
         }
@@ -152,12 +152,12 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     return $('#jsb_' + id + '_' + config.suffix);
   };
 
-  var jsbElementStand = function(black, piece) {
+  var jsbElementStand = function(is_black, piece) {
     var player;
-    if (typeof black == 'string') {
-      player = black;
+    if (typeof is_black == 'string') {
+      player = is_black;
     } else {
-      player = black ? 'black' : 'white';
+      player = is_black ? 'black' : 'white';
     }
 
     var id = 'stand_' + player;
@@ -174,22 +174,22 @@ $.fn.shogiBoard = function(initial_kifu, options) {
       return;
     }
 
-    var from  = move.from;
-    var to    = move.to;
-    var black = move.black;
-    var piece = to.piece;
-    var stand = move.stand;
+    var from     = move.from;
+    var to       = move.to;
+    var is_black = move.is_black;
+    var piece    = to.piece;
+    var stand    = move.stand;
 
     if (from.x == 0) {
-      standRemove(black, piece);
+      standRemove(is_black, piece);
     } else {
       cellClear(from.x, from.y);
     }
 
-    cellPieceSet(to.x, to.y, piece, black);
+    cellPieceSet(to.x, to.y, piece, is_black);
 
     if (stand) {
-      standSet(black, stand.stand);
+      standSet(is_black, stand.stand);
     }
 
     lastMoveSet(to.x, to.y);
@@ -202,21 +202,21 @@ $.fn.shogiBoard = function(initial_kifu, options) {
       return;
     }
 
-    var from  = move.from;
-    var to    = move.to;
-    var black = move.black;
-    var piece = to.piece;
-    var stand = move.stand;
+    var from     = move.from;
+    var to       = move.to;
+    var is_black = move.is_black;
+    var piece    = to.piece;
+    var stand    = move.stand;
 
     if (from.x) {
-      cellPieceSet(from.x, from.y, from.piece, black);
+      cellPieceSet(from.x, from.y, from.piece, is_black);
     } else {
-      standSet(black, from.piece);
+      standSet(is_black, from.piece);
     }
 
     if (stand) {
-      cellPieceSet(to.x, to.y, stand.piece, !black);
-      standRemove(black, stand.stand);
+      cellPieceSet(to.x, to.y, stand.piece, !is_black);
+      standRemove(is_black, stand.stand);
     } else {
       cellClear(to.x, to.y);
     }
@@ -251,7 +251,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
           mark = "\u00a0";
         }
         var sp = i < 10 ? "\u00a0\u00a0" : i < 100 ? "\u00a0" : '';
-        var turn = move.black ? '▲' : '△';
+        var turn = move.is_black ? '▲' : '△';
         ele.append($('<option>', {value: i}).
 	           text(mark + ' ' + sp + i + '.' + ' ' + turn + move.str));
       }
@@ -303,24 +303,24 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     jsbElementById('player_white').text('▽'+info.player_white)
   };
 
-  var standRemove = function(black, piece) {
-    var black_p = typeof black == 'string' ? black == 'black' : black;
-    jsbElementStand(black, piece).
+  var standRemove = function(is_black, piece) {
+    is_black = typeof is_black == 'string' ? is_black == 'black' : is_black;
+    jsbElementStand(is_black, piece).
       jsbSetNumber(function() { return this.jsbGetNumber() - 1; }).
-      each(function() { render($(this), piece, black_p); });
+      each(function() { render($(this), piece, is_black); });
   };
 
-  var standRemoveAll = function(black) {
+  var standRemoveAll = function(is_black) {
     for (var piece in Kifu.Suite.standEmpty()) {
-      jsbElementStand(black, piece).jsbSetStand().jsbSetNumber(0).empty();
+      jsbElementStand(is_black, piece).jsbSetStand().jsbSetNumber(0).empty();
     }
   };
 
-  var standSet = function(black, piece) {
-    var black_p = typeof black == 'string' ? black == 'black' : black;
-    render(jsbElementStand(black, piece).
+  var standSet = function(is_black, piece) {
+    is_black = typeof is_black == 'string' ? is_black == 'black' : is_black;
+    render(jsbElementStand(is_black, piece).
            jsbSetNumber(function() { return this.jsbGetNumber() + 1; }),
-           piece, black_p);
+           piece, is_black);
   };
 
   var registerFunctions = function() {
@@ -377,14 +377,14 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   var imageRenderer =
     function(images_url) {
       var SPACE_IMAGE_URL = './space.gif';
-      var pieceImgUrl = function(piece, black_p) {
+      var pieceImgUrl = function(piece, is_black) {
         if (! piece) {
           return SPACE_IMAGE_URL;
         }
         else {
           var name = piece.toLowerCase();
           if (name == 'ou') {
-	    if (black_p) {
+	    if (is_black) {
 	      name = config.black_king;
 	    }
 	    else {
@@ -392,25 +392,25 @@ $.fn.shogiBoard = function(initial_kifu, options) {
 	    }
           }
           else {
-            if (!black_p) {
+            if (!is_black) {
               name += '_r';
             }
           }
           return images_url + '/' + name + '.png';
         }
       };
-      var createImage = function(piece, black_p) {
-        var image_url = pieceImgUrl(piece, black_p);
+      var createImage = function(piece, is_black) {
+        var image_url = pieceImgUrl(piece, is_black);
         return $('<img>', {src: image_url}).
           width(config.piece_width).
           height(config.piece_height);
       };
-      return function(cell, piece, black_p) {
+      return function(cell, piece, is_black) {
         if (cell.jsbIsStand()) {
           var diff = cell.jsbGetNumber() - cell.children().length;
           if (diff > 0) {
             while (diff-- > 0) {
-              cell.append(createImage(piece, black_p));
+              cell.append(createImage(piece, is_black));
             }
           } else if (0 > diff) {
             while (0 > diff++) {
@@ -418,7 +418,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
             }
           }
         } else {
-          var img = createImage(piece, black_p),
+          var img = createImage(piece, is_black),
               cw = config.board_cell_width,
               ch = config.board_cell_height,
               iw = img.width(),
@@ -490,12 +490,12 @@ $.fn.shogiBoard = function(initial_kifu, options) {
         return (q >= 1 ? me(q) : '') + me(10) + me(n % 10);
       };
 
-      var createPiece = function(piece, number, black_p) {
+      var createPiece = function(piece, number, is_black) {
         if (piece) {
           if (number == 0)
             return '';
           var text = pieceToString[piece];
-          if (piece == 'OU' && config[black_p ? 'black_king' : 'white_king'] == 'jewel_king')
+          if (piece == 'OU' && config[is_black ? 'black_king' : 'white_king'] == 'jewel_king')
             text = '玉';
           var numPart = [];
           if (number >= 2) {
@@ -504,7 +504,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
                    });
           }
           return $('<div class="jsb_text_piece">').
-            addClass(black_p ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
+            addClass(is_black ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
             append(document.createTextNode(text), numPart).
             css({
                 width: config.board_cell_width,
@@ -521,11 +521,11 @@ $.fn.shogiBoard = function(initial_kifu, options) {
           });
       };
 
-      return function(cell, piece, black_p) {
+      return function(cell, piece, is_black) {
         if (cell.jsbIsStand()) {
-          cell.html(createPiece(piece, cell.jsbGetNumber(), black_p));
+          cell.html(createPiece(piece, cell.jsbGetNumber(), is_black));
         } else {
-          cell.html(createPiece(piece, 1, black_p));
+          cell.html(createPiece(piece, 1, is_black));
         }
       };
     };
