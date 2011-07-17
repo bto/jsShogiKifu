@@ -159,7 +159,7 @@ Kifu.Csa.prototype.extend({
   },
 
   outputStand: function(stand) {
-    var result = 'P';
+    var result = '';
 
     var players = ['black', 'white'];
     for (var p in players) {
@@ -175,8 +175,11 @@ Kifu.Csa.prototype.extend({
       }
     }
 
-    result += "\n";
-    return result;
+    if (result) {
+      return 'P' + result + "\n";
+    } else {
+      return '';
+    }
   },
 
   outputSuite: function(suite, info) {
