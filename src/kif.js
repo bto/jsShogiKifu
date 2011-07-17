@@ -366,9 +366,9 @@ Kifu.Kif.prototype.extend({
     }
 
     var result = '';
-    result += '後手の持ち駒：' + this.outputStand(suite.stand['white']);
+    result += '後手の持ち駒：' + this.outputStand(suite.stand.white);
     result += this.outputBoard(suite.board);
-    result += '先手の持ち駒：' + this.outputStand(suite.stand['black']);
+    result += '先手の持ち駒：' + this.outputStand(suite.stand.black);
     return result;
   },
 

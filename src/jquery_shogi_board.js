@@ -39,7 +39,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
       for (var y = 1; y <= 9; y++) {
         var piece = board[x][y];
         if (piece) {
-          cellPieceSet(x, y, piece['piece'], piece['black']);
+          cellPieceSet(x, y, piece.piece, piece.black);
         } else {
           cellClear(x, y);
         }
@@ -67,7 +67,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   };
 
   var commentSet = function() {
-    var comment = kifu.moves.get(kifu.step)['comment'];
+    var comment = kifu.moves.get(kifu.step).comment;
     if (comment) {
       jsbElementById('comment').text(comment);
     } else {
@@ -85,26 +85,26 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   };
 
   var initialize = function(template) {
-    var contents_id = '#jsb_contents_' + config['suffix'];
+    var contents_id = '#jsb_contents_' + config.suffix;
 
-    config['this'].append(template.replace(/%suffix%/g, config['suffix']));
+    config.this.append(template.replace(/%suffix%/g, config.suffix));
 
-    if (config['board_cell_width']) {
-      $(contents_id + ' .jsb_board td').width(config['board_cell_width']);
+    if (config.board_cell_width) {
+      $(contents_id + ' .jsb_board td').width(config.board_cell_width);
     }
-    if (config['board_cell_height']) {
-      $(contents_id + ' .jsb_board td').height(config['board_cell_height']);
+    if (config.board_cell_height) {
+      $(contents_id + ' .jsb_board td').height(config.board_cell_height);
     }
 
-    if (config['piece_width']) {
-      var width = getNumberPart(config['piece_width']);
+    if (config.piece_width) {
+      var width = getNumberPart(config.piece_width);
       if (width) {
         width = width * 2 + 5;
         $(contents_id + ' .jsb_stand').width(width + 'px');
       }
     }
-    else if (config['board_cell_width']) {
-      var width = getNumberPart(config['board_cell_width']);
+    else if (config.board_cell_width) {
+      var width = getNumberPart(config.board_cell_width);
       if (width) {
 	  width = (width - 4) * 2 + 5;
         $(contents_id + ' .jsb_stand').width(width + 'px');
@@ -129,8 +129,8 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     registerFunctions();
     moveStringsSet();
 
-    if (config['move_to']) {
-      var m = config['move_to'];
+    if (config.move_to) {
+      var m = config.move_to;
       var len = kifu.moves.getLastMoveNum();
       if (m == 'last' || m > len) m = len;
 
@@ -149,7 +149,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   };
 
   var jsbElementById = function(id) {
-    return $('#jsb_' + id + '_' + config['suffix']);
+    return $('#jsb_' + id + '_' + config.suffix);
   };
 
   var jsbElementStand = function(black, piece) {
@@ -170,55 +170,55 @@ $.fn.shogiBoard = function(initial_kifu, options) {
 
   var moveNext = function() {
     var move = kifu.moveNext();
-    if (!move || move['type'] != 'move') {
+    if (!move || move.type != 'move') {
       return;
     }
 
-    var from  = move['from'];
-    var to    = move['to'];
-    var black = move['black'];
-    var piece = to['piece'];
-    var stand = move['stand'];
+    var from  = move.from;
+    var to    = move.to;
+    var black = move.black;
+    var piece = to.piece;
+    var stand = move.stand;
 
-    if (from['x'] == 0) {
+    if (from.x == 0) {
       standRemove(black, piece);
     } else {
-      cellClear(from['x'], from['y']);
+      cellClear(from.x, from.y);
     }
 
-    cellPieceSet(to['x'], to['y'], piece, black);
+    cellPieceSet(to.x, to.y, piece, black);
 
     if (stand) {
-      standSet(black, stand['stand']);
+      standSet(black, stand.stand);
     }
 
-    lastMoveSet(to['x'], to['y']);
+    lastMoveSet(to.x, to.y);
     updateNavigation();
   };
 
   var movePrev = function() {
     var move = kifu.movePrev();
-    if (!move || move['type'] != 'move') {
+    if (!move || move.type != 'move') {
       return;
     }
 
-    var from  = move['from'];
-    var to    = move['to'];
-    var black = move['black'];
-    var piece = to['piece'];
-    var stand = move['stand'];
+    var from  = move.from;
+    var to    = move.to;
+    var black = move.black;
+    var piece = to.piece;
+    var stand = move.stand;
 
-    if (from['x']) {
-      cellPieceSet(from['x'], from['y'], from['piece'], black);
+    if (from.x) {
+      cellPieceSet(from.x, from.y, from.piece, black);
     } else {
-      standSet(black, from['piece']);
+      standSet(black, from.piece);
     }
 
     if (stand) {
-      cellPieceSet(to['x'], to['y'], stand['piece'], !black);
-      standRemove(black, stand['stand']);
+      cellPieceSet(to.x, to.y, stand.piece, !black);
+      standRemove(black, stand.stand);
     } else {
-      cellClear(to['x'], to['y']);
+      cellClear(to.x, to.y);
     }
 
     setCurrToLastMove();
@@ -240,7 +240,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     var nsp, mark;
     for (var i in move_records) {
       var move = move_records[i];
-      if (move['str']) {
+      if (move.str) {
         var comment = move.comment;
         if (comment && comment.length > 0) {
           if (comment.indexOf('※') >= 0) 
@@ -253,7 +253,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
         var sp = i < 10 ? "\u00a0\u00a0" : i < 100 ? "\u00a0" : '';
         var turn = move.black ? '▲' : '△';
         ele.append($('<option>', {value: i}).
-	           text(mark + ' ' + sp + i + '.' + ' ' + turn + move['str']));
+	           text(mark + ' ' + sp + i + '.' + ' ' + turn + move.str));
       }
     }
 
@@ -272,7 +272,7 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   var lastMoveCell = null;
 
   var lastMoveSet = function(x, y) {
-    var color = config['highlight_last_move'];
+    var color = config.highlight_last_move;
     var cell = jsbElementBoardCell(x, y);
     if (! color) return ;
     if (cell == lastMoveCell) return ;
@@ -289,8 +289,8 @@ $.fn.shogiBoard = function(initial_kifu, options) {
   var setCurrToLastMove = function() {
     var curr = kifu.moveCurrent();
     if (curr) {
-      var to = curr['to'];
-      lastMoveSet(to['x'], to['y']);
+      var to = curr.to;
+      lastMoveSet(to.x, to.y);
     }
     else {
       lastMoveClear();
@@ -299,8 +299,8 @@ $.fn.shogiBoard = function(initial_kifu, options) {
 
   var playerSet = function() {
     var info = kifu.info;
-    jsbElementById('player_black').text('▲'+info['player_black'])
-    jsbElementById('player_white').text('▽'+info['player_white'])
+    jsbElementById('player_black').text('▲'+info.player_black)
+    jsbElementById('player_white').text('▽'+info.player_white)
   };
 
   var standRemove = function(black, piece) {
@@ -385,10 +385,10 @@ $.fn.shogiBoard = function(initial_kifu, options) {
           var name = piece.toLowerCase();
           if (name == 'ou') {
 	    if (black_p) {
-	      name = config['black_king'];
+	      name = config.black_king;
 	    }
 	    else {
-	      name = config['white_king'] + '_r';
+	      name = config.white_king + '_r';
 	    }
           }
           else {
@@ -402,8 +402,8 @@ $.fn.shogiBoard = function(initial_kifu, options) {
       var createImage = function(piece, black_p) {
         var image_url = pieceImgUrl(piece, black_p);
         return $('<img>', {src: image_url}).
-          width(config['piece_width']).
-          height(config['piece_height']);
+          width(config.piece_width).
+          height(config.piece_height);
       };
       return function(cell, piece, black_p) {
         if (cell.jsbIsStand()) {
@@ -419,8 +419,8 @@ $.fn.shogiBoard = function(initial_kifu, options) {
           }
         } else {
           var img = createImage(piece, black_p),
-              cw = config['board_cell_width'],
-              ch = config['board_cell_height'],
+              cw = config.board_cell_width,
+              ch = config.board_cell_height,
               iw = img.width(),
               ih = img.height(),
               ml = Math.ceil((cw - iw) / 2),
@@ -507,17 +507,17 @@ $.fn.shogiBoard = function(initial_kifu, options) {
             addClass(black_p ? 'jsb_text_piece_black' : 'jsb_text_piece_white').
             append(document.createTextNode(text), numPart).
             css({
-                width: config['board_cell_width'],
+                width: config.board_cell_width,
                 'font-size': fontsize,
-                'line-height': config['board_cell_height']
+                'line-height': config.board_cell_height
             });
         }
         return $('<div class="jsb_text_piece">').
           html('<br>').
           css({
-              width: config['board_cell_width'],
+              width: config.board_cell_width,
               'font-size': fontsize,
-              'line-height': config['board_cell_height']
+              'line-height': config.board_cell_height
           });
       };
 
@@ -546,39 +546,39 @@ $.fn.shogiBoard = function(initial_kifu, options) {
     $.extend(config, options);
   }
 
-  if (config['piece_image_width']) {
-    config['piece_width'] = config['piece_image_width'];
+  if (config.piece_image_width) {
+    config.piece_width = config.piece_image_width;
   }
-  if (config['piece_image_height']) {
-    config['piece_height'] = config['piece_image_height'];
+  if (config.piece_image_height) {
+    config.piece_height = config.piece_image_height;
   }
 
-  config['this'] = this;
+  config.this = this;
 
   _suffix++;
-  config['suffix'] = _suffix;
+  config.suffix = _suffix;
 
-  render = config['renderer'];
+  render = config.renderer;
   switch (render) {
   case 'image':
-    render = imageRenderer(config['images_url'] || config['url_prefix'] + '/' + 'images');
+    render = imageRenderer(config.images_url || config.url_prefix + '/' + 'images');
     break;
   case 'text':
-    render = textRenderer(config['piece_width']);
+    render = textRenderer(config.piece_width);
     break;
   }
 
-  if (config['template_id']) {
-    initialize($('#'+config['template_id']).html());
-  } else if (config['template_url']) {
+  if (config.template_id) {
+    initialize($('#'+config.template_id).html());
+  } else if (config.template_url) {
     var ajax_opts = {};
-    ajax_opts['dataType'] = 'text';
-    ajax_opts['type']     = 'GET';
-    ajax_opts['url']      = config['template_url'];
-    ajax_opts['success']  = initialize;
+    ajax_opts.dataType = 'text';
+    ajax_opts.type     = 'GET';
+    ajax_opts.url      = config.template_url;
+    ajax_opts.success  = initialize;
     $.ajax(ajax_opts);
-  } else if (config['template_src']) {
-    initialize(config['template_src']);
+  } else if (config.template_src) {
+    initialize(config.template_src);
   } else {
     initialize(_html);
   }
