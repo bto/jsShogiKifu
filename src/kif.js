@@ -643,15 +643,17 @@ Kifu.Kif.prototype.extend({
     var kifu = this.kifu;
     var info = kifu.info;
 
-    var handicap = info.handicap;
-    if (handicap) {
-      if (this._board_setup) {
-        delete info.handicap;
-      } else {
-        kifu.suite_init.setup(handicap);
-        if (handicap != 'Even') {
-          info.player_start = 'white';
-        }
+    if (this._board_setup) {
+      delete info.handicap;
+    } else {
+      if (!info.handicap) {
+        info.handicap = 'Even';
+      }
+
+      var handicap = info.handicap;
+      kifu.suite_init.setup(handicap);
+      if (handicap != 'Even') {
+        info.player_start = 'white';
       }
     }
   },
