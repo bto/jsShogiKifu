@@ -158,6 +158,13 @@ Kifu.prototype.extend({
     }
   },
 
+  output: function(format)
+  {
+    var klass  = Kifu.capitalize(format);
+    var parser = Kifu[klass](this);
+    return parser.output();
+  },
+
   parse: function(format) {
     if (format) {
       this.info.format = format;

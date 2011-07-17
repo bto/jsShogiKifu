@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+
+<body>
+<h2>棋譜形式変換サンプル</h2>
+<table>
+<tr>
+  <td colspan="2">
+    変換元棋譜形式:
+    <select id="kifu_from_format">
+      <option value="csa">CSA</option>
+      <option value="kif">KIF</option>
+    </select>
+    変換先棋譜形式:
+    <select id="kifu_to_format">
+      <option value="csa">CSA</option>
+      <option value="kif">KIF</option>
+    </select>
+    <input type="button" value="変換" onclick="convert()" />
+  </td>
+</tr>
+<tr>
+<td>
+  変換元棋譜:<br />
+  <textarea id="kifu_from_source" cols="50" rows="50"></textarea>
+</td>
+<td>
+  変換先棋譜:<br />
+  <textarea id="kifu_to_source" cols="50" rows="50"></textarea>
+</td>
+</tr></table>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../dist/kifu.js"></script>
+<script><!--
+  function convert() {
+    var from_format = $('#kifu_from_format').val();
+    var from_source = $('#kifu_from_source').val();
+    var kifu = Kifu(from_source, from_format);
+
+    var to_format = $('#kifu_to_format').val();
+    var to_source = kifu.output(to_format);
+    $('#kifu_to_source').val(to_source);
+  };
+--></script>
+</body>
+</html>
