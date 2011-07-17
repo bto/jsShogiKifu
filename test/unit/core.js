@@ -97,8 +97,10 @@ test('moveNext, movePrev', 31, function() {
   var kifu = Kifu('V2.2');
   kifu.suite_init.hirate();
   kifu.parse('csa');
-  kifu.moves.addMove([2, 7], [2, 6], 'FU', {is_black: true});
-  kifu.moves.addMove([3, 3], [3, 4], 'FU', {is_black: false});
+  kifu.moves.addMove(
+    {from: {x: 2, y: 7}, to: {x: 2, y: 6, piece: 'FU'}, is_black: true});
+  kifu.moves.addMove(
+    {from: {x: 3, y: 3}, to: {x: 3, y: 4, piece: 'FU'}, is_black: false});
   var is_black = kifu.is_black;
   var moves    = kifu.moves.clone();
   var step     = kifu.step;
@@ -187,16 +189,20 @@ test('prepare', 10, function() {
   kifu.suite_init.hirate();
 
   // -3334FU
-  kifu.moves.addMove([3, 3], [3, 4], 'FU', {is_black: false, str: '34foo'});
-  moves.addMove([3, 3], [3, 4], 'FU', {is_black: false, str: '34foo'});
+  kifu.moves.addMove(
+    {from: {x: 3, y: 3}, to: {x: 3, y: 4, piece: 'FU'},
+    is_black: false, str: '34foo'});
+  moves.addMove(
+    {from: {x: 3, y: 3}, to: {x: 3, y: 4, piece: 'FU'},
+    is_black: false, str: '34foo'});
   var move = moves.get(1);
   move.from.piece = 'FU';
   ok(kifu.prepare(), 'prepare');
   same(kifu.moves, moves, '-3334FU');
 
   // 2878HI
-  kifu.moves.addMove([2, 8], [7, 8], 'HI');
-  moves.addMove([2, 8], [7, 8], 'HI');
+  kifu.moves.addMove({from: {x: 2, y: 8}, to: {x: 7, y: 8, piece: 'HI'}});
+  moves.addMove({from: {x: 2, y: 8}, to: {x: 7, y: 8, piece: 'HI'}});
   var move = moves.get(2);
   move.is_black   = true;
   move.from.piece = 'HI';
@@ -205,8 +211,8 @@ test('prepare', 10, function() {
   same(kifu.moves, moves, '2878HI');
 
   // 8100NK
-  kifu.moves.addMove([8, 1], [0, 0], 'NK');
-  moves.addMove([8, 1], [0, 0], 'NK');
+  kifu.moves.addMove({from: {x: 8, y: 1}, to: {x: 0, y: 0, piece: 'NK'}});
+  moves.addMove({from: {x: 8, y: 1}, to: {x: 0, y: 0, piece: 'NK'}});
   var move = moves.get(3);
   move.is_black   = false;
   move.from.piece = 'KE';
@@ -218,8 +224,8 @@ test('prepare', 10, function() {
   same(kifu.moves, moves, '8100NK');
 
   // 7900GI
-  kifu.moves.addMove([7, 9], [0, 0], 'GI');
-  moves.addMove([7, 9], [0, 0], 'GI');
+  kifu.moves.addMove({from: {x: 7, y: 9}, to: {x: 0, y: 0, piece: 'GI'}});
+  moves.addMove({from: {x: 7, y: 9}, to: {x: 0, y: 0, piece: 'GI'}});
   var move = moves.get(4);
   move.is_black   = true;
   move.from.piece = 'GI';
@@ -231,8 +237,8 @@ test('prepare', 10, function() {
   same(kifu.moves, moves, '7900GI');
 
   // 0055KA
-  kifu.moves.addMove([0, 0], [5, 5], 'KA');
-  moves.addMove([0, 0], [5, 5], 'KA');
+  kifu.moves.addMove({from: {x: 0, y: 0}, to: {x: 5, y: 5, piece: 'KA'}});
+  moves.addMove({from: {x: 0, y: 0}, to: {x: 5, y: 5, piece: 'KA'}});
   var move = moves.get(5);
   move.is_black   = false;
   move.from.piece = 'KA';

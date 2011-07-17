@@ -262,7 +262,8 @@ test('parse moves', 20, function() {
   same(parser.kifu.moves, moves, line+' move');
 
   // '+2726FU'
-  moves.addMove([2, 7], [2, 6], 'FU', {is_black: true});
+  moves.addMove(
+    {from: {x: 2, y: 7}, to: {x: 2, y: 6, piece: 'FU'}, is_black: true});
   var line = '+2726FU';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
@@ -280,7 +281,8 @@ test('parse moves', 20, function() {
   same(parser.kifu.moves, moves, line+' move');
 
   // '-0055KA'
-  moves.addMove([0, 0], [5, 5], 'KA', {is_black: false});
+  moves.addMove(
+    {from: {x: 0, y: 0}, to: {x: 5, y: 5, piece: 'KA'}, is_black: false});
   var line = '-0055KA';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
@@ -377,9 +379,11 @@ T6\n\
   info.opening      = 'YAGURA';
   info.player_start = 'black';
   suite.hirate();
-  moves.addMove([2, 7], [2, 6], 'FU', {is_black: true});
+  moves.addMove(
+    {from: {x: 2, y: 7}, to: {x: 2, y: 6, piece: 'FU'}, is_black: true});
   moves.addPeriod(12);
-  moves.addMove([3, 3], [3, 4], 'FU', {is_black: false});
+  moves.addMove(
+    {from: {x: 3, y: 3}, to: {x: 3, y: 4, piece: 'FU'}, is_black: false});
   moves.addPeriod(6);
   moves.addSpecial('CHUDAN');
 

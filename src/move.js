@@ -17,13 +17,11 @@ Kifu.Move.prototype.extend({
     return this;
   },
 
-  addMove: function(from, to, piece, options) {
+  addMove: function(params) {
     var move = this.newMove();
-    move.from = {x: from[0], y: from[1]};
-    move.to   = {piece: piece, x: to[0], y: to[1]};
     move.type = 'move';
-    for (var property in options) {
-      move[property] = options[property];
+    for (var property in params) {
+      move[property] = params[property];
     }
     return this;
   },
@@ -71,15 +69,13 @@ Kifu.Move.prototype.extend({
     return move;
   },
 
-  setMove: function(num, from, to, piece, options) {
+  setMove: function(num, params) {
     var records = this.records;
     records[num] || (records[num] = {});
     var move = records[num];
-    move.from = {x: from[0], y: from[1]};
-    move.to   = {piece: piece, x: to[0], y: to[1]};
     move.type = 'move';
-    for (var property in options) {
-      move[property] = options[property];
+    for (var property in params) {
+      move[property] = params[property];
     }
     return this;
   }

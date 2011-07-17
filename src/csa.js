@@ -259,11 +259,12 @@ Kifu.Csa.prototype.extend({
 
     case '+':
     case '-':
-      var from     = [line.charAt(1)-'0', line.charAt(2)-'0'];
-      var to       = [line.charAt(3)-'0', line.charAt(4)-'0'];
-      var piece    = line.substr(5, 2);
-      var is_black = line.charAt(0) == '+' ? true : false;
-      kifu.moves.addMove(from, to, piece, {is_black: is_black});
+      var params = {};
+      params.from     = {x: line.charAt(1)-'0', y: line.charAt(2)-'0'};
+      params.to       = {x: line.charAt(3)-'0', y: line.charAt(4)-'0'};
+      params.to.piece = line.substr(5, 2);
+      params.is_black = line.charAt(0) == '+' ? true : false;
+      kifu.moves.addMove(params);
       return true;
 
     case 'N':

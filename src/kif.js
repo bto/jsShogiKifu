@@ -567,9 +567,9 @@ Kifu.Kif.prototype.extend({
       return true;
     }
 
-    var num   = parseInt(RegExp.$1);
-    var move  = RegExp.$2;
-    var moves = this.kifu.moves;
+    var num    = parseInt(RegExp.$1);
+    var move   = RegExp.$2;
+    var moves  = this.kifu.moves;
 
     switch (this.strip(move)) {
     case '投了':
@@ -589,18 +589,19 @@ Kifu.Kif.prototype.extend({
       return true;
     }
 
-    var to = [kifu_map[move.charAt(0)], kifu_map[move.charAt(1)]];
+    var params = {}
+    params.to = {x: kifu_map[move.charAt(0)], y: kifu_map[move.charAt(1)]};
     if (move.substr(2).match(/(.*)\(([1-9])([1-9])\)/)) {
-      var piece = kifu_map[RegExp.$1];
-      var from  = [parseInt(RegExp.$2), parseInt(RegExp.$3)];
+      params.to.piece = kifu_map[RegExp.$1];
+      params.from     = {x: parseInt(RegExp.$2), y: parseInt(RegExp.$3)};
       move.match(/(.*)\(/);
-      var str   = RegExp.$1;
+      params.str      = RegExp.$1;
     } else {
-      var piece = kifu_map[move.charAt(2)];
-      var from  = [0, 0];
-      var str   = move;
+      params.to.piece = kifu_map[move.charAt(2)];
+      params.from     = {x: 0, y: 0};
+      params.str      = move;
     }
-    moves.setMove(num, from, to, piece, {str: str});
+    moves.setMove(num, params);
 
     return true;
   },

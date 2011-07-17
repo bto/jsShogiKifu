@@ -114,7 +114,8 @@ test('parse moves', 16, function() {
   same(parser.kifu.moves, moves, line+' move');
 
   //    1 ７六歩(77)   ( 0:00/00:00:00)
-  moves.addMove([7, 7], [7, 6], 'FU', {str: '７六歩'});
+  moves.addMove(
+    {from: {x: 7, y: 7}, to: {x: 7, y: 6, piece: 'FU'}, str: '７六歩'});
   var line = "   1 ７六歩(77)   ( 0:00/00:00:00)";
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
@@ -126,19 +127,22 @@ test('parse moves', 16, function() {
   same(parser.kifu.moves, moves, line+' move');
 
   //    2 同　歩(73)   +
-  moves.addMove([7, 3], [0, 0], 'FU', {str: '同　歩'});
+  moves.addMove(
+    {from: {x: 7, y: 3}, to: {x: 0, y: 0, piece: 'FU'}, str: '同　歩'});
   var line = "   2 同　歩(73)   +";
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
 
   //    3 ５五角打     
-  moves.addMove([0, 0], [5, 5], 'KA', {str: '５五角打'});
+  moves.addMove(
+    {from: {x: 0, y: 0}, to: {x: 5, y: 5, piece: 'KA'}, str: '５五角打'});
   var line = "   3 ５五角打     ";
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');
 
   //    4 ８八飛成(82)
-  moves.addMove([8, 2], [8, 8], 'RY', {str: '８八飛成'});
+  moves.addMove(
+    {from: {x: 8, y: 2}, to: {x: 8, y: 8, piece: 'RY'}, str: '８八飛成'});
   var line = "   4 ８八飛成(82)";
   ok(parser.parseByLine(line), line);
   same(parser.kifu.moves, moves, line+' move');

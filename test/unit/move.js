@@ -28,7 +28,7 @@ test('addComment', 11, function() {
   same(moves.get(0), move1, 'comment2 move1');
 
   // comment3
-  moves.addMove([2, 7], [2, 6], 'FU');
+  moves.addMove({from: {x: 2, y: 7}, to: {x: 2, y: 6, piece: 'FU'}});
   var move2 = Kifu.clone(moves.get(1));
   move2.comment = "comment3\n";
   ok(moves.addComment('comment3'), 'comment3');
@@ -56,7 +56,8 @@ test('addMove', 6, function() {
     to:       {piece: 'FU', x: 2, y: 6},
     type:     'move'};
   records.push(move);
-  moves.addMove([2, 7], [2, 6], 'FU', {is_black: true});
+  moves.addMove({
+    from: {x: 2, y: 7}, to: {x: 2, y: 6, piece: 'FU'}, is_black: true});
   same(moves.get(1), move, '+2726FU');
 
   // -2326FU
@@ -66,7 +67,8 @@ test('addMove', 6, function() {
     to:       {piece: 'FU', x: 2, y: 6},
     type:     'move'};
   records.push(move);
-  moves.addMove([2, 3], [2, 6], 'FU', {is_black: false});
+  moves.addMove({
+    from: {x: 2, y: 3}, to: {x: 2, y: 6, piece: 'FU'}, is_black: false});
   same(moves.get(2), move, '-2326FU');
 
   // 2800HI
@@ -76,7 +78,8 @@ test('addMove', 6, function() {
     to:    {piece: 'HI', x: 0, y: 0},
     type:  'move'};
   records.push(move);
-  moves.addMove([2, 8], [0, 0], 'HI', {str: '同　飛'});
+  moves.addMove({
+    from: {x: 2, y: 8}, to: {x: 0, y: 0, piece: 'HI'}, str: '同　飛'});
   same(moves.get(3), move, '2800HI');
 
   // 0025FU
@@ -86,7 +89,8 @@ test('addMove', 6, function() {
     to:    {piece: 'FU', x: 2, y: 5},
     type:  'move'};
   records.push(move);
-  moves.addMove([0, 0], [2, 5], 'FU', {str: '２五歩打'});
+  moves.addMove({
+    from: {x: 0, y: 0}, to: {x: 2, y: 5, piece: 'FU'}, str: '２五歩打'});
   same(moves.get(4), move, '0025FU');
 
   // 2600HI
@@ -98,7 +102,8 @@ test('addMove', 6, function() {
   records.push({type: 'MATTA'});
   records.push(move);
   moves.addSpecial('MATTA');
-  moves.addMove([2, 6], [0, 0], 'HI', {str: '同　飛'});
+  moves.addMove({
+    from: {x: 2, y: 6}, to: {x: 0, y: 0, piece: 'HI'}, str: '同　飛'});
   same(moves.get(6), move, '2600HI');
 
   // check records
