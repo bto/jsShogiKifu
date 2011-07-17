@@ -13,13 +13,13 @@ test('parse version', 4, function() {
   var info = Kifu().info;
 
   // version 2
-  info['version'] = '2';
+  info.version = '2';
   var line = 'V2';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // version 2.2
-  info['version'] = '2.2';
+  info.version = '2.2';
   var line = 'V2.2';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
@@ -29,13 +29,13 @@ test('parse player', 4, function() {
   var info = Kifu().info;
 
   // black player
-  info['player_black'] = '大山康晴';
+  info.player_black = '大山康晴';
   var line = 'N+大山康晴';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // white player
-  info['player_white'] = '升田幸三';
+  info.player_white = '升田幸三';
   var line = 'N-升田幸三';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
@@ -45,55 +45,55 @@ test('parse info', 18, function() {
   var info = Kifu().info;
 
   // EVENT
-  info['event'] = '名人戦';
+  info.event = '名人戦';
   var line = '$EVENT:名人戦';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // SITE
-  info['site'] = '陣屋';
+  info.site = '陣屋';
   var line = '$SITE:陣屋';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // START_TIME
-  info['start_time'] = new Date(2011, 3, 7, 9, 45, 10);
+  info.start_time = new Date(2011, 3, 7, 9, 45, 10);
   var line = '$START_TIME:2011/04/07 09:45:10';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // START_TIME 2
-  info['start_time'] = new Date(2010, 9, 25);
+  info.start_time = new Date(2010, 9, 25);
   var line = '$START_TIME:2010/10/25';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // END_TIME
-  info['end_time'] = new Date(2011, 3, 8, 10, 20, 30);
+  info.end_time = new Date(2011, 3, 8, 10, 20, 30);
   var line = '$END_TIME:2011/04/08 10:20:30';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // END_TIME 2
-  info['end_time'] = new Date(2010, 9, 26);
+  info.end_time = new Date(2010, 9, 26);
   var line = '$END_TIME:2010/10/26';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // TIME_LIMIT
-  info['time_limit'] = {allotted: 360, extra: 60};
+  info.time_limit = {allotted: 360, extra: 60};
   var line = '$TIME_LIMIT:06:00+60';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // TIME_LIMIT 2
-  info['time_limit'] = {allotted: 0, extra: 0};
+  info.time_limit = {allotted: 0, extra: 0};
   var line = '$TIME_LIMIT:00:00+00';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // OPENING
-  info['opening'] = '相矢倉';
+  info.opening = '相矢倉';
   var line = '$OPENING:相矢倉';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
@@ -233,14 +233,14 @@ test('parse start player', 5, function() {
   var info = Kifu().info;
 
   // -
-  info['player_start'] = 'white';
+  info.player_start = 'white';
   var line = '-';
-  same(parser.kifu.info['player_start'], undefined, 'first status');
+  same(parser.kifu.info.player_start, undefined, 'first status');
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // +
-  info['player_start'] = 'black';
+  info.player_start = 'black';
   var line = '+';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
@@ -365,17 +365,17 @@ T6\n\
   var suite = kifu.suite_init;
   var info  = kifu.info;
   var moves = kifu.moves;
-  info['source']       = source;
-  info['version']      = '2.2';
-  info['player_black'] = 'NAKAHARA';
-  info['player_white'] = 'YONENAGA';
-  info['event']        = '13th World Computer Shogi Championship';
-  info['site']         = 'KAZUSA ARC';
-  info['start_time']   = new Date(2003, 4, 3, 10, 30);
-  info['end_time']     = new Date(2003, 4, 3, 11, 11, 5);
-  info['time_limit']   = {allotted: 25, extra: 0};
-  info['opening']      = 'YAGURA';
-  info['player_start'] = 'black';
+  info.source       = source;
+  info.version      = '2.2';
+  info.player_black = 'NAKAHARA';
+  info.player_white = 'YONENAGA';
+  info.event        = '13th World Computer Shogi Championship';
+  info.site         = 'KAZUSA ARC';
+  info.start_time   = new Date(2003, 4, 3, 10, 30);
+  info.end_time     = new Date(2003, 4, 3, 11, 11, 5);
+  info.time_limit   = {allotted: 25, extra: 0};
+  info.opening      = 'YAGURA';
+  info.player_start = 'black';
   suite.hirate();
   moves.addMove([2, 7], [2, 6], 'FU', {is_black: true});
   moves.addPeriod(12);

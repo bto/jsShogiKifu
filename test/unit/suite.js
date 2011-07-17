@@ -44,7 +44,7 @@ test('cellDeploy, cellRemove', 34, function() {
 
   // deploy +18FU
   board[1][8] = {is_black: true, piece: 'FU'};
-  pieces['FU'] = 17;
+  pieces.FU = 17;
   ok(suite.cellDeploy(1, 8, 'FU', true), 'deploy +18FU');
   same(suite.board,  board,  'deploy +18FU board');
   same(suite.pieces, pieces, 'deploy +18FU pieces');
@@ -52,7 +52,7 @@ test('cellDeploy, cellRemove', 34, function() {
 
   // deploy -73KA
   board[7][3] = {is_black: false, piece: 'KA'};
-  pieces['KA'] = 1;
+  pieces.KA = 1;
   ok(suite.cellDeploy(7, 3, 'KA', false), 'deploy -73KA' );
   same(suite.board,  board,  'deploy -73KA board');
   same(suite.pieces, pieces, 'deploy -73KA pieces');
@@ -66,7 +66,7 @@ test('cellDeploy, cellRemove', 34, function() {
 
   // deploy +74UM: success, deploy +75KA: fail(lack of pieces)
   board[7][4] = {is_black: true, piece: 'UM'};
-  pieces['KA'] = 0;
+  pieces.KA = 0;
   ok(suite.cellDeploy(7, 4, 'UM', true), 'deploy +74UM');
   same(suite.cellDeploy(7, 5, 'KA', false), false, 'deploy +75KA');
   same(suite.board,  board,  'deploy +74UM board');
@@ -75,7 +75,7 @@ test('cellDeploy, cellRemove', 34, function() {
 
   // remove 18FU
   board[1][8] = null;
-  pieces['FU'] = 18;
+  pieces.FU = 18;
   ok(suite.cellRemove(1, 8, 'FU'), 'remove 18FU');
   same(suite.board,  board,  'remove 18FU board');
   same(suite.pieces, pieces, 'remove 18FU pieces');
@@ -83,7 +83,7 @@ test('cellDeploy, cellRemove', 34, function() {
 
   // remove 73: success, remove 73: fail
   board[7][3] = null;
-  pieces['KA'] = 1;
+  pieces.KA = 1;
   ok(suite.cellRemove(7, 3), 'remove 73');
   same(suite.cellRemove(7, 3), false, 'remove 73');
   same(suite.board,  board,  'remove 73 board');
@@ -98,7 +98,7 @@ test('cellDeploy, cellRemove', 34, function() {
 
   // remove 74UM
   board[7][4] = null;
-  pieces['KA'] = 2;
+  pieces.KA = 2;
   ok(suite.cellRemove(7, 4, 'UM'), 'remove 74UM');
   same(suite.board,  board,  'remove 74UM board');
   same(suite.pieces, pieces, 'remove 74UM pieces');
@@ -126,7 +126,7 @@ test('cellGet, cellSet, cellTrash', 10, function() {
 test('clone', 2, function() {
   var suite2 = suite.clone();
   same(suite2, suite, 'clone');
-  suite2.stand['black']['FU'] = 1;
+  suite2.stand.black.FU = 1;
   QUnit.notDeepEqual(suite2, suite, 'clone');
 });
 
@@ -265,7 +265,7 @@ test('move, moveReverse', 32, function() {
   // -8288RY
   board[8][2] = null;
   board[8][8] = {is_black: false, piece: 'RY'};
-  stand['white']['KA'] = 1;
+  stand.white.KA = 1;
   states.push({
     title:  '+8288RY',
     board:  Kifu.clone(board),
@@ -280,7 +280,7 @@ test('move, moveReverse', 32, function() {
   // +7988GI
   board[7][9] = null;
   board[8][8] = {is_black: true, piece: 'GI'};
-  stand['black']['HI'] = 1;
+  stand.black.HI = 1;
   states.push({
     title:  '+7988GI',
     board:  Kifu.clone(board),
@@ -294,7 +294,7 @@ test('move, moveReverse', 32, function() {
 
   // -0055KA
   board[5][5] = {is_black: false, piece: 'KA'};
-  stand['white']['KA'] = 0;
+  stand.white.KA = 0;
   states.push({
     title:  '-0055KA',
     board:  Kifu.clone(board),
@@ -307,17 +307,17 @@ test('move, moveReverse', 32, function() {
 
   for (var i in states) {
     var state = states[i];
-    var title = state['title'];
-    ok(suite.move(state['move']), title);
-    same(suite.board,  state['board'],  title+' board');
-    same(suite.pieces, state['pieces'], title+' pieces');
-    same(suite.stand,  state['stand'],  title+' stand');
+    var title = state.title;
+    ok(suite.move(state.move), title);
+    same(suite.board,  state.board,  title+' board');
+    same(suite.pieces, state.pieces, title+' pieces');
+    same(suite.stand,  state.stand,  title+' stand');
   }
 
   for (var i = states.length-1; 0 <= i; i--) {
     var state      = states[i];
     var state_prev = states[i-1];
-    var title      = state['title'];
+    var title      = state.title;
 
     if (!state_prev) {
       var b = Kifu.Suite().hirate();
@@ -327,10 +327,10 @@ test('move, moveReverse', 32, function() {
         stand:  b.stand};
     }
 
-    ok(suite.moveReverse(state['move']), 'reverse '+title);
-    same(suite.board,  state_prev['board'],  'reverse '+title+' board');
-    same(suite.pieces, state_prev['pieces'], 'reverse '+title+' pieces');
-    same(suite.stand,  state_prev['stand'],  'reverse '+title+' stand');
+    ok(suite.moveReverse(state.move), 'reverse '+title);
+    same(suite.board,  state_prev.board,  'reverse '+title+' board');
+    same(suite.pieces, state_prev.pieces, 'reverse '+title+' pieces');
+    same(suite.stand,  state_prev.stand,  'reverse '+title+' stand');
   }
 });
 
@@ -339,15 +339,15 @@ test('standDeploy, standRemove', 16, function() {
   var stand  = Kifu.clone(suite.stand);
 
   // +KA
-  pieces['KA'] = 1;
-  stand['black']['KA'] = 1;
+  pieces.KA = 1;
+  stand.black.KA = 1;
   ok(suite.standDeploy('KA', true), '+KA');
   same(suite.pieces, pieces, '+KA pieces');
   same(suite.stand,  stand,  '+KA stand');
 
   // -KA
-  pieces['KA'] = 0;
-  stand['white']['KA'] = 1;
+  pieces.KA = 0;
+  stand.white.KA = 1;
   ok(suite.standDeploy('KA', false), '-KA');
   same(suite.standDeploy('KA', false), false, '-KA');
   same(suite.pieces, pieces, '-KA pieces');
@@ -355,21 +355,21 @@ test('standDeploy, standRemove', 16, function() {
 
   // +AL
   pieces = Kifu.Suite.standEmpty();
-  pieces['OU'] = 2;
-  stand['black'] = Kifu.Suite.piecesDefault();
-  stand['black']['KA'] = 1;
-  stand['black']['OU'] = 0;
+  pieces.OU = 2;
+  stand.black = Kifu.Suite.piecesDefault();
+  stand.black.KA = 1;
+  stand.black.OU = 0;
   ok(suite.standDeploy('AL', true), '+AL');
   same(suite.pieces, pieces, '+AL pieces');
   same(suite.stand,  stand,  '+AL stand');
 
   // remove -KA
-  stand['white']['KA'] = 0;
+  stand.white.KA = 0;
   ok(suite.standRemove('KA', false), 'remove -KA');
   same(suite.stand, stand, 'remove -KA stand');
 
   // remove +KA
-  stand['black']['KA'] = 0;
+  stand.black.KA = 0;
   ok(suite.standRemove('KA', true), 'remove +KA');
   same(suite.standRemove('KA', true), false, 'remove +KA');
   same(suite.stand, stand, 'remove +KA stand');
@@ -380,22 +380,22 @@ test('standSet, standTrash', 9, function() {
   var stand = Kifu.clone(suite.stand);
 
   // +FU
-  stand['black']['FU'] = 1;
+  stand.black.FU = 1;
   ok(suite.standSet('FU', true), '+FU');
   same(suite.stand, stand, '+FU stand');
 
   // -KY
-  stand['white']['KY'] = 1;
+  stand.white.KY = 1;
   ok(suite.standSet('KY', false), '-KY');
   same(suite.stand, stand, '-KY stand');
 
   // trash -KY
-  stand['white']['KY'] = 0;
+  stand.white.KY = 0;
   ok(suite.standTrash('KY', false), 'trash -KY');
   same(suite.stand, stand, 'trash -KY stand');
 
   // trash +FU
-  stand['black']['FU'] = 0;
+  stand.black.FU = 0;
   ok(suite.standTrash('FU', true), 'trash +FU');
   same(suite.stand, stand, 'trash +FU stand');
   same(suite.standTrash('FU', true), false, 'trash +FU');

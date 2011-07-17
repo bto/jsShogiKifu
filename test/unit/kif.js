@@ -13,79 +13,79 @@ test('parse info', 26, function() {
   var info = Kifu().info;
 
   // 対局ID
-  info['kif'] = {id: 246};
+  info.kif = {id: 246};
   var line = '対局ID：246';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 開始日時
-  info['start_time'] = new Date(2010, 9, 14, 9);
+  info.start_time = new Date(2010, 9, 14, 9);
   var line = '開始日時：2010/10/14 9:00';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 終了日時
-  info['end_time'] = new Date(2010, 9, 15, 18, 1);
+  info.end_time = new Date(2010, 9, 15, 18, 1);
   var line = '終了日時：2010/10/15 18:01';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 表題
-  info['title'] = '竜王戦';
+  info.title = '竜王戦';
   var line = '表題：竜王戦';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 棋戦
-  info['event'] = '第23期竜王戦七番勝負第1局';
+  info.event = '第23期竜王戦七番勝負第1局';
   var line = '棋戦：第23期竜王戦七番勝負第1局';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 持ち時間
-  info['time_limit'] = {allotted: 480};
+  info.time_limit = {allotted: 480};
   var line = '持ち時間：各8時間';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 消費時間
-  info['time_consumed'] = {black: 451, white: 457};
+  info.time_consumed = {black: 451, white: 457};
   var line = '消費時間：93▲451△457';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 場所
-  info['site'] = '長崎・にっしょうかん別邸紅葉亭';
+  info.site = '長崎・にっしょうかん別邸紅葉亭';
   var line = '場所：長崎・にっしょうかん別邸紅葉亭';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 戦型：横歩取り
-  info['opening'] = '横歩取り';
+  info.opening = '横歩取り';
   var line = '戦型：横歩取り';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 先手
-  info['player_black'] = '渡辺　明';
+  info.player_black = '渡辺　明';
   var line = '先手：渡辺　明';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 後手
-  info['player_white'] = '羽生善治';
+  info.player_white = '羽生善治';
   var line = '後手：羽生善治';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 携帯先手
-  info['kif']['携帯先手'] = '渡辺';
+  info.kif.携帯先手 = '渡辺';
   var line = '携帯先手：渡辺';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
 
   // 携帯後手
-  info['kif']['携帯後手'] = '羽生';
+  info.kif.携帯後手 = '羽生';
   var line = '携帯後手：羽生';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');

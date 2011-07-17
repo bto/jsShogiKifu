@@ -22,7 +22,7 @@ test('addComment', 11, function() {
   same(moves.get(0), move1, 'comment1 move1');
 
   // comment2
-  move1['comment'] += "comment2\n";
+  move1.comment += "comment2\n";
   records[0] = move1;
   ok(moves.addComment('comment2'), 'comment2');
   same(moves.get(0), move1, 'comment2 move1');
@@ -30,13 +30,13 @@ test('addComment', 11, function() {
   // comment3
   moves.addMove([2, 7], [2, 6], 'FU');
   var move2 = Kifu.clone(moves.get(1));
-  move2['comment'] = "comment3\n";
+  move2.comment = "comment3\n";
   ok(moves.addComment('comment3'), 'comment3');
   same(moves.get(0), move1, 'comment3 move1');
   same(moves.get(1), move2, 'comment3 move2');
 
   // comment4
-  move2['comment'] += "comment4\n";
+  move2.comment += "comment4\n";
   records.push(move2);
   ok(moves.addComment('comment4'), 'comment4');
   same(moves.get(0), move1, 'comment4 move1');
@@ -110,13 +110,13 @@ test('addPeriod', 9, function() {
 
   // 10sec
   var move = Kifu.clone(moves.get(0));
-  move['period'] = 10;
+  move.period = 10;
   ok(moves.addPeriod(10), '10sec');
   same(moves.get(0), move, '10sec move');
 
   // 20sec
   var move = Kifu.clone(moves.get(0));
-  move['period'] = 20;
+  move.period = 20;
   records[0] = move;
   ok(moves.addPeriod(20), '20sec');
   same(moves.get(0), move, '20sec move');
@@ -124,13 +124,13 @@ test('addPeriod', 9, function() {
   // 15sec
   moves.addMove([2, 7], [2, 6], 'FU');
   var move = Kifu.clone(moves.get(1));
-  move['period'] = 15;
+  move.period = 15;
   ok(moves.addPeriod(15), '15sec');
   same(moves.get(1), move, '15sec move');
 
   // 30sec
   var move = Kifu.clone(moves.get(1));
-  move['period'] = 30;
+  move.period = 30;
   records.push(move);
   ok(moves.addPeriod(30), '30sec');
   same(moves.get(1), move, '30sec move');
@@ -167,7 +167,7 @@ test('addSpecial', 4, function() {
 test('clone', 2, function() {
   var moves2 = moves.clone();
   same(moves2, moves, 'clone');
-  moves2.records[0]['comment'] = 'comment';
+  moves2.records[0].comment = 'comment';
   QUnit.notDeepEqual(moves2, moves, 'clone');
 });
 

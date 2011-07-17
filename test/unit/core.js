@@ -18,8 +18,8 @@ test('ajax', 2, function() {
     start();
 
     var info = kifu.info;
-    same(info['format'], 'csa', 'check format');
-    same(info['source'], source, 'source');
+    same(info.format, 'csa', 'check format');
+    same(info.source, source, 'source');
   });
 });
 
@@ -33,14 +33,14 @@ test('clone', 6, function() {
   var h1 = {foo: 'foo'};
   var h2 = Kifu.clone(h1);
   same(h1, h2, 'same simple object');
-  h2['foo'] = 'bar';
+  h2.foo = 'bar';
   QUnit.notDeepEqual(h1, h2, 'different simple object');
 
   // deep object
   h1 = {foo: 'foo', bar: {bar: 'bar', baz: null}};
   h2 = Kifu.clone(h1);
   same(h1, h2, 'same deep object');
-  h2['bar']['baz'] = 'baz';
+  h2.bar.baz = 'baz';
   QUnit.notDeepEqual(h1, h2, 'different deep object');
 
   // simple array
@@ -77,16 +77,16 @@ test('initialization', 9, function() {
 
   // initialization with source
   var source = 'V2.2';
-  info['source'] = source;
+  info.source = source;
   var kifu = Kifu(source);
   same(kifu.suite_init, Kifu.Suite(), 'source suite_init');
   same(kifu.info,       info,         'source info');
   same(kifu.moves,      Kifu.Move(),  'source moves');
 
   // initialization with source and format
-  info['format']       = 'csa';
-  info['player_start'] = 'black';
-  info['version']      = '2.2';
+  info.format       = 'csa';
+  info.player_start = 'black';
+  info.version      = '2.2';
   var kifu = Kifu(source, 'csa');
   same(kifu.suite_init, Kifu.Suite(), 'source suite_init');
   same(kifu.info,       info,         'source info');
@@ -190,7 +190,7 @@ test('prepare', 10, function() {
   kifu.moves.addMove([3, 3], [3, 4], 'FU', {is_black: false, str: '34foo'});
   moves.addMove([3, 3], [3, 4], 'FU', {is_black: false, str: '34foo'});
   var move = moves.get(1);
-  move['from']['piece'] = 'FU';
+  move.from.piece = 'FU';
   ok(kifu.prepare(), 'prepare');
   same(kifu.moves, moves, '-3334FU');
 
@@ -198,9 +198,9 @@ test('prepare', 10, function() {
   kifu.moves.addMove([2, 8], [7, 8], 'HI');
   moves.addMove([2, 8], [7, 8], 'HI');
   var move = moves.get(2);
-  move['is_black']      = true;
-  move['from']['piece'] = 'HI';
-  move['str']           = '７八飛';
+  move.is_black   = true;
+  move.from.piece = 'HI';
+  move.str        = '７八飛';
   ok(kifu.prepare(), 'prepare');
   same(kifu.moves, moves, '2878HI');
 
@@ -208,12 +208,12 @@ test('prepare', 10, function() {
   kifu.moves.addMove([8, 1], [0, 0], 'NK');
   moves.addMove([8, 1], [0, 0], 'NK');
   var move = moves.get(3);
-  move['is_black']      = false;
-  move['from']['piece'] = 'KE';
-  move['to']['x']       = 7;
-  move['to']['y']       = 8;
-  move['stand']         = {piece: 'HI', stand: 'HI'};
-  move['str']           = '７八桂成';
+  move.is_black   = false;
+  move.from.piece = 'KE';
+  move.to.x       = 7;
+  move.to.y       = 8;
+  move.stand      = {piece: 'HI', stand: 'HI'};
+  move.str        = '７八桂成';
   ok(kifu.prepare(), 'prepare');
   same(kifu.moves, moves, '8100NK');
 
@@ -221,12 +221,12 @@ test('prepare', 10, function() {
   kifu.moves.addMove([7, 9], [0, 0], 'GI');
   moves.addMove([7, 9], [0, 0], 'GI');
   var move = moves.get(4);
-  move['is_black']      = true;
-  move['from']['piece'] = 'GI';
-  move['to']['x']       = 7;
-  move['to']['y']       = 8;
-  move['stand']         = {piece: 'NK', stand: 'KE'};
-  move['str']           = '７八銀';
+  move.is_black   = true;
+  move.from.piece = 'GI';
+  move.to.x       = 7;
+  move.to.y       = 8;
+  move.stand      = {piece: 'NK', stand: 'KE'};
+  move.str        = '７八銀';
   ok(kifu.prepare(), 'prepare');
   same(kifu.moves, moves, '7900GI');
 
@@ -234,9 +234,9 @@ test('prepare', 10, function() {
   kifu.moves.addMove([0, 0], [5, 5], 'KA');
   moves.addMove([0, 0], [5, 5], 'KA');
   var move = moves.get(5);
-  move['is_black']      = false;
-  move['from']['piece'] = 'KA';
-  move['str']           = '５五角打';
+  move.is_black   = false;
+  move.from.piece = 'KA';
+  move.str        = '５五角打';
   ok(kifu.prepare(), 'prepare');
   same(kifu.moves, moves, '0055KA');
 });
