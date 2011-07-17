@@ -158,25 +158,18 @@ Kifu.Csa.prototype.extend({
     return result;
   },
 
-  outputStand: function(stand) {
+  outputStand: function(stand, is_black) {
     var result = '';
 
-    var players = ['black', 'white'];
-    for (var p in players) {
-      var player       = players[p];
-      var stand_player = stand[player];
-      var player_mark  = player == 'black' ? '+' : '-';
-
-      for (var piece in stand_player) {
-        var amount = stand_player[piece];
-        for (var i = 0; i < amount; i++) {
-          result += player_mark + '00' + piece;
-        }
+    for (var piece in stand) {
+      var amount = stand[piece];
+      for (var i = 0; i < amount; i++) {
+        result += '00' + piece;
       }
     }
 
     if (result) {
-      return 'P' + result + "\n";
+      return 'P' + (is_black ? '+' : '-') + result + "\n";
     } else {
       return '';
     }
@@ -185,7 +178,8 @@ Kifu.Csa.prototype.extend({
   outputSuite: function(suite, info) {
     var result = '';
     result += this.outputBoard(suite.board);
-    result += this.outputStand(suite.stand);
+    result += this.outputStand(suite.stand.black, true);
+    result += this.outputStand(suite.stand.white, false);
     result += (info.player_start == 'black' ? '+' : '-') + "\n";
     return result;
   },
