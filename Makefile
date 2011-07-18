@@ -4,6 +4,7 @@ SRC_DIR = src
 SOURCES = ${SRC_DIR}/core.js \
 	${SRC_DIR}/csa.js \
 	${SRC_DIR}/kif.js \
+	${SRC_DIR}/ki2.js \
 	${SRC_DIR}/move.js \
 	${SRC_DIR}/suite.js
 
