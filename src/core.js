@@ -474,7 +474,7 @@ Kifu.prototype.extend({
     for (var i in move_records) {
       var m = move_records[i];
       if (!m || m.type != 'move') continue;
-      var move_prev = move;
+      var move_prev = move_records[i-1];
       var move      = m;
       var from      = move.from;
       var to        = move.to;
