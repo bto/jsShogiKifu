@@ -188,63 +188,47 @@ test('prepare', 10, function() {
   var moves = Kifu.Move();
   kifu.suite_init.hirate();
 
-  // -3334FU
-  kifu.moves.addMove(
-    {from: {x: 3, y: 3}, to: {x: 3, y: 4, piece: 'FU'},
-    is_black: false, str: '34foo'});
-  moves.addMove(
-    {from: {x: 3, y: 3}, to: {x: 3, y: 4, piece: 'FU'},
-    is_black: false, str: '34foo'});
-  var move = moves.get(1);
-  move.from.piece = 'FU';
+  // ７六歩
+  kifu.moves.addMove({to: {x: 7, y: 6, piece: 'FU'}, str: '76foo'});
+  moves.addMove({
+    from: {x: 7, y: 7, piece: 'FU'}, to: {x: 7, y: 6, piece: 'FU'},
+    is_black: true, is_same_place: false, str: '76foo'});
   ok(kifu.prepare(), 'prepare');
-  same(kifu.moves, moves, '-3334FU');
+  same(kifu.moves, moves, '７六歩');
 
-  // 2878HI
-  kifu.moves.addMove({from: {x: 2, y: 8}, to: {x: 7, y: 8, piece: 'HI'}});
-  moves.addMove({from: {x: 2, y: 8}, to: {x: 7, y: 8, piece: 'HI'}});
-  var move = moves.get(2);
-  move.is_black   = true;
-  move.from.piece = 'HI';
-  move.str        = '７八飛';
+  // ３四歩
+  kifu.moves.addMove({to: {x: 3, y: 4, piece: 'FU'}});
+  moves.addMove({
+    from: {x: 3, y: 3, piece: 'FU'}, to: {x: 3, y: 4, piece: 'FU'},
+    is_black: false, is_same_place: false, str: '３四歩'});
   ok(kifu.prepare(), 'prepare');
-  same(kifu.moves, moves, '2878HI');
+  same(kifu.moves, moves, '３四歩');
 
-  // 8100NK
-  kifu.moves.addMove({from: {x: 8, y: 1}, to: {x: 0, y: 0, piece: 'NK'}});
-  moves.addMove({from: {x: 8, y: 1}, to: {x: 0, y: 0, piece: 'NK'}});
-  var move = moves.get(3);
-  move.is_black   = false;
-  move.from.piece = 'KE';
-  move.to.x       = 7;
-  move.to.y       = 8;
-  move.stand      = {piece: 'HI', stand: 'HI'};
-  move.str        = '７八桂成';
+  // ２二角成
+  kifu.moves.addMove({from: {piece: 'KA'}, to: {x: 2, y: 2, piece: 'UM'}});
+  moves.addMove({
+    from: {x: 8, y: 8, piece: 'KA'}, to: {x: 2, y: 2, piece: 'UM'},
+    stand: {piece: 'KA', stand: 'KA'}, is_black: true, is_same_place: false,
+    str: '２二角成'});
   ok(kifu.prepare(), 'prepare');
-  same(kifu.moves, moves, '8100NK');
+  same(kifu.moves, moves, '２二角成');
 
-  // 7900GI
-  kifu.moves.addMove({from: {x: 7, y: 9}, to: {x: 0, y: 0, piece: 'GI'}});
-  moves.addMove({from: {x: 7, y: 9}, to: {x: 0, y: 0, piece: 'GI'}});
-  var move = moves.get(4);
-  move.is_black   = true;
-  move.from.piece = 'GI';
-  move.to.x       = 7;
-  move.to.y       = 8;
-  move.stand      = {piece: 'NK', stand: 'KE'};
-  move.str        = '７八銀';
+  // 同銀
+  kifu.moves.addMove({to: {x: 0, y: 0, piece: 'GI'}});
+  moves.addMove({
+    from: {x: 3, y: 1, piece: 'GI'}, to: {x: 2, y: 2, piece: 'GI'},
+    stand: {piece: 'UM', stand: 'KA'}, is_black: false, is_same_place: true,
+    str: '同銀'});
   ok(kifu.prepare(), 'prepare');
-  same(kifu.moves, moves, '7900GI');
+  same(kifu.moves, moves, '同銀');
 
-  // 0055KA
-  kifu.moves.addMove({from: {x: 0, y: 0}, to: {x: 5, y: 5, piece: 'KA'}});
-  moves.addMove({from: {x: 0, y: 0}, to: {x: 5, y: 5, piece: 'KA'}});
-  var move = moves.get(5);
-  move.is_black   = false;
-  move.from.piece = 'KA';
-  move.str        = '５五角打';
+  // ５五角打
+  kifu.moves.addMove({to: {x: 5, y: 5, piece: 'KA'}});
+  moves.addMove({
+    from: {x: 0, y: 0, piece: 'KA'}, to: {x: 5, y: 5, piece: 'KA'},
+    is_black: true, is_same_place: false, str: '５五角打'});
   ok(kifu.prepare(), 'prepare');
-  same(kifu.moves, moves, '0055KA');
+  same(kifu.moves, moves, '５五角打');
 });
 
 test('source', 5, function() {

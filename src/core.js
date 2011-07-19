@@ -474,6 +474,7 @@ Kifu.prototype.extend({
     for (var i in move_records) {
       var m = move_records[i];
       if (!m || m.type != 'move') continue;
+      m.from || (m.from = {});
       var move_prev = move_records[i-1];
       var move      = m;
       var from      = move.from;
@@ -492,12 +493,24 @@ Kifu.prototype.extend({
         to.y = move_prev.to.y;
       }
 
+      if (typeof from.piece == 'undefined') {
+        if (from.x) {
+          from.piece = suite.board[from.x][from.y].piece;
+        } else {
+          from.piece = to.piece;
+        }
+      }
+
       if (typeof from.x == 'undefined') {
         this.findFromCell(suite, move);
-      } else if (from.x) {
-        from.piece = suite.board[from.x][from.y].piece;
-      } else {
-        from.piece = to.piece;
+      }
+
+      if (typeof move.is_same_place == 'undefined') {
+        if (move_prev.type == 'init') {
+          move.is_same_place = false;
+        } else {
+          move.is_same_place = move_prev.to.x == to.x && move_prev.to.y == to.y;
+        }
       }
 
       var cell = suite.board[to.x][to.y];
@@ -510,8 +523,12 @@ Kifu.prototype.extend({
 
       if (!move.str) {
         var str = '';
-        str += number_x_map[to.x];
-        str += number_y_map[to.y];
+        if (move.is_same_place) {
+          str += '同';
+        } else {
+          str += number_x_map[to.x];
+          str += number_y_map[to.y];
+        }
         if (from.piece == to.piece) {
           str += piece_string_map[to.piece];
         } else {
