@@ -13,7 +13,7 @@ test('parse info', 26, function() {
   var info = Kifu().info;
 
   // 対局ID
-  info.kif = {id: 246};
+  info.kif = {対局ID: '246'};
   var line = '対局ID：246';
   ok(parser.parseByLine(line), line);
   same(parser.kifu.info, info, line+' info');
