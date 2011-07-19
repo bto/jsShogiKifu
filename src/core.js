@@ -10,6 +10,25 @@
 
 var _Kifu = window.Kifu;
 
+var board_piece_map = {
+  '歩': 'FU',
+  '香': 'KY',
+  '桂': 'KE',
+  '銀': 'GI',
+  '金': 'KI',
+  '角': 'KA',
+  '飛': 'HI',
+  '王': 'OU',
+  '玉': 'OU',
+  'と': 'TO',
+  '杏': 'NY',
+  '圭': 'NK',
+  '全': 'NG',
+  '馬': 'UM',
+  '龍': 'RY',
+  '竜': 'RY'
+};
+
 var kanji_number_map = {
   '一':   1,
   '二':   2,
@@ -21,6 +40,25 @@ var kanji_number_map = {
   '八':   8,
   '九':   9,
   '十':  10
+};
+
+var move_piece_map = {
+  '歩':   'FU',
+  '香':   'KY',
+  '桂':   'KE',
+  '銀':   'GI',
+  '金':   'KI',
+  '角':   'KA',
+  '飛':   'HI',
+  '王':   'OU',
+  '玉':   'OU',
+  'と':   'TO',
+  '成香': 'NY',
+  '成桂': 'NK',
+  '成銀': 'NG',
+  '馬':   'UM',
+  '龍':   'RY',
+  '竜':   'RY'
 };
 
 var zenkaku_number_map = {
@@ -51,23 +89,6 @@ var piece_map = {
   NG: 'GI',
   UM: 'KA',
   RY: 'HI'
-};
-
-var piece_string_map = {
-  FU: '歩',
-  KY: '香',
-  KE: '桂',
-  GI: '銀',
-  KI: '金',
-  KA: '角',
-  HI: '飛',
-  OU: '王',
-  TO: 'と',
-  NY: '成香',
-  NK: '成桂',
-  NG: '成銀',
-  UM: '馬',
-  RY: '竜'
 };
 
 /*
@@ -531,10 +552,9 @@ Kifu.prototype.extend({
           str += Kifu.integerToZenkaku(to.x);
           str += Kifu.integerToKanji(to.y);
         }
-        if (from.piece == to.piece) {
-          str += piece_string_map[to.piece];
-        } else {
-          str += piece_string_map[from.piece] + '成';
+        str += Kifu.pieceToMovePiece(from.piece);
+        if (from.piece != to.piece) {
+          str += '成';
         }
         if (!from.x) {
           str += '打';
@@ -582,6 +602,10 @@ Kifu.extend({
 
   ajaxLoad: function(url, format, func_obj) {
     return Kifu.ajax({url: url}, format, func_obj);
+  },
+
+  boardPieceToPiece: function(kanji) {
+    return board_piece_map[kanji];
   },
 
   capitalize: function(str) {
@@ -653,9 +677,29 @@ Kifu.extend({
     }
   },
 
+  movePieceToPiece: function(kanji) {
+    return move_piece_map[kanji];
+  },
+
   noConflict: function() {
     window.Kifu = _Kifu;
     return Kifu;
+  },
+
+  pieceToBoardPiece: function(piece) {
+    for (var name in board_piece_map) {
+      if (board_piece_map[name] == piece) {
+        return name;
+      }
+    }
+  },
+
+  pieceToMovePiece: function(piece) {
+    for (var name in move_piece_map) {
+      if (move_piece_map[name] == piece) {
+        return name;
+      }
+    }
   },
 
   zenkakuToInteger: function(zenkaku) {

@@ -84,10 +84,6 @@ var promote_map = {
 };
 
 Kifu.Kif.prototype.extend({
-  boardPieceToPiece: function(kanji) {
-    return board_piece_map[kanji];
-  },
-
   handicapToKanji: function(handicap) {
     for (var name in handicap_name_map) {
       if (handicap_name_map[name] == handicap) {
@@ -110,10 +106,6 @@ Kifu.Kif.prototype.extend({
 
   kanjiToInfo: function(kanji) {
     return info_map[kanji];
-  },
-
-  movePieceToPiece: function(kanji) {
-    return move_piece_map[kanji];
   },
 
   output: function() {
@@ -140,7 +132,7 @@ Kifu.Kif.prototype.extend({
         var cell = board[x][y];
         if (cell) {
           result += cell.is_black ? ' ' : 'v';
-          result += this.pieceToBoardPiece(cell.piece);
+          result += Kifu.pieceToBoardPiece(cell.piece);
         } else {
           result += ' ・';
         }
@@ -265,7 +257,7 @@ Kifu.Kif.prototype.extend({
         } else {
           result += Kifu.integerToZenkaku(to.x) + Kifu.integerToKanji(to.y);
         }
-        result += this.pieceToMovePiece(from.piece);
+        result += Kifu.pieceToMovePiece(from.piece);
         if (from.piece != to.piece) {
           result  += '成';
           space_l -= 2;
@@ -317,7 +309,7 @@ Kifu.Kif.prototype.extend({
         continue;
       }
       result +=
-        this.pieceToBoardPiece(piece) + Kifu.kanjiToInteger(amount) + '　';
+        Kifu.pieceToBoardPiece(piece) + Kifu.kanjiToInteger(amount) + '　';
     }
 
     if (!result) {
@@ -389,7 +381,7 @@ Kifu.Kif.prototype.extend({
 
     var suite_init = this.kifu.suite_init;
     for (var i = 0; i < 9; i++) {
-      var piece = this.boardPieceToPiece(line.substr(i*2+2, 1));
+      var piece = Kifu.boardPieceToPiece(line.substr(i*2+2, 1));
       if (!piece) {
         continue;
       }
@@ -544,10 +536,10 @@ Kifu.Kif.prototype.extend({
     move = move.substr(2);
 
     if (move.charAt(0) == '成') {
-      from.piece = to.piece = this.movePieceToPiece(move.substr(0, 2));
+      from.piece = to.piece = Kifu.movePieceToPiece(move.substr(0, 2));
       move = move.substr(2);
     } else {
-      from.piece = to.piece = this.movePieceToPiece(move.charAt(0));
+      from.piece = to.piece = Kifu.movePieceToPiece(move.charAt(0));
       move = move.substr(1);
     }
 
@@ -583,7 +575,7 @@ Kifu.Kif.prototype.extend({
     var list = str.split(/[\s　]+/);
     for (var i in list) {
       var value = list[i];
-      var piece = this.boardPieceToPiece(value.substr(0, 1));
+      var piece = Kifu.boardPieceToPiece(value.substr(0, 1));
       if (!piece) {
         continue;
       }
@@ -592,22 +584,6 @@ Kifu.Kif.prototype.extend({
     }
 
     return true;
-  },
-
-  pieceToBoardPiece: function(piece) {
-    for (var name in board_piece_map) {
-      if (board_piece_map[name] == piece) {
-        return name;
-      }
-    }
-  },
-
-  pieceToMovePiece: function(piece) {
-    for (var name in move_piece_map) {
-      if (move_piece_map[name] == piece) {
-        return name;
-      }
-    }
   },
 
   prepare: function() {
