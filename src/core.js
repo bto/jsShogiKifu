@@ -61,20 +61,7 @@ var move_piece_map = {
   '竜':   'RY'
 };
 
-var zenkaku_number_map = {
-  '０': 0,
-  '１': 1,
-  '２': 2,
-  '３': 3,
-  '４': 4,
-  '５': 5,
-  '６': 6,
-  '７': 7,
-  '８': 8,
-  '９': 9
-};
-
-var piece_map = {
+var original_piece_map = {
   FU: 'FU',
   KY: 'KY',
   KE: 'KE',
@@ -89,6 +76,19 @@ var piece_map = {
   NG: 'GI',
   UM: 'KA',
   RY: 'HI'
+};
+
+var zenkaku_number_map = {
+  '０': 0,
+  '１': 1,
+  '２': 2,
+  '３': 3,
+  '４': 4,
+  '５': 5,
+  '６': 6,
+  '７': 7,
+  '８': 8,
+  '９': 9
 };
 
 /*
@@ -540,7 +540,7 @@ Kifu.prototype.extend({
       if (cell) {
         move.stand = {
           piece: cell.piece,
-          stand: piece_map[cell.piece]
+          stand: original_piece_map[cell.piece]
         };
       }
 
