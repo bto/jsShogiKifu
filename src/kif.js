@@ -29,6 +29,32 @@ var board_piece_map = {
   '竜': 'RY'
 };
 
+var handicap_name_map = {
+  '平手':     'Even',
+  '香落ち':   'Lance',
+  '右香落ち': 'Right_Lance',
+  '角落ち':   'Bishop',
+  '飛車落ち': 'Rook',
+  '飛香落ち': 'Rook_and_Lance',
+  '二枚落ち': 'Two_Drops',
+  '四枚落ち': 'Four_Drops',
+  '六枚落ち': 'Six_Drops',
+  'その他':   'Other'
+};
+
+var kanji_number_map = {
+  '一':   1,
+  '二':   2,
+  '三':   3,
+  '四':   4,
+  '五':   5,
+  '六':   6,
+  '七':   7,
+  '八':   8,
+  '九':   9,
+  '十':  10
+};
+
 var kifu_map = {
   '同':   0,
   '　':   0,
@@ -74,33 +100,15 @@ var kifu_map = {
   '竜':   'RY'
 };
 
-var kanji_number_map = {
-  '一':   1,
-  '二':   2,
-  '三':   3,
-  '四':   4,
-  '五':   5,
-  '六':   6,
-  '七':   7,
-  '八':   8,
-  '九':   9,
-  '十':  10
-};
-
-var handicap_name_map = {
-  '平手':     'Even',
-  '香落ち':   'Lance',
-  '右香落ち': 'Right_Lance',
-  '角落ち':   'Bishop',
-  '飛車落ち': 'Rook',
-  '飛香落ち': 'Rook_and_Lance',
-  '二枚落ち': 'Two_Drops',
-  '四枚落ち': 'Four_Drops',
-  '六枚落ち': 'Six_Drops',
-  'その他':   'Other'
-};
-
 Kifu.Kif.prototype.extend({
+  handicapToKanji: function(handicap) {
+    for (var name in handicap_name_map) {
+      if (handicap_name_map[name] == handicap) {
+        return name;
+      }
+    }
+  },
+
   integerToKanji: function(num) {
     var str = '';
 
@@ -119,11 +127,15 @@ Kifu.Kif.prototype.extend({
     return str;
   },
 
-  kanjiToInteger: function(str) {
+  kanjiToHandicap: function(kanji) {
+    return handicap_name_map[kanji];
+  },
+
+  kanjiToInteger: function(kanji) {
     var num = 0;
-    var l   = str.length;
+    var l   = kanji.length;
     for (var i = 0; i < l; i++) {
-      num += kanji_number_map[str.substr(i, 1)];
+      num += kanji_number_map[kanji.substr(i, 1)];
     }
     return num;
   },
@@ -201,22 +213,15 @@ Kifu.Kif.prototype.extend({
       var value = info[key];
       switch (key) {
       case 'end_time':
-        result += '終了日時：'+this.outputDate(value)+"\n";
+        result += '終了日時：' + this.outputDate(value) + "\n";
         break;
 
       case 'event':
-        result += '棋戦：'+value+"\n";
+        result += '棋戦：' + value + "\n";
         break;
 
       case 'handicap':
-        result += '手合割：';
-        for (var name in handicap_name_map) {
-          if (handicap_name_map[name] == value) {
-            result += name;
-            break;
-          }
-        }
-        result += "\n";
+        result += '手合割：' + this.handicapToKanji(value) + "\n";
         break;
 
       case 'kif':
@@ -233,11 +238,11 @@ Kifu.Kif.prototype.extend({
         break;
 
       case 'opening':
-        result += '戦型：'+value+"\n";
+        result += '戦型：' + value + "\n";
         break;
 
       case 'player_black':
-        result += '先手：'+value+"\n";
+        result += '先手：' + value + "\n";
         break;
 
       case 'player_start':
@@ -249,19 +254,19 @@ Kifu.Kif.prototype.extend({
         break;
 
       case 'player_white':
-        result += '後手：'+value+"\n";
+        result += '後手：'+ value +"\n";
         break;
 
       case 'site':
-        result += '場所：'+value+"\n";
+        result += '場所：'+ value +"\n";
         break;
 
       case 'start_time':
-        result += '開始日時：'+this.outputDate(value)+"\n";
+        result += '開始日時：' + this.outputDate(value) + "\n";
         break;
 
       case 'title':
-        result += '表題：'+value+"\n";
+        result += '表題：' + value + "\n";
         break;
 
       case 'time_consumed':
@@ -503,7 +508,7 @@ Kifu.Kif.prototype.extend({
       return true;
 
     case '手合割':
-      info.handicap = handicap_name_map[value];
+      info.handicap = this.handicapToKanji(value);
       return true;
 
     case '先手':
