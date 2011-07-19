@@ -480,7 +480,7 @@ Kifu.Kif.prototype.extend({
       return true;
 
     case '手合割':
-      info.handicap = this.handicapToKanji(value);
+      info.handicap = this.kanjiToHandicap(value);
       return true;
 
     case '先手の持駒':
