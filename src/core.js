@@ -568,6 +568,12 @@ Kifu.prototype.extend({
           str += Kifu.integerToKanji(to.y);
         }
         str += Kifu.pieceToMovePiece(from.piece);
+        if (move.relative) {
+          str += Kifu.relativeToKanji(move.relative);
+        }
+        if (move.direction) {
+          str += Kifu.directionToKanji(move.direction);
+        }
         if (from.piece != to.piece) {
           str += '成';
         }
