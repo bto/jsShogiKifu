@@ -10,6 +10,25 @@ Kifu.Kif = (function(kifu) { return new Kifu.Kif.initialize(kifu); });
 Kifu.Kif.extend = Kifu.Kif.prototype.extend = Kifu.extend;
 
 
+var board_piece_map = {
+  '歩': 'FU',
+  '香': 'KY',
+  '桂': 'KE',
+  '銀': 'GI',
+  '金': 'KI',
+  '角': 'KA',
+  '飛': 'HI',
+  '王': 'OU',
+  '玉': 'OU',
+  'と': 'TO',
+  '杏': 'NY',
+  '圭': 'NK',
+  '全': 'NG',
+  '馬': 'UM',
+  '龍': 'RY',
+  '竜': 'RY'
+};
+
 var kifu_map = {
   '同':   0,
   '　':   0,
@@ -55,25 +74,6 @@ var kifu_map = {
   '竜':   'RY'
 };
 
-var board_piece_map = {
-  '歩': 'FU',
-  '香': 'KY',
-  '桂': 'KE',
-  '銀': 'GI',
-  '金': 'KI',
-  '角': 'KA',
-  '飛': 'HI',
-  '王': 'OU',
-  '玉': 'OU',
-  'と': 'TO',
-  '杏': 'NY',
-  '圭': 'NK',
-  '全': 'NG',
-  '馬': 'UM',
-  '龍': 'RY',
-  '竜': 'RY'
-};
-
 var kanji_number_map = {
   '一':   1,
   '二':   2,
@@ -101,6 +101,10 @@ var handicap_name_map = {
 };
 
 Kifu.Kif.prototype.extend({
+  kanjiToPiece: function(kanji) {
+    return board_piece_map[kanji];
+  },
+
   output: function() {
     var kifu = this.kifu;
     if (kifu.info.format == 'kif') {
@@ -124,14 +128,7 @@ Kifu.Kif.prototype.extend({
         var cell = board[x][y];
         if (cell) {
           result += cell.is_black ? ' ' : 'v';
-
-          var piece = cell.piece;
-          for (var name in board_piece_map) {
-            if (board_piece_map[name] == piece) {
-              result += name;
-              break;
-            }
-          }
+          result += this.pieceToKanji(cell.piece);
         } else {
           result += ' ・';
         }
@@ -330,12 +327,7 @@ Kifu.Kif.prototype.extend({
         continue;
       }
 
-      for (var name in board_piece_map) {
-        if (board_piece_map[name] == piece) {
-          result += name;
-          break;
-        }
-      }
+      result += this.pieceToKanji(piece);
 
       if (10 <= amount) {
         result += '十';
@@ -421,7 +413,7 @@ Kifu.Kif.prototype.extend({
 
     var suite_init = this.kifu.suite_init;
     for (var i = 0; i < 9; i++) {
-      var piece = board_piece_map[line.substr(i*2+2, 1)];
+      var piece = this.kanjiToPiece(line.substr(i*2+2, 1));
       if (!piece) {
         continue;
       }
@@ -615,7 +607,7 @@ Kifu.Kif.prototype.extend({
     var list = str.split(/[\s　]+/);
     for (var i in list) {
       var value = list[i];
-      var piece = board_piece_map[value.substr(0, 1)];
+      var piece = this.kanjiToPiece(value.substr(0, 1));
       var num   = this.parseKansuuchi(value.substr(1));
       if (!piece || !num) {
         continue;
@@ -638,6 +630,14 @@ Kifu.Kif.prototype.extend({
     }
 
     return num;
+  },
+
+  pieceToKanji: function(piece) {
+    for (var name in board_piece_map) {
+      if (board_piece_map[name] == piece) {
+        return name;
+      }
+    }
   },
 
   prepare: function() {
