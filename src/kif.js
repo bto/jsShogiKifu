@@ -55,19 +55,6 @@ var info_map = {
   表題:     'title'
 };
 
-var kanji_number_map = {
-  '一':   1,
-  '二':   2,
-  '三':   3,
-  '四':   4,
-  '五':   5,
-  '六':   6,
-  '七':   7,
-  '八':   8,
-  '九':   9,
-  '十':  10
-};
-
 var move_piece_map = {
   '歩':   'FU',
   '香':   'KY',
@@ -96,19 +83,6 @@ var promote_map = {
   HI: 'RY'
 };
 
-var zenkaku_number_map = {
-  '０': 0,
-  '１': 1,
-  '２': 2,
-  '３': 3,
-  '４': 4,
-  '５': 5,
-  '６': 6,
-  '７': 7,
-  '８': 8,
-  '９': 9
-};
-
 Kifu.Kif.prototype.extend({
   boardPieceToPiece: function(kanji) {
     return board_piece_map[kanji];
@@ -130,47 +104,12 @@ Kifu.Kif.prototype.extend({
     }
   },
 
-  integerToKanji: function(num) {
-    var str = '';
-
-    if (10 <= num) {
-      str += '十';
-    }
-
-    num = num % 10;
-    for (var name in kanji_number_map) {
-      if (kanji_number_map[name] == num) {
-        str += name;
-        break;
-      }
-    }
-
-    return str;
-  },
-
-  integerToZenkaku: function(num) {
-    for (var name in zenkaku_number_map) {
-      if (zenkaku_number_map[name] == num) {
-        return name;
-      }
-    }
-  },
-
   kanjiToHandicap: function(kanji) {
     return handicap_name_map[kanji];
   },
 
   kanjiToInfo: function(kanji) {
     return info_map[kanji];
-  },
-
-  kanjiToInteger: function(kanji) {
-    var num = 0;
-    var l   = kanji.length;
-    for (var i = 0; i < l; i++) {
-      num += kanji_number_map[kanji.substr(i, 1)];
-    }
-    return num;
   },
 
   movePieceToPiece: function(kanji) {
@@ -207,7 +146,7 @@ Kifu.Kif.prototype.extend({
         }
       }
 
-      result += '|' + this.integerToKanji(y) + "\n";
+      result += '|' + Kifu.integerToKanji(y) + "\n";
     }
 
     result += "+---------------------------+\n";
@@ -324,7 +263,7 @@ Kifu.Kif.prototype.extend({
         if (record.is_same_place) {
           result += '同　';
         } else {
-          result += this.integerToZenkaku(to.x) + this.integerToKanji(to.y);
+          result += Kifu.integerToZenkaku(to.x) + Kifu.integerToKanji(to.y);
         }
         result += this.pieceToMovePiece(from.piece);
         if (from.piece != to.piece) {
@@ -378,7 +317,7 @@ Kifu.Kif.prototype.extend({
         continue;
       }
       result +=
-        this.pieceToBoardPiece(piece) + this.kanjiToInteger(amount) + '　';
+        this.pieceToBoardPiece(piece) + Kifu.kanjiToInteger(amount) + '　';
     }
 
     if (!result) {
@@ -446,7 +385,7 @@ Kifu.Kif.prototype.extend({
     this._board_setup = true;
 
     var line = this.strip(line);
-    var y    = this.kanjiToInteger(line.charAt(line.length-1));
+    var y    = Kifu.kanjiToInteger(line.charAt(line.length-1));
 
     var suite_init = this.kifu.suite_init;
     for (var i = 0; i < 9; i++) {
@@ -598,8 +537,8 @@ Kifu.Kif.prototype.extend({
       to.x = to.y = 0;
       params.is_same_place = true;
     } else {
-      to.x = this.zenkakuToInteger(move.charAt(0));
-      to.y = this.kanjiToInteger(move.charAt(1));
+      to.x = Kifu.zenkakuToInteger(move.charAt(0));
+      to.y = Kifu.kanjiToInteger(move.charAt(1));
       params.is_same_place = false;
     }
     move = move.substr(2);
@@ -648,7 +587,7 @@ Kifu.Kif.prototype.extend({
       if (!piece) {
         continue;
       }
-      var num = this.kanjiToInteger(value.substr(1)) || 1;
+      var num = Kifu.kanjiToInteger(value.substr(1)) || 1;
       suite_init.standDeploy(piece, is_black, num);
     }
 
@@ -711,10 +650,6 @@ Kifu.Kif.prototype.extend({
       }
     }
     return result;
-  },
-
-  zenkakuToInteger: function(zenkaku) {
-    return zenkaku_number_map[zenkaku];
   }
 });
 

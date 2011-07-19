@@ -10,28 +10,30 @@
 
 var _Kifu = window.Kifu;
 
-var number_x_map = {
-  1: '１',
-  2: '２',
-  3: '３',
-  4: '４',
-  5: '５',
-  6: '６',
-  7: '７',
-  8: '８',
-  9: '９'
+var kanji_number_map = {
+  '一':   1,
+  '二':   2,
+  '三':   3,
+  '四':   4,
+  '五':   5,
+  '六':   6,
+  '七':   7,
+  '八':   8,
+  '九':   9,
+  '十':  10
 };
 
-var number_y_map = {
-  1: '一',
-  2: '二',
-  3: '三',
-  4: '四',
-  5: '五',
-  6: '六',
-  7: '七',
-  8: '八',
-  9: '九'
+var zenkaku_number_map = {
+  '０': 0,
+  '１': 1,
+  '２': 2,
+  '３': 3,
+  '４': 4,
+  '５': 5,
+  '６': 6,
+  '７': 7,
+  '８': 8,
+  '９': 9
 };
 
 var piece_map = {
@@ -526,8 +528,8 @@ Kifu.prototype.extend({
         if (move.is_same_place) {
           str += '同';
         } else {
-          str += number_x_map[to.x];
-          str += number_y_map[to.y];
+          str += Kifu.integerToZenkaku(to.x);
+          str += Kifu.integerToKanji(to.y);
         }
         if (from.piece == to.piece) {
           str += piece_string_map[to.piece];
@@ -607,6 +609,41 @@ Kifu.extend({
     return result;
   },
 
+  integerToKanji: function(num) {
+    var str = '';
+
+    if (10 <= num) {
+      str += '十';
+    }
+
+    num = num % 10;
+    for (var name in kanji_number_map) {
+      if (kanji_number_map[name] == num) {
+        str += name;
+        break;
+      }
+    }
+
+    return str;
+  },
+
+  integerToZenkaku: function(num) {
+    for (var name in zenkaku_number_map) {
+      if (zenkaku_number_map[name] == num) {
+        return name;
+      }
+    }
+  },
+
+  kanjiToInteger: function(kanji) {
+    var num = 0;
+    var l   = kanji.length;
+    for (var i = 0; i < l; i++) {
+      num += kanji_number_map[kanji.substr(i, 1)];
+    }
+    return num;
+  },
+
   load: function(source) {
     var element = document.getElementById(source);
     if (element) {
@@ -619,6 +656,10 @@ Kifu.extend({
   noConflict: function() {
     window.Kifu = _Kifu;
     return Kifu;
+  },
+
+  zenkakuToInteger: function(zenkaku) {
+    return zenkaku_number_map[zenkaku];
   }
 });
 
