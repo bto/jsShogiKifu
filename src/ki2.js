@@ -44,7 +44,7 @@ Kifu.Ki2.prototype.extend({
 
       switch (record.type) {
       case 'move':
-        result += (record.is_black ? '▲' : '△') + record.str + '　';
+        result += (record.is_black ? '▲' : '△') + record.str + ' ';
         break;
       }
 
