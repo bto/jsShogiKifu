@@ -101,6 +101,33 @@ var handicap_name_map = {
 };
 
 Kifu.Kif.prototype.extend({
+  integerToKanji: function(num) {
+    var str = '';
+
+    if (10 <= num) {
+      str += '十';
+    }
+
+    num = num % 10;
+    for (var name in kanji_number_map) {
+      if (kanji_number_map[name] == num) {
+        str += name;
+        break;
+      }
+    }
+
+    return str;
+  },
+
+  kanjiToInteger: function(str) {
+    var num = 0;
+    var l   = str.length;
+    for (var i = 0; i < l; i++) {
+      num += kanji_number_map[str.substr(i, 1)];
+    }
+    return num;
+  },
+
   kanjiToPiece: function(kanji) {
     return board_piece_map[kanji];
   },
@@ -124,6 +151,7 @@ Kifu.Kif.prototype.extend({
 
     for (var y = 1; y <= 9; y++) {
       result += '|';
+
       for (var x = 9; 1 <= x; x--) {
         var cell = board[x][y];
         if (cell) {
@@ -134,14 +162,7 @@ Kifu.Kif.prototype.extend({
         }
       }
 
-      result += '|';
-      for (var name in kanji_number_map) {
-        if (kanji_number_map[name] == y) {
-          result += name;
-          break;
-        }
-      }
-      result += "\n";
+      result += '|' + this.integerToKanji(y) + "\n";
     }
 
     result += "+---------------------------+\n";
@@ -326,22 +347,7 @@ Kifu.Kif.prototype.extend({
       if (amount < 1) {
         continue;
       }
-
-      result += this.pieceToKanji(piece);
-
-      if (10 <= amount) {
-        result += '十';
-      }
-
-      amount = amount % 10;
-      for (var name in kanji_number_map) {
-        if (kanji_number_map[name] == amount) {
-          result += name;
-          break;
-        }
-      }
-
-      result += '　';
+      result += this.pieceToKanji(piece) + this.kanjiToInteger(amount) + '　';
     }
 
     if (!result) {
@@ -409,7 +415,7 @@ Kifu.Kif.prototype.extend({
     this._board_setup = true;
 
     var line = this.strip(line);
-    var y = this.parseKansuuchi(line.charAt(line.length-1));
+    var y    = this.kanjiToInteger(line.charAt(line.length-1));
 
     var suite_init = this.kifu.suite_init;
     for (var i = 0; i < 9; i++) {
@@ -608,28 +614,14 @@ Kifu.Kif.prototype.extend({
     for (var i in list) {
       var value = list[i];
       var piece = this.kanjiToPiece(value.substr(0, 1));
-      var num   = this.parseKansuuchi(value.substr(1));
-      if (!piece || !num) {
+      if (!piece) {
         continue;
       }
+      var num = this.kanjiToInteger(value.substr(1)) || 1;
       suite_init.standDeploy(piece, is_black, num);
     }
 
     return true;
-  },
-
-  parseKansuuchi: function(str) {
-    var num = 0;
-    var l = str.length;
-    for (var i = 0; i < l; i++) {
-      num += kanji_number_map[str.substr(i, 1)];
-    }
-
-    if (!num) {
-      num = 1;
-    }
-
-    return num;
   },
 
   pieceToKanji: function(piece) {
