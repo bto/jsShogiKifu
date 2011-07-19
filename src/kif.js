@@ -10,25 +10,6 @@ Kifu.Kif = (function(kifu) { return new Kifu.Kif.initialize(kifu); });
 Kifu.Kif.extend = Kifu.Kif.prototype.extend = Kifu.extend;
 
 
-var board_piece_map = {
-  '歩': 'FU',
-  '香': 'KY',
-  '桂': 'KE',
-  '銀': 'GI',
-  '金': 'KI',
-  '角': 'KA',
-  '飛': 'HI',
-  '王': 'OU',
-  '玉': 'OU',
-  'と': 'TO',
-  '杏': 'NY',
-  '圭': 'NK',
-  '全': 'NG',
-  '馬': 'UM',
-  '龍': 'RY',
-  '竜': 'RY'
-};
-
 var handicap_name_map = {
   '平手':     'even',
   '香落ち':   'lance',
@@ -53,25 +34,6 @@ var info_map = {
   場所:     'site',
   開始日時: 'start_time',
   表題:     'title'
-};
-
-var move_piece_map = {
-  '歩':   'FU',
-  '香':   'KY',
-  '桂':   'KE',
-  '銀':   'GI',
-  '金':   'KI',
-  '角':   'KA',
-  '飛':   'HI',
-  '王':   'OU',
-  '玉':   'OU',
-  'と':   'TO',
-  '成香': 'NY',
-  '成桂': 'NK',
-  '成銀': 'NG',
-  '馬':   'UM',
-  '龍':   'RY',
-  '竜':   'RY'
 };
 
 var promote_map = {
