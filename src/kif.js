@@ -30,16 +30,16 @@ var board_piece_map = {
 };
 
 var handicap_name_map = {
-  '平手':     'Even',
-  '香落ち':   'Lance',
-  '右香落ち': 'Right_Lance',
-  '角落ち':   'Bishop',
-  '飛車落ち': 'Rook',
-  '飛香落ち': 'Rook_and_Lance',
-  '二枚落ち': 'Two_Drops',
-  '四枚落ち': 'Four_Drops',
-  '六枚落ち': 'Six_Drops',
-  'その他':   'Other'
+  '平手':     'even',
+  '香落ち':   'lance',
+  '右香落ち': 'right_lance',
+  '角落ち':   'bishop',
+  '飛車落ち': 'rook',
+  '飛香落ち': 'rook_and_lance',
+  '二枚落ち': 'two_drops',
+  '四枚落ち': 'four_drops',
+  '六枚落ち': 'six_drops',
+  'その他':   'other'
 };
 
 var info_map = {
@@ -390,7 +390,7 @@ Kifu.Kif.prototype.extend({
   },
 
   outputSuite: function(suite, info) {
-    if (info.handicap && info.handicap != 'Other') {
+    if (info.handicap && info.handicap != 'other') {
       return '';
     }
 
@@ -679,12 +679,12 @@ Kifu.Kif.prototype.extend({
       delete info.handicap;
     } else {
       if (!info.handicap) {
-        info.handicap = 'Even';
+        info.handicap = 'even';
       }
 
       var handicap = info.handicap;
       kifu.suite_init.setup(handicap);
-      if (handicap != 'Even') {
+      if (handicap != 'even') {
         info.player_start = 'white';
       }
     }

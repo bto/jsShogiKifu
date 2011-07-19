@@ -95,7 +95,7 @@ test('parse initial board hirate', 2, function() {
   // 平手
   var line = '手合割：平手　　';
   ok(parser.parseByLine(line), line);
-  same(parser.kifu.info.handicap, 'Even', line+' suite');
+  same(parser.kifu.info.handicap, 'even', line+' suite');
 });
 
 test('parse moves', 16, function() {

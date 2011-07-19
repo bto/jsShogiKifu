@@ -88,36 +88,36 @@ Kifu.Suite.prototype.extend({
   },
 
   setup: function(handicap) {
-    if (handicap == 'Other') return this;
+    if (handicap == 'other') return this;
     this.hirate();
-    if (handicap == 'Even' || handicap == null) return this;
+    if (handicap == 'even' || handicap == null) return this;
 
     switch (handicap) {
-    case 'Lance':
+    case 'lance':
       this.cellRemove(1, 1, 'KY');
       break;
 
-    case 'Right_Lance':
+    case 'right_lance':
       this.cellRemove(9, 1, 'KY');
       break;
 
-    case 'Bishop':
+    case 'bishop':
       this.cellRemove(2, 2, 'KA');
       break;
 
-    case 'Rook_and_Lance':
+    case 'rook_and_lance':
       this.cellRemove(1, 1, 'KY');
-    case 'Rook':
+    case 'rook':
       this.cellRemove(8, 2, 'HI');
       break;
 
-    case 'Six_Drops':
+    case 'six_drops':
       this.cellRemove(2, 1, 'KE');
       this.cellRemove(8, 1, 'KE');
-    case 'Four_Drops':
+    case 'four_drops':
       this.cellRemove(1, 1, 'KY');
       this.cellRemove(9, 1, 'KY');
-    case 'Two_Drops':
+    case 'two_drops':
       this.cellRemove(8, 2, 'HI');
       this.cellRemove(2, 2, 'KA');
       break;
