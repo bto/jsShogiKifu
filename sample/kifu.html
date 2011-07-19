@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+
+<body>
+<h2>棋譜表示サンプル</h2>
+<table><tr>
+  <td>
+    棋譜形式:
+    <select id="kifu_format">
+      <option value="csa">CSA</option>
+      <option value="kif">KIF</option>
+      <option value="ki2">KI2</option>
+    </select>
+    <input type="button" value="表示" onclick="kifu_display()" /><br />
+    <textarea id="kifu_source" cols="40" rows="15"></textarea>
+  </td>
+  <td valign="top">
+    <span id="board"></span>
+  </td>
+</tr></table>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../dist/kifu.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../src/jquery_shogi_board.js"></script>
+<script><!--
+  function kifu_display() {
+    var format = $('#kifu_format').val();
+    var source = $('#kifu_source').val();
+    var kifu = Kifu(source, format);
+    var options = {
+      images_url:   '../src/images',
+      template_url: 'templates/jquery_shogi_board_no_comment.html'};
+    $('#board').shogiBoard(kifu, options);
+  };
+--></script>
+</body>
+</html>
