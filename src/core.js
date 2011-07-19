@@ -30,12 +30,9 @@ var board_piece_map = {
 };
 
 var direction_map = {
-  上: 'up',
-  寄: 'horizon',
-  引: 'down',
-  下: 'down',  // optional
-  行: 'up',    // optional
-  入: 'up'     // optional
+  左: 'left',
+  右: 'right',
+  直: 'straight_up'
 };
 
 var kanji_number_map = {
@@ -70,6 +67,15 @@ var move_piece_map = {
   '竜':   'RY'
 };
 
+var movement_map = {
+  上: 'up',
+  寄: 'horizon',
+  引: 'down',
+  下: 'down',  // optional
+  行: 'up',    // optional
+  入: 'up'     // optional
+};
+
 var original_piece_map = {
   FU: 'FU',
   KY: 'KY',
@@ -85,12 +91,6 @@ var original_piece_map = {
   NG: 'GI',
   UM: 'KA',
   RY: 'HI'
-};
-
-var relative_map = {
-  左: 'left',
-  右: 'right',
-  直: 'straight_up'
 };
 
 var zenkaku_number_map = {
@@ -495,11 +495,11 @@ Kifu.prototype.extend({
         str += Kifu.integerToZenkaku(to.x) + Kifu.integerToKanji(to.y);
       }
       str += Kifu.pieceToMovePiece(from.piece);
-      if (move.relative) {
-        str += Kifu.relativeToKanji(move.relative);
-      }
       if (move.direction) {
         str += Kifu.directionToKanji(move.direction);
+      }
+      if (move.movement) {
+        str += Kifu.movementToKanji(move.movement);
       }
       if (from.piece != to.piece) {
         str += '成';
@@ -513,69 +513,6 @@ Kifu.prototype.extend({
     }
 
     return this;
-  },
-
-  _prepareDirection: function(move, areas) {
-    var is_black = move.is_black;
-    var from     = move.from;
-    var from_x   = from.x;
-    var from_y   = from.y;
-    var to       = move.to;
-    var to_x     = to.x;
-    var to_y     = to.y;
-    var piece    = from.piece;
-
-    var areas_x_less    = [];
-    var areas_x_greater = [];
-    var areas_x_equal   = [];
-    var areas_y_less    = [];
-    var areas_y_greater = [];
-    var areas_y_equal   = [];
-    var l = areas.length;
-    for (var i = 0; i < l; i++) {
-      var area = areas[i];
-      if (area[0] < to_x)      areas_x_less.push(area);
-      else if (to_x < area[0]) areas_x_greater.push(area);
-      else                     areas_x_equal.push(area);
-      if (area[1] < to_y)      areas_y_less.push(area);
-      else if (to_y < area[1]) areas_y_greater.push(area);
-      else                     areas_y_equal.push(area);
-    }
-
-    if (from_y < to_y && areas_y_less.length == 1) {
-      move.direction = is_black ? 'down' : 'up';
-      move.relative  = false;
-      return true;
-    } else if (to_y < from_y && areas_y_greater.length == 1) {
-      move.direction = is_black ? 'up' : 'down';
-      move.relative  = false;
-      return true;
-    } else if (from_y == to_y && areas_y_equal.length == 1) {
-      move.direction = 'horizon';
-      move.relative  = false;
-      return true;
-    }
-
-    if (from_x < to_x && areas_x_less.length == 1) {
-      move.direction = false;
-      move.relative  = is_black ? 'right' : 'left';
-      return true;
-    } else if (to_x < from_x && areas_x_greater.length == 1) {
-      move.direction = false;
-      move.relative  = is_black ? 'left' : 'right';
-      return true;
-    } else if (from_x == to_x && areas_x_equal.length == 1) {
-      if (piece == 'UM' && piece == 'RY') {
-        // not implemented yet
-      } else {
-        move.direction = false;
-        move.relative  = 'straight_up';
-        return true;
-      }
-    }
-
-    // not implemented yet
-    return false;
   },
 
   _prepareFromCell: function(suite, move) {
@@ -603,15 +540,15 @@ Kifu.prototype.extend({
       from.x         = area[0];
       from.y         = area[1];
       move.direction = false;
+      move.movement  = false;
       move.put       = false;
-      move.relative  = false;
       return true;
     }
 
     if (from.x == 0) {
       move.direction = false;
+      move.movement  = false;
       move.put       = true;
-      move.relative  = false;
       return true;
     }
 
@@ -620,20 +557,20 @@ Kifu.prototype.extend({
       from.x         = area[0];
       from.y         = area[1];
       move.direction = false;
+      move.movement  = false;
       move.put       = false;
-      move.relative  = false;
       return true;
     }
 
     move.put = false;
-    if (move.direction || move.relative) {
-      return this._prepareFromCellByDirection(move, areas);
+    if (move.direction || move.movement) {
+      return this._prepareFromCellByMovement(move, areas);
     } else {
-      return this._prepareDirection(move, areas);
+      return this._prepareMovement(move, areas);
     }
   },
 
-  _prepareFromCellByDirection: function(move, areas) {
+  _prepareFromCellByMovement: function(move, areas) {
     var is_black = move.is_black;
     var from     = move.from;
     var to       = move.to;
@@ -651,7 +588,7 @@ Kifu.prototype.extend({
       else                     areas_x_equal.push(area);
     }
 
-    switch (move.relative) {
+    switch (move.direction) {
     case 'left':
       areas = is_black ? areas_x_greater : areas_x_less;
       break;
@@ -680,7 +617,7 @@ Kifu.prototype.extend({
       else                     areas_y_equal.push(area);
     }
 
-    switch (move.direction) {
+    switch (move.movement) {
     case 'down':
       areas = is_black ? areas_y_less : areas_y_greater;
       break;
@@ -699,6 +636,69 @@ Kifu.prototype.extend({
       return true;
     }
 
+    return false;
+  },
+
+  _prepareMovement: function(move, areas) {
+    var is_black = move.is_black;
+    var from     = move.from;
+    var from_x   = from.x;
+    var from_y   = from.y;
+    var to       = move.to;
+    var to_x     = to.x;
+    var to_y     = to.y;
+    var piece    = from.piece;
+
+    var areas_x_less    = [];
+    var areas_x_greater = [];
+    var areas_x_equal   = [];
+    var areas_y_less    = [];
+    var areas_y_greater = [];
+    var areas_y_equal   = [];
+    var l = areas.length;
+    for (var i = 0; i < l; i++) {
+      var area = areas[i];
+      if (area[0] < to_x)      areas_x_less.push(area);
+      else if (to_x < area[0]) areas_x_greater.push(area);
+      else                     areas_x_equal.push(area);
+      if (area[1] < to_y)      areas_y_less.push(area);
+      else if (to_y < area[1]) areas_y_greater.push(area);
+      else                     areas_y_equal.push(area);
+    }
+
+    if (from_y < to_y && areas_y_less.length == 1) {
+      move.direction = false;
+      move.movement  = is_black ? 'down' : 'up';
+      return true;
+    } else if (to_y < from_y && areas_y_greater.length == 1) {
+      move.direction = false;
+      move.movement  = is_black ? 'up' : 'down';
+      return true;
+    } else if (from_y == to_y && areas_y_equal.length == 1) {
+      move.direction = false;
+      move.movement  = 'horizon';
+      return true;
+    }
+
+    if (from_x < to_x && areas_x_less.length == 1) {
+      move.direction = is_black ? 'right' : 'left';
+      move.movement  = false;
+      return true;
+    } else if (to_x < from_x && areas_x_greater.length == 1) {
+      move.direction = is_black ? 'left' : 'right';
+      move.movement  = false;
+      return true;
+    } else if (from_x == to_x && areas_x_equal.length == 1) {
+      if (piece == 'UM' && piece == 'RY') {
+        // not implemented yet
+      } else {
+        move.direction = 'straight_up';
+        move.movement  = false;
+        return true;
+      }
+    }
+
+    // not implemented yet
     return false;
   }
 });
@@ -798,6 +798,10 @@ Kifu.extend({
     return direction_map[kanji];
   },
 
+  kanjiToMovement: function(kanji) {
+    return movement_map[kanji];
+  },
+
   kanjiToInteger: function(kanji) {
     var num = 0;
     var l   = kanji.length;
@@ -807,16 +811,20 @@ Kifu.extend({
     return num;
   },
 
-  kanjiToRelative: function(kanji) {
-    return relative_map[kanji];
-  },
-
   load: function(source) {
     var element = document.getElementById(source);
     if (element) {
       return element.innerHTML;
     } else {
       return source;
+    }
+  },
+
+  movementToKanji: function(movement) {
+    for (var name in movement_map) {
+      if (movement_map[name] == movement) {
+        return name;
+      }
     }
   },
 
@@ -840,14 +848,6 @@ Kifu.extend({
   pieceToMovePiece: function(piece) {
     for (var name in move_piece_map) {
       if (move_piece_map[name] == piece) {
-        return name;
-      }
-    }
-  },
-
-  relativeToKanji: function(relative) {
-    for (var name in relative_map) {
-      if (relative_map[name] == relative) {
         return name;
       }
     }

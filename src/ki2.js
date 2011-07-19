@@ -53,11 +53,11 @@ Kifu.Ki2.prototype.extend({
           result += Kifu.integerToZenkaku(to.x) + Kifu.integerToKanji(to.y);
         }
         result += Kifu.pieceToMovePiece(from.piece);
-        if (record.relative) {
-          result += Kifu.relativeToKanji(record.relative);
-        }
         if (record.direction) {
           result += Kifu.directionToKanji(record.direction);
+        }
+        if (record.movement) {
+          result += Kifu.movementToKanji(record.movement);
         }
         if (from.piece != to.piece) {
           result += '成';
@@ -124,16 +124,16 @@ Kifu.Ki2.prototype.extend({
         p_info = p_info.substr(1);
       }
 
-      var relative = Kifu.kanjiToRelative(p_info.charAt(0));
-      if (relative) {
-        params.relative = relative;
-        p_info          = p_info.substr(1);
-      }
-
       var direction = Kifu.kanjiToDirection(p_info.charAt(0));
       if (direction) {
         params.direction = direction;
         p_info           = p_info.substr(1);
+      }
+
+      var movement = Kifu.kanjiToMovement(p_info.charAt(0));
+      if (movement) {
+        params.movement = movement;
+        p_info          = p_info.substr(1);
       }
 
       switch (p_info) {
