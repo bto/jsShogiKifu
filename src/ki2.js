@@ -10,16 +10,6 @@ Kifu.Ki2 = (function(kifu) { return new Kifu.Ki2.initialize(kifu); });
 Kifu.Ki2.extend = Kifu.Ki2.prototype.extend = Kifu.extend;
 
 
-var direction_map = {
-  上: 'up',
-  寄: 'horizon',
-  引: 'down',
-  直: 'straight_up',
-  下: 'down',  // optional
-  行: 'up',    // optional
-  入: 'up'     // optional
-};
-
 var promote_map = {
   FU: 'TO',
   KY: 'NY',
@@ -27,11 +17,6 @@ var promote_map = {
   GI: 'NG',
   KA: 'UM',
   HI: 'RY'
-};
-
-var relative_map = {
-  左: 'left',
-  右: 'right'
 };
 
 Kifu.Ki2.prototype.extend(Kifu.Kif.prototype);
@@ -84,13 +69,13 @@ Kifu.Ki2.prototype.extend({
         p_info = p_info.substr(1);
       }
 
-      var relative = relative_map[p_info.charAt(0)];
+      var relative = Kifu.kanjiToRelative(p_info.charAt(0));
       if (relative) {
         params.relative = relative;
         p_info          = p_info.substr(1);
       }
 
-      var direction = direction_map[p_info.charAt(0)];
+      var direction = Kifu.kanjiToDirection(p_info.charAt(0));
       if (direction) {
         params.direction = direction;
         p_info           = p_info.substr(1);

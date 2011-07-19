@@ -29,6 +29,16 @@ var board_piece_map = {
   '竜': 'RY'
 };
 
+var direction_map = {
+  上: 'up',
+  寄: 'horizon',
+  引: 'down',
+  直: 'straight_up',
+  下: 'down',  // optional
+  行: 'up',    // optional
+  入: 'up'     // optional
+};
+
 var kanji_number_map = {
   '一':   1,
   '二':   2,
@@ -76,6 +86,11 @@ var original_piece_map = {
   NG: 'GI',
   UM: 'KA',
   RY: 'HI'
+};
+
+var relative_map = {
+  左: 'left',
+  右: 'right'
 };
 
 var zenkaku_number_map = {
@@ -633,6 +648,14 @@ Kifu.extend({
     return result;
   },
 
+  directionToKanji: function(direction) {
+    for (var name in direction_map) {
+      if (direction_map[name] == direction) {
+        return name;
+      }
+    }
+  },
+
   integerToKanji: function(num) {
     var str = '';
 
@@ -659,6 +682,10 @@ Kifu.extend({
     }
   },
 
+  kanjiToDirection: function(kanji) {
+    return direction_map[kanji];
+  },
+
   kanjiToInteger: function(kanji) {
     var num = 0;
     var l   = kanji.length;
@@ -666,6 +693,10 @@ Kifu.extend({
       num += kanji_number_map[kanji.substr(i, 1)];
     }
     return num;
+  },
+
+  kanjiToRelative: function(kanji) {
+    return relative_map[kanji];
   },
 
   load: function(source) {
@@ -697,6 +728,14 @@ Kifu.extend({
   pieceToMovePiece: function(piece) {
     for (var name in move_piece_map) {
       if (move_piece_map[name] == piece) {
+        return name;
+      }
+    }
+  },
+
+  relativeToKanji: function(relative) {
+    for (var name in relative_map) {
+      if (relative_map[name] == relative) {
         return name;
       }
     }
