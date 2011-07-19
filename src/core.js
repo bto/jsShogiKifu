@@ -33,7 +33,6 @@ var direction_map = {
   上: 'up',
   寄: 'horizon',
   引: 'down',
-  直: 'straight_up',
   下: 'down',  // optional
   行: 'up',    // optional
   入: 'up'     // optional
@@ -90,7 +89,8 @@ var original_piece_map = {
 
 var relative_map = {
   左: 'left',
-  右: 'right'
+  右: 'right',
+  直: 'straight_up'
 };
 
 var zenkaku_number_map = {
@@ -226,8 +226,13 @@ Kifu.prototype.extend({
     return this.info.source;
   },
 
-  _checkFromAreas: function(board, areas, is_black, piece) {
-    var result = [];
+  _checkFromAreas: function(suite, move) {
+    var board    = suite.board;
+    var is_black = move.is_black;
+    var piece    = move.from.piece;
+    var result   = [];
+
+    var areas  = this['_findFromAreas'+piece](suite, move);
     var l      = areas.length;
     for (var i = 0; i < l; i++) {
       var area = areas[i];
@@ -241,7 +246,32 @@ Kifu.prototype.extend({
         result.push(area);
       }
     }
+
     return result;
+  },
+
+  _checkStandArea: function(suite, move) {
+    var is_black = move.is_black;
+    var piece    = move.from.piece;
+    var player   = is_black ? 'black' : 'white';
+
+    if (suite.stand[player][piece] < 1) {
+      return null;
+    }
+
+    if (piece != 'FU') {
+      return [0, 0];
+    }
+
+    var board_x = suite.board[move.to.x];
+    for (var y = 1; y <= 9; y++) {
+      var cell = board_x[y];
+      if (cell && cell.is_black == is_black && cell.piece == 'FU') {
+        return null;
+      }
+    }
+
+    return [0, 0];
   },
 
   _findFromAreasFU: function(suite, move) {
@@ -404,109 +434,6 @@ Kifu.prototype.extend({
     return areas;
   },
 
-  _findFromCell: function(suite, move) {
-    var from  = move.from;
-    var piece = from.piece;
-
-    var method = '_findFromAreas' + piece;
-    var areas  = this[method](suite, move);
-    areas      = this._checkFromAreas(suite.board, areas, move.is_black, piece);
-    if (areas.length == 1) {
-      var area = areas[0];
-      from.x   = area[0];
-      from.y   = area[1];
-      return true;
-    } else if (areas.length == 0) {
-      from.x = 0;
-      from.y = 0;
-      return true;
-    }
-
-    return this._findFromCellByDirection(move, areas);
-  },
-
-  _findFromCellByDirection: function(move, areas) {
-    var is_black = move.is_black;
-    var from     = move.from;
-    var to       = move.to;
-    var to_x     = to.x;
-    var to_y     = to.y;
-
-    var relative = move.relative;
-    if (relative) {
-      var new_areas = [];
-      var l         = areas.length;
-      for (var i = 0; i < l; i++) {
-        var area = areas[i];
-        if ((relative == 'right' && is_black) || (relative == 'left' && !is_black)) {
-          if (area[0] < to_x) new_areas.push(area);
-        } else {
-          if (to_x < area[0]) new_areas.push(area);
-        }
-      }
-
-      if (new_areas.length == 1) {
-        var area = new_areas[0];
-        from.x   = area[0];
-        from.y   = area[1];
-        return true;
-      } else if (new_areas.length == 0) {
-        return false;
-      }
-
-      areas = new_areas;
-    }
-
-    var direction = move.direction;
-    if (direction) {
-      var new_areas = [];
-      var l         = areas.length;
-      for (var i = 0; i < l; i++) {
-        var area = areas[i];
-        switch (direction) {
-        case 'down':
-          if (is_black) {
-            if (area[1] < to_y) new_areas.push(area);
-          } else {
-            if (to_y < area[1]) new_areas.push(area);
-          }
-          break;
-
-        case 'horizon':
-          if (area[1] == to_y) new_areas.push(area);
-          break;
-
-        case 'straight_up':
-          if (area[0] == to_x) {
-            if (is_black) {
-              if (to_y < area[1]) new_areas.push(area);
-            } else {
-              if (area[1] < to_y) new_areas.push(area);
-            }
-          }
-          break;
-
-        case 'up':
-          if (is_black) {
-            if (to_y < area[1]) new_areas.push(area);
-          } else {
-            if (area[1] < to_y) new_areas.push(area);
-          }
-          break;
-        }
-      }
-
-      if (new_areas.length == 1) {
-        var area = new_areas[0];
-        from.x   = area[0];
-        from.y   = area[1];
-        return true;
-      }
-    }
-
-    return false;
-  },
-
   _prepare: function() {
     var info = this.info;
 
@@ -525,6 +452,7 @@ Kifu.prototype.extend({
       var from      = move.from;
       var to        = move.to;
 
+      // is_black
       if (typeof move.is_black == 'undefined') {
         if (move_prev.type == 'init') {
           move.is_black = info.player_start == 'black';
@@ -533,23 +461,16 @@ Kifu.prototype.extend({
         }
       }
 
+      // to cell
       if (to.x == 0) {
         to.x = move_prev.to.x;
         to.y = move_prev.to.y;
       }
 
-      if (typeof from.piece == 'undefined') {
-        if (from.x) {
-          from.piece = suite.board[from.x][from.y].piece;
-        } else {
-          from.piece = to.piece;
-        }
-      }
+      // from cell
+      this._prepareFromCell(suite, move);
 
-      if (typeof from.x == 'undefined') {
-        this._findFromCell(suite, move);
-      }
-
+      // is_same_place
       if (typeof move.is_same_place == 'undefined') {
         if (move_prev.type == 'init') {
           move.is_same_place = false;
@@ -558,6 +479,7 @@ Kifu.prototype.extend({
         }
       }
 
+      // stand
       var cell = suite.board[to.x][to.y];
       if (cell) {
         move.stand = {
@@ -566,34 +488,217 @@ Kifu.prototype.extend({
         };
       }
 
-      if (!move.str) {
-        var str = '';
-        if (move.is_same_place) {
-          str += '同';
-        } else {
-          str += Kifu.integerToZenkaku(to.x);
-          str += Kifu.integerToKanji(to.y);
-        }
-        str += Kifu.pieceToMovePiece(from.piece);
-        if (move.relative) {
-          str += Kifu.relativeToKanji(move.relative);
-        }
-        if (move.direction) {
-          str += Kifu.directionToKanji(move.direction);
-        }
-        if (from.piece != to.piece) {
-          str += '成';
-        }
-        if (!from.x) {
-          str += '打';
-        }
-        move.str = str;
+      var str = '';
+      if (move.is_same_place) {
+        str += '同';
+      } else {
+        str += Kifu.integerToZenkaku(to.x);
+        str += Kifu.integerToKanji(to.y);
       }
+      str += Kifu.pieceToMovePiece(from.piece);
+      if (move.relative) {
+        str += Kifu.relativeToKanji(move.relative);
+      }
+      if (move.direction) {
+        str += Kifu.directionToKanji(move.direction);
+      }
+      if (from.piece != to.piece) {
+        str += '成';
+      }
+      if (move.put) {
+        str += '打';
+      }
+      move.str = str;
 
       suite.move(move);
     }
 
     return this;
+  },
+
+  _prepareDirection: function(move, areas) {
+    var is_black = move.is_black;
+    var from     = move.from;
+    var from_x   = from.x;
+    var from_y   = from.y;
+    var to       = move.to;
+    var to_x     = to.x;
+    var to_y     = to.y;
+    var piece    = from.piece;
+
+    var areas_x_less    = [];
+    var areas_x_greater = [];
+    var areas_x_equal   = [];
+    var areas_y_less    = [];
+    var areas_y_greater = [];
+    var areas_y_equal   = [];
+    var l = areas.length;
+    for (var i = 0; i < l; i++) {
+      var area = areas[i];
+      if (area[0] < to_x)      areas_x_less.push(area);
+      else if (to_x < area[0]) areas_x_greater.push(area);
+      else                     areas_x_equal.push(area);
+      if (area[1] < to_y)      areas_y_less.push(area);
+      else if (to_y < area[1]) areas_y_greater.push(area);
+      else                     areas_y_equal.push(area);
+    }
+
+    if (from_y < to_y && areas_y_less.length == 1) {
+      move.direction = is_black ? 'down' : 'up';
+      move.relative  = false;
+      return true;
+    } else if (to_y < from_y && areas_y_greater.length == 1) {
+      move.direction = is_black ? 'up' : 'down';
+      move.relative  = false;
+      return true;
+    } else if (from_y == to_y && areas_y_equal.length == 1) {
+      move.direction = 'horizon';
+      move.relative  = false;
+      return true;
+    }
+
+    if (from_x < to_x && areas_x_less.length == 1) {
+      move.direction = false;
+      move.relative  = is_black ? 'right' : 'left';
+      return true;
+    } else if (to_x < from_x && areas_x_greater.length == 1) {
+      move.direction = false;
+      move.relative  = is_black ? 'left' : 'right';
+      return true;
+    } else if (from_x == to_x && areas_x_equal.length == 1) {
+      if (piece == 'UM' && piece == 'RY') {
+      } else {
+        move.direction = false;
+        move.relative  = 'straight_up';
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  _prepareFromCell: function(suite, move) {
+    var from     = move.from;
+    var is_black = move.is_black;
+    var to       = move.to;
+
+    if (!from.piece) {
+      if (from.x) {
+        from.piece = suite.board[from.x][from.y].piece;
+      } else {
+        from.piece = to.piece;
+      }
+    }
+
+    var areas      = this._checkFromAreas(suite, move);
+    var area_stand = this._checkStandArea(suite, move);
+
+    var areas2 = Kifu.clone(areas);
+    if (area_stand) {
+      areas2.push(area_stand);
+    }
+    if (areas2.length == 1) {
+      var area       = areas2[0];
+      from.x         = area[0];
+      from.y         = area[1];
+      move.direction = false;
+      move.put       = false;
+      move.relative  = false;
+      return true;
+    }
+
+    if (from.x == 0) {
+      move.direction = false;
+      move.put       = true;
+      move.relative  = false;
+      return true;
+    }
+
+    if (areas.length == 1) {
+      var area       = areas[0];
+      from.x         = area[0];
+      from.y         = area[1];
+      move.direction = false;
+      move.put       = false;
+      move.relative  = false;
+      return true;
+    }
+
+    move.put = false;
+    if (move.direction || move.relative) {
+      return this._prepareFromCellByDirection(move, areas);
+    } else {
+      return this._prepareDirection(move, areas);
+    }
+  },
+
+  _prepareFromCellByDirection: function(move, areas) {
+    var is_black = move.is_black;
+    var from     = move.from;
+    var to       = move.to;
+    var to_x     = to.x;
+    var to_y     = to.y;
+    var areas_l  = areas.length;
+
+    var areas_x_less    = [];
+    var areas_x_greater = [];
+    var areas_x_equal   = [];
+    for (var i = 0; i < areas_l; i++) {
+      var area = areas[i];
+      if (area[0] < to_x)      areas_x_less.push(area);
+      else if (to_x < area[0]) areas_x_greater.push(area);
+      else                     areas_x_equal.push(area);
+    }
+
+    switch (move.relative) {
+    case 'left':
+      areas = is_black ? areas_x_greater : areas_x_less;
+      break;
+    case 'right':
+      areas = is_black ? areas_x_less : areas_x_greater;
+      break;
+    case 'straight_up':
+      areas = areas_x_equal;
+      break;
+    }
+
+    if (areas.length == 1) {
+      var area = areas[0];
+      from.x   = area[0];
+      from.y   = area[1];
+      return true;
+    }
+
+    var areas_y_less    = [];
+    var areas_y_greater = [];
+    var areas_y_equal   = [];
+    for (var i = 0; i < areas_l; i++) {
+      var area = areas[i];
+      if (area[1] < to_y)      areas_y_less.push(area);
+      else if (to_y < area[1]) areas_y_greater.push(area);
+      else                     areas_y_equal.push(area);
+    }
+
+    switch (move.direction) {
+    case 'down':
+      areas = is_black ? areas_y_less : areas_y_greater;
+      break;
+    case 'up':
+      areas = is_black ? areas_y_greater : areas_y_less;
+      break;
+    case 'horizon':
+      areas = areas_y_equal;
+      break;
+    }
+
+    if (areas.length == 1) {
+      var area = areas[0];
+      from.x   = area[0];
+      from.y   = area[1];
+      return true;
+    }
+
+    return false;
   }
 });
 
