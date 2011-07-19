@@ -210,7 +210,7 @@ Kifu.Kif.prototype.extend({
       case 'move':
         var from    = record.from;
         var to      = record.to;
-        var space_l = 5;
+        var space_l = 7;
 
         result += num + ' ';
 
@@ -219,7 +219,9 @@ Kifu.Kif.prototype.extend({
         } else {
           result += Kifu.integerToZenkaku(to.x) + Kifu.integerToKanji(to.y);
         }
-        result += Kifu.pieceToMovePiece(from.piece);
+        var piece = Kifu.pieceToMovePiece(from.piece);
+        result   += piece;
+        space_l  -= piece.length * 2;
         if (from.piece != to.piece) {
           result  += '成';
           space_l -= 2;
@@ -505,23 +507,23 @@ Kifu.Kif.prototype.extend({
       move = move.substr(1);
     }
 
-    if (move.charAt(0) == '成') {
+    switch (move.charAt(0)) {
+    case '成':
       from.piece = to.piece;
       to.piece   = promote_map[to.piece];
       move       = move.substr(1);
-    }
-
-    switch (move.charAt(0)) {
-    case '(':
-      from.x = parseInt(move.charAt(1));
-      from.y = parseInt(move.charAt(2));
-      move   = move.substr(4);
       break;
 
     case '打':
       from.x = from.y = 0;
       move   = move.substr(1);
       break;
+    }
+
+    if (move.charAt(0) == '(') {
+      from.x = parseInt(move.charAt(1));
+      from.y = parseInt(move.charAt(2));
+      move   = move.substr(4);
     }
 
     moves.setMove(num, params);
