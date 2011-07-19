@@ -41,10 +41,30 @@ Kifu.Ki2.prototype.extend({
     var l       = records.length;
     for (var i = 1; i < l; i++) {
       var record = records[i];
+      var from   = record.from;
+      var to     = record.to;
 
       switch (record.type) {
       case 'move':
-        result += (record.is_black ? '▲' : '△') + record.str + ' ';
+        result += (record.is_black ? '▲' : '△');
+        if (record.is_same_place) {
+          result += '同　';
+        } else {
+          result += Kifu.integerToZenkaku(to.x) + Kifu.integerToKanji(to.y);
+        }
+        result += Kifu.pieceToMovePiece(from.piece);
+        if (record.relative) {
+          result += Kifu.relativeToKanji(record.relative);
+        }
+        if (record.direction) {
+          result += Kifu.directionToKanji(record.direction);
+        }
+        if (from.piece != to.piece) {
+          result += '成';
+        }
+        if (record.put) {
+          result += '打';
+        }
         break;
       }
 

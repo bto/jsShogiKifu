@@ -492,8 +492,7 @@ Kifu.prototype.extend({
       if (move.is_same_place) {
         str += '同';
       } else {
-        str += Kifu.integerToZenkaku(to.x);
-        str += Kifu.integerToKanji(to.y);
+        str += Kifu.integerToZenkaku(to.x) + Kifu.integerToKanji(to.y);
       }
       str += Kifu.pieceToMovePiece(from.piece);
       if (move.relative) {
@@ -567,6 +566,7 @@ Kifu.prototype.extend({
       return true;
     } else if (from_x == to_x && areas_x_equal.length == 1) {
       if (piece == 'UM' && piece == 'RY') {
+        // not implemented yet
       } else {
         move.direction = false;
         move.relative  = 'straight_up';
@@ -574,6 +574,7 @@ Kifu.prototype.extend({
       }
     }
 
+    // not implemented yet
     return false;
   },
 
