@@ -121,287 +121,6 @@ Kifu.extend = Kifu.prototype.extend = function(source) {
 };
 
 Kifu.prototype.extend({
-  checkFromAreas: function(board, areas, is_black, piece) {
-    var result = [];
-    var l      = areas.length;
-    for (var i = 0; i < l; i++) {
-      var area = areas[i];
-      var x    = area[0];
-      var y    = area[1];
-      if (x < 1 || 9 < x || y < 1 || 9 < y) {
-        continue;
-      }
-      var cell = board[x][y];
-      if (cell && cell.is_black == is_black && cell.piece == piece) {
-        result.push(area);
-      }
-    }
-    return result;
-  },
-
-  findFromAreasFU: function(suite, move) {
-    var to = move.to;
-    var y  = to.y + (move.is_black ? 1 : -1);
-    return [[to.x, y]];
-  },
-
-  findFromAreasKY: function(suite, move) {
-    var board = suite.board;
-    var to    = move.to;
-    var x     = to.x;
-    if (move.is_black) {
-      for (var y = to.y + 1; y <= 9; y++) {
-        if (board[x][y]) return [[x, y]];
-      }
-    } else {
-      for (var y = to.y - 1; 1 <= y; y--) {
-        if (board[x][y]) return [[x, y]];
-      }
-    }
-    return [];
-  },
-
-  findFromAreasKE: function(suite, move) {
-    var to = move.to;
-    var x  = to.x;
-    var y  = to.y + (move.is_black ? 2 : -2);
-    return [[x+1, y], [x-1, y]];
-  },
-
-  findFromAreasGI: function(suite, move) {
-    var to    = move.to;
-    var x     = to.x;
-    var y     = to.y;
-    var areas = [[x+1, y+1], [x+1, y-1], [x-1, y+1], [x-1, y-1]];
-    if (move.is_black) {
-      areas.push([x, y+1]);
-    } else {
-      areas.push([x, y-1]);
-    }
-    return areas;
-  },
-
-  findFromAreasKI: function(suite, move) {
-    var to    = move.to;
-    var x     = to.x;
-    var y     = to.y;
-    var areas = [[x+1, y], [x-1, y], [x, y+1], [x, y-1]];
-    if (move.is_black) {
-      areas.push([x+1, y+1]);
-      areas.push([x-1, y+1]);
-    } else {
-      areas.push([x+1, y-1]);
-      areas.push([x-1, y-1]);
-    }
-    return areas;
-  },
-
-  findFromAreasKA: function(suite, move) {
-    var board = suite.board;
-    var to    = move.to;
-    var to_x  = to.x;
-    var to_y  = to.y;
-    var areas = [];
-
-    for (var i = 1; i <= 8; i++) {
-      var x = to_x + i; var y = to_y + i;
-      if (x < 1 || 9 < x || y < 1 || 9 < y) break;
-      if (board[x][y]) { areas.push([x, y]); break; }
-    }
-    for (var i = 1; i <= 8; i++) {
-      var x = to_x + i; var y = to_y - i;
-      if (x < 1 || 9 < x || y < 1 || 9 < y) break;
-      if (board[x][y]) { areas.push([x, y]); break; }
-    }
-    for (var i = 1; i <= 8; i++) {
-      var x = to_x - i; var y = to_y + i;
-      if (x < 1 || 9 < x || y < 1 || 9 < y) break;
-      if (board[x][y]) { areas.push([x, y]); break; }
-    }
-    for (var i = 1; i <= 8; i++) {
-      var x = to_x - i; var y = to_y - i;
-      if (x < 1 || 9 < x || y < 1 || 9 < y) break;
-      if (board[x][y]) { areas.push([x, y]); break; }
-    }
-
-    return areas;
-  },
-
-  findFromAreasHI: function(suite, move) {
-    var board = suite.board;
-    var to    = move.to;
-    var areas = [];
-
-    var y = to.y;
-    for (var x = to.x + 1; x <= 9; x++) {
-      if (board[x][y]) { areas.push([x, y]); break; }
-    }
-    for (var x = to.x - 1; 1 <= x; x--) {
-      if (board[x][y]) { areas.push([x, y]); break; }
-    }
-
-    var x = to.x;
-    for (var y = to.y + 1; y <= 9; y++) {
-      if (board[x][y]) { areas.push([x, y]); break; }
-    }
-    for (var y = to.y - 1; 1 <= y; y--) {
-      if (board[x][y]) { areas.push([x, y]); break; }
-    }
-
-    return areas;
-  },
-
-  findFromAreasOU: function(suite, move) {
-    var to = move.to;
-    var x  = to.x;
-    var y  = to.y;
-    return [[x+1, y+1], [x+1, y], [x+1, y-1], [x, y+1], [x, y-1],
-      [x-1, y+1], [x-1, y], [x-1, y-1]];
-  },
-
-  findFromAreasTO: function(suite, move) {
-    return this.findFromAreasKI(suite, move);
-  },
-
-  findFromAreasNY: function(suite, move) {
-    return this.findFromAreasKI(suite, move);
-  },
-
-  findFromAreasNK: function(suite, move) {
-    return this.findFromAreasKI(suite, move);
-  },
-
-  findFromAreasNG: function(suite, move) {
-    return this.findFromAreasKI(suite, move);
-  },
-
-  findFromAreasUM: function(suite, move) {
-    var areas = this.findFromAreasKA(suite, move);
-    var to    = move.to;
-    var x     = to.x;
-    var y     = to.y;
-    areas.push([x+1, y]);
-    areas.push([x-1, y]);
-    areas.push([x, y+1]);
-    areas.push([x, y-1]);
-    return areas;
-  },
-
-  findFromAreasRY: function(suite, move) {
-    var areas = this.findFromAreasHI(suite, move);
-    var to    = move.to;
-    var x     = to.x;
-    var y     = to.y;
-    areas.push([x+1, y+1]);
-    areas.push([x+1, y-1]);
-    areas.push([x-1, y+1]);
-    areas.push([x-1, y-1]);
-    return areas;
-  },
-
-  findFromCell: function(suite, move) {
-    var from  = move.from;
-    var piece = from.piece;
-
-    var method = 'findFromAreas' + piece;
-    var areas  = this[method](suite, move);
-    areas      = this.checkFromAreas(suite.board, areas, move.is_black, piece);
-    if (areas.length == 1) {
-      var area = areas[0];
-      from.x   = area[0];
-      from.y   = area[1];
-      return true;
-    } else if (areas.length == 0) {
-      from.x = 0;
-      from.y = 0;
-      return true;
-    }
-
-    return this.findFromCellByDirection(move, areas);
-  },
-
-  findFromCellByDirection: function(move, areas) {
-    var is_black = move.is_black;
-    var from     = move.from;
-    var to       = move.to;
-    var to_x     = to.x;
-    var to_y     = to.y;
-
-    var relative = move.relative;
-    if (relative) {
-      var new_areas = [];
-      var l         = areas.length;
-      for (var i = 0; i < l; i++) {
-        var area = areas[i];
-        if ((relative == 'right' && is_black) || (relative == 'left' && !is_black)) {
-          if (area[0] < to_x) new_areas.push(area);
-        } else {
-          if (to_x < area[0]) new_areas.push(area);
-        }
-      }
-
-      if (new_areas.length == 1) {
-        var area = new_areas[0];
-        from.x   = area[0];
-        from.y   = area[1];
-        return true;
-      } else if (new_areas.length == 0) {
-        return false;
-      }
-
-      areas = new_areas;
-    }
-
-    var direction = move.direction;
-    if (direction) {
-      var new_areas = [];
-      var l         = areas.length;
-      for (var i = 0; i < l; i++) {
-        var area = areas[i];
-        switch (direction) {
-        case 'down':
-          if (is_black) {
-            if (area[1] < to_y) new_areas.push(area);
-          } else {
-            if (to_y < area[1]) new_areas.push(area);
-          }
-          break;
-
-        case 'horizon':
-          if (area[1] == to_y) new_areas.push(area);
-          break;
-
-        case 'straight_up':
-          if (area[0] == to_x) {
-            if (is_black) {
-              if (to_y < area[1]) new_areas.push(area);
-            } else {
-              if (area[1] < to_y) new_areas.push(area);
-            }
-          }
-          break;
-
-        case 'up':
-          if (is_black) {
-            if (to_y < area[1]) new_areas.push(area);
-          } else {
-            if (area[1] < to_y) new_areas.push(area);
-          }
-          break;
-        }
-      }
-
-      if (new_areas.length == 1) {
-        var area = new_areas[0];
-        from.x   = area[0];
-        from.y   = area[1];
-        return true;
-      }
-    }
-
-    return false;
-  },
-
   hasNext: function() {
     var move = this.moves.get(this.step+1);
     if (move && move.type == 'move') {
@@ -494,13 +213,301 @@ Kifu.prototype.extend({
     var klass = Kifu.capitalize(this.info.format);
     this.parser = Kifu[klass](this);
     this.parser.parse();
-    this.prepare();
+    this._prepare();
 
     this.moveFirst();
     return this;
   },
 
-  prepare: function() {
+  source: function(source) {
+    if (source) {
+      this.info.source = Kifu.load(source);
+    }
+    return this.info.source;
+  },
+
+  _checkFromAreas: function(board, areas, is_black, piece) {
+    var result = [];
+    var l      = areas.length;
+    for (var i = 0; i < l; i++) {
+      var area = areas[i];
+      var x    = area[0];
+      var y    = area[1];
+      if (x < 1 || 9 < x || y < 1 || 9 < y) {
+        continue;
+      }
+      var cell = board[x][y];
+      if (cell && cell.is_black == is_black && cell.piece == piece) {
+        result.push(area);
+      }
+    }
+    return result;
+  },
+
+  _findFromAreasFU: function(suite, move) {
+    var to = move.to;
+    var y  = to.y + (move.is_black ? 1 : -1);
+    return [[to.x, y]];
+  },
+
+  _findFromAreasKY: function(suite, move) {
+    var board = suite.board;
+    var to    = move.to;
+    var x     = to.x;
+    if (move.is_black) {
+      for (var y = to.y + 1; y <= 9; y++) {
+        if (board[x][y]) return [[x, y]];
+      }
+    } else {
+      for (var y = to.y - 1; 1 <= y; y--) {
+        if (board[x][y]) return [[x, y]];
+      }
+    }
+    return [];
+  },
+
+  _findFromAreasKE: function(suite, move) {
+    var to = move.to;
+    var x  = to.x;
+    var y  = to.y + (move.is_black ? 2 : -2);
+    return [[x+1, y], [x-1, y]];
+  },
+
+  _findFromAreasGI: function(suite, move) {
+    var to    = move.to;
+    var x     = to.x;
+    var y     = to.y;
+    var areas = [[x+1, y+1], [x+1, y-1], [x-1, y+1], [x-1, y-1]];
+    if (move.is_black) {
+      areas.push([x, y+1]);
+    } else {
+      areas.push([x, y-1]);
+    }
+    return areas;
+  },
+
+  _findFromAreasKI: function(suite, move) {
+    var to    = move.to;
+    var x     = to.x;
+    var y     = to.y;
+    var areas = [[x+1, y], [x-1, y], [x, y+1], [x, y-1]];
+    if (move.is_black) {
+      areas.push([x+1, y+1]);
+      areas.push([x-1, y+1]);
+    } else {
+      areas.push([x+1, y-1]);
+      areas.push([x-1, y-1]);
+    }
+    return areas;
+  },
+
+  _findFromAreasKA: function(suite, move) {
+    var board = suite.board;
+    var to    = move.to;
+    var to_x  = to.x;
+    var to_y  = to.y;
+    var areas = [];
+
+    for (var i = 1; i <= 8; i++) {
+      var x = to_x + i; var y = to_y + i;
+      if (x < 1 || 9 < x || y < 1 || 9 < y) break;
+      if (board[x][y]) { areas.push([x, y]); break; }
+    }
+    for (var i = 1; i <= 8; i++) {
+      var x = to_x + i; var y = to_y - i;
+      if (x < 1 || 9 < x || y < 1 || 9 < y) break;
+      if (board[x][y]) { areas.push([x, y]); break; }
+    }
+    for (var i = 1; i <= 8; i++) {
+      var x = to_x - i; var y = to_y + i;
+      if (x < 1 || 9 < x || y < 1 || 9 < y) break;
+      if (board[x][y]) { areas.push([x, y]); break; }
+    }
+    for (var i = 1; i <= 8; i++) {
+      var x = to_x - i; var y = to_y - i;
+      if (x < 1 || 9 < x || y < 1 || 9 < y) break;
+      if (board[x][y]) { areas.push([x, y]); break; }
+    }
+
+    return areas;
+  },
+
+  _findFromAreasHI: function(suite, move) {
+    var board = suite.board;
+    var to    = move.to;
+    var areas = [];
+
+    var y = to.y;
+    for (var x = to.x + 1; x <= 9; x++) {
+      if (board[x][y]) { areas.push([x, y]); break; }
+    }
+    for (var x = to.x - 1; 1 <= x; x--) {
+      if (board[x][y]) { areas.push([x, y]); break; }
+    }
+
+    var x = to.x;
+    for (var y = to.y + 1; y <= 9; y++) {
+      if (board[x][y]) { areas.push([x, y]); break; }
+    }
+    for (var y = to.y - 1; 1 <= y; y--) {
+      if (board[x][y]) { areas.push([x, y]); break; }
+    }
+
+    return areas;
+  },
+
+  _findFromAreasOU: function(suite, move) {
+    var to = move.to;
+    var x  = to.x;
+    var y  = to.y;
+    return [[x+1, y+1], [x+1, y], [x+1, y-1], [x, y+1], [x, y-1],
+      [x-1, y+1], [x-1, y], [x-1, y-1]];
+  },
+
+  _findFromAreasTO: function(suite, move) {
+    return this._findFromAreasKI(suite, move);
+  },
+
+  _findFromAreasNY: function(suite, move) {
+    return this._findFromAreasKI(suite, move);
+  },
+
+  _findFromAreasNK: function(suite, move) {
+    return this._findFromAreasKI(suite, move);
+  },
+
+  _findFromAreasNG: function(suite, move) {
+    return this._findFromAreasKI(suite, move);
+  },
+
+  _findFromAreasUM: function(suite, move) {
+    var areas = this._findFromAreasKA(suite, move);
+    var to    = move.to;
+    var x     = to.x;
+    var y     = to.y;
+    areas.push([x+1, y]);
+    areas.push([x-1, y]);
+    areas.push([x, y+1]);
+    areas.push([x, y-1]);
+    return areas;
+  },
+
+  _findFromAreasRY: function(suite, move) {
+    var areas = this._findFromAreasHI(suite, move);
+    var to    = move.to;
+    var x     = to.x;
+    var y     = to.y;
+    areas.push([x+1, y+1]);
+    areas.push([x+1, y-1]);
+    areas.push([x-1, y+1]);
+    areas.push([x-1, y-1]);
+    return areas;
+  },
+
+  _findFromCell: function(suite, move) {
+    var from  = move.from;
+    var piece = from.piece;
+
+    var method = '_findFromAreas' + piece;
+    var areas  = this[method](suite, move);
+    areas      = this._checkFromAreas(suite.board, areas, move.is_black, piece);
+    if (areas.length == 1) {
+      var area = areas[0];
+      from.x   = area[0];
+      from.y   = area[1];
+      return true;
+    } else if (areas.length == 0) {
+      from.x = 0;
+      from.y = 0;
+      return true;
+    }
+
+    return this._findFromCellByDirection(move, areas);
+  },
+
+  _findFromCellByDirection: function(move, areas) {
+    var is_black = move.is_black;
+    var from     = move.from;
+    var to       = move.to;
+    var to_x     = to.x;
+    var to_y     = to.y;
+
+    var relative = move.relative;
+    if (relative) {
+      var new_areas = [];
+      var l         = areas.length;
+      for (var i = 0; i < l; i++) {
+        var area = areas[i];
+        if ((relative == 'right' && is_black) || (relative == 'left' && !is_black)) {
+          if (area[0] < to_x) new_areas.push(area);
+        } else {
+          if (to_x < area[0]) new_areas.push(area);
+        }
+      }
+
+      if (new_areas.length == 1) {
+        var area = new_areas[0];
+        from.x   = area[0];
+        from.y   = area[1];
+        return true;
+      } else if (new_areas.length == 0) {
+        return false;
+      }
+
+      areas = new_areas;
+    }
+
+    var direction = move.direction;
+    if (direction) {
+      var new_areas = [];
+      var l         = areas.length;
+      for (var i = 0; i < l; i++) {
+        var area = areas[i];
+        switch (direction) {
+        case 'down':
+          if (is_black) {
+            if (area[1] < to_y) new_areas.push(area);
+          } else {
+            if (to_y < area[1]) new_areas.push(area);
+          }
+          break;
+
+        case 'horizon':
+          if (area[1] == to_y) new_areas.push(area);
+          break;
+
+        case 'straight_up':
+          if (area[0] == to_x) {
+            if (is_black) {
+              if (to_y < area[1]) new_areas.push(area);
+            } else {
+              if (area[1] < to_y) new_areas.push(area);
+            }
+          }
+          break;
+
+        case 'up':
+          if (is_black) {
+            if (to_y < area[1]) new_areas.push(area);
+          } else {
+            if (area[1] < to_y) new_areas.push(area);
+          }
+          break;
+        }
+      }
+
+      if (new_areas.length == 1) {
+        var area = new_areas[0];
+        from.x   = area[0];
+        from.y   = area[1];
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  _prepare: function() {
     var info = this.info;
 
     if (!info.player_start) {
@@ -540,7 +547,7 @@ Kifu.prototype.extend({
       }
 
       if (typeof from.x == 'undefined') {
-        this.findFromCell(suite, move);
+        this._findFromCell(suite, move);
       }
 
       if (typeof move.is_same_place == 'undefined') {
@@ -587,13 +594,6 @@ Kifu.prototype.extend({
     }
 
     return this;
-  },
-
-  source: function(source) {
-    if (source) {
-      this.info.source = Kifu.load(source);
-    }
-    return this.info.source;
   }
 });
 
