@@ -249,7 +249,7 @@ test('initialization', 9, function() {
   same(kifu.moves,      Kifu.Move(),  'source moves');
 });
 
-test('hasNext, hasPrev, moveCurrent, moveFirst, moveLast, moveNext, movePrev', 0, function() {
+test('hasNext, hasPrev, moveCurrent, moveFirst, moveLast, moveNext, movePrev, moveTo', 49, function() {
   var kifu = Kifu("V2.2\nPI\n+2726FU\n-3334FU");
   kifu.parse('csa');
 
@@ -327,6 +327,20 @@ test('hasNext, hasPrev, moveCurrent, moveFirst, moveLast, moveNext, movePrev', 0
   same(kifu.is_black, true,  'first is_black');
   same(kifu.step,     0,     'first step');
   same(kifu.suite,    suite, 'first suite');
+
+  // move to
+  suite.move(moves.get(1));
+  kifu.moveTo(1);
+  same(kifu.is_black, false, 'move to 1 is_black');
+  same(kifu.step,     1,     'move to 1 step');
+  same(kifu.suite,    suite, 'move to 1 suite');
+});
+
+test('moveStrings', 1, function() {
+  var kifu = Kifu("V2.2\nPI\n+2726FU\n-3334FU");
+  kifu.parse('csa');
+
+  same(kifu.moveStrings(), ['２六歩', '３四歩'], 'move strings');
 });
 
 test('parse', 7, function() {
