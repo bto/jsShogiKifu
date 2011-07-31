@@ -249,79 +249,84 @@ test('initialization', 9, function() {
   same(kifu.moves,      Kifu.Move(),  'source moves');
 });
 
-test('moveNext, movePrev', 31, function() {
-  var kifu = Kifu('V2.2');
-  kifu.suite_init.hirate();
+test('hasNext, hasPrev, moveCurrent, moveFirst, moveLast, moveNext, movePrev', 0, function() {
+  var kifu = Kifu("V2.2\nPI\n+2726FU\n-3334FU");
   kifu.parse('csa');
-  kifu.moves.addMove(
-    {from: {x: 2, y: 7}, to: {x: 2, y: 6, piece: 'FU'}, is_black: true});
-  kifu.moves.addMove(
-    {from: {x: 3, y: 3}, to: {x: 3, y: 4, piece: 'FU'}, is_black: false});
-  var is_black = kifu.is_black;
-  var moves    = kifu.moves.clone();
-  var step     = kifu.step;
-  var suite    = kifu.suite.clone();
+
+  var moves = kifu.moves.clone();
+  var suite = kifu.suite.clone();
 
   // 1st move
-  var move = moves.get(1);
-  suite.move(move);
-  is_black = false;
-  step     = 1;
-  same(kifu.moveNext(), move,     '1st move');
-  same(kifu.is_black,   is_black, '1st black');
-  same(kifu.moves,      moves,    '1st moves');
-  same(kifu.step,       step,     '1st step');
-  same(kifu.suite,      suite,    '1st suite');
+  suite.move(moves.get(1));
+  same(kifu.hasNext(),     true,         '1st move hasNext');
+  same(kifu.hasPrev(),     false,        '1st move hasPrev');
+  same(kifu.moveCurrent(), null,         '1st move current');
+  same(kifu.moveNext(),    moves.get(1), '1st move next');
+  same(kifu.is_black,      false,        '1st is_black');
+  same(kifu.step,          1,            '1st step');
+  same(kifu.suite,         suite,        '1st suite');
 
   // 2nd move
-  var move = moves.get(2);
-  suite.move(move);
-  is_black = true;
-  step     = 2;
-  same(kifu.moveNext(), move,     '2nd move');
-  same(kifu.is_black,   is_black, '2nd black');
-  same(kifu.moves,      moves,    '2nd moves');
-  same(kifu.step,       step,     '2nd step');
-  same(kifu.suite,      suite,    '2nd suite');
+  suite.move(moves.get(2));
+  same(kifu.hasNext(),     true,         '2nd move hasNext');
+  same(kifu.hasPrev(),     false,        '2nd move hasPrev');
+  same(kifu.moveCurrent(), moves.get(1), '2nd move current');
+  same(kifu.moveNext(),    moves.get(2), '2nd move next');
+  same(kifu.is_black,      true,         '2nd is_black');
+  same(kifu.step,          2,            '2nd step');
+  same(kifu.suite,         suite,        '2nd suite');
 
   // 3rd move
-  var move = moves.get(3);
-  same(move,            undefined, '3rd move undefined');
-  same(kifu.moveNext(), move,      '3rd move');
-  same(kifu.is_black,   is_black,  '3rd black');
-  same(kifu.moves,      moves,     '3rd moves');
-  same(kifu.step,       step,      '3rd step');
-  same(kifu.suite,      suite,     '3rd suite');
+  same(moves.get(3),       undefined,    '3rd move undefined');
+  same(kifu.hasNext(),     false,        '3rd move hasNext');
+  same(kifu.hasPrev(),     true,         '3rd move hasPrev');
+  same(kifu.moveCurrent(), moves.get(2), '3rd move current');
+  same(kifu.moveNext(),    undefined,    '3rd move next');
+  same(kifu.is_black,      true,         '3rd is_black');
+  same(kifu.step,          2,            '3rd step');
+  same(kifu.suite,         suite,        '3rd suite');
 
   // 2nd prev
-  var move = moves.get(2);
-  suite.moveReverse(move);
-  is_black = false;
-  step     = 1;
-  same(kifu.movePrev(), move,     '2nd perv move');
-  same(kifu.is_black,   is_black, '2nd perv black');
-  same(kifu.moves,      moves,    '2nd perv moves');
-  same(kifu.step,       step,     '2nd perv step');
-  same(kifu.suite,      suite,    '2nd perv suite');
+  suite.moveReverse(moves.get(2));
+  same(kifu.movePrev(),    moves.get(2), '2nd move prev');
+  same(kifu.is_black,      false,        '2nd is_black');
+  same(kifu.step,          1,            '2nd step');
+  same(kifu.suite,         suite,        '2nd suite');
 
   // 1st prev
-  var move = moves.get(1);
-  suite.moveReverse(move);
-  is_black = true;
-  step     = 0;
-  same(kifu.movePrev(), move,     '1st perv move');
-  same(kifu.is_black,   is_black, '1st perv black');
-  same(kifu.moves,      moves,    '1st perv moves');
-  same(kifu.step,       step,     '1st perv step');
-  same(kifu.suite,      suite,    '1st perv suite');
+  suite.moveReverse(moves.get(1));
+  same(kifu.hasNext(),     true,         '1st move hasNext');
+  same(kifu.hasPrev(),     false,        '1st move hasPrev');
+  same(kifu.moveCurrent(), moves.get(1), '1st move current');
+  same(kifu.movePrev(),    moves.get(1), '1st move prev');
+  same(kifu.is_black,      true,         '1st is_black');
+  same(kifu.step,          0,            '1st step');
+  same(kifu.suite,         suite,        '1st suite');
 
   // init prev
-  var move = moves.get(0);
-  same(kifu.movePrev(), move,     'init perv move');
-  same(kifu.is_black,   is_black, 'init perv black');
-  same(kifu.moves,      moves,    'init perv moves');
-  same(kifu.step,       step,     'init perv step');
-  same(kifu.suite,      suite,    'init perv suite');
+  same(kifu.hasNext(),     true,         'init move hasNext');
+  same(kifu.hasPrev(),     false,        'init move hasPrev');
+  same(kifu.moveCurrent(), null,         'init move current');
+  same(kifu.movePrev(),    moves.get(0), 'init prev move');
+  same(kifu.is_black,      true,         'init prev black');
+  same(kifu.step,          0,            'init prev step');
+  same(kifu.suite,         suite,        'init prev suite');
+
+  // move last
+  suite.move(moves.get(1));
+  suite.move(moves.get(2));
+  kifu.moveLast();
+  same(kifu.is_black, true,  'last is_black');
+  same(kifu.step,     2,     'last step');
+  same(kifu.suite,    suite, 'last suite');
+
+  // move first
+  suite.moveReverse(moves.get(2));
+  suite.moveReverse(moves.get(1));
+  kifu.moveFirst();
+  same(kifu.is_black, true,  'first is_black');
+  same(kifu.step,     0,     'first step');
+  same(kifu.suite,    suite, 'first suite');
 });
 
 test('parse', 7, function() {
