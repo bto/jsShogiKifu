@@ -6,6 +6,7 @@ SOURCES = ${SRC_DIR}/core.js \
 	${SRC_DIR}/kif.js \
 	${SRC_DIR}/ki2.js \
 	${SRC_DIR}/move.js \
+	${SRC_DIR}/prepare.js \
 	${SRC_DIR}/suite.js
 
 TARGET = ${DIST_DIR}/kifu.js

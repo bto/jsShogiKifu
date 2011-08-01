@@ -374,59 +374,6 @@ test('source', 5, function() {
   same(kifu.source(), source, source);
 });
 
-test('_prepare', 10, function() {
-  var kifu  = Kifu();
-  var moves = Kifu.Move();
-  kifu.suite_init.hirate();
-
-  // ７六歩
-  kifu.moves.addMove({to: {x: 7, y: 6, piece: 'FU'}});
-  moves.addMove({
-    from: {x: 7, y: 7, piece: 'FU'}, to: {x: 7, y: 6, piece: 'FU'},
-    direction: false, movement: false, put: false,
-    is_black: true, is_same_place: false, str: '７六歩'});
-  ok(kifu._prepare(), '_prepare');
-  same(kifu.moves, moves, '７六歩');
-
-  // ３四歩
-  kifu.moves.addMove({to: {x: 3, y: 4, piece: 'FU'}});
-  moves.addMove({
-    from: {x: 3, y: 3, piece: 'FU'}, to: {x: 3, y: 4, piece: 'FU'},
-    direction: false, movement: false, put: false,
-    is_black: false, is_same_place: false, str: '３四歩'});
-  ok(kifu._prepare(), '_prepare');
-  same(kifu.moves, moves, '３四歩');
-
-  // ２二角成
-  kifu.moves.addMove({from: {piece: 'KA'}, to: {x: 2, y: 2, piece: 'UM'}});
-  moves.addMove({
-    from: {x: 8, y: 8, piece: 'KA'}, to: {x: 2, y: 2, piece: 'UM'},
-    stand: {piece: 'KA', stand: 'KA'},
-    direction: false, movement: false, put: false,
-    is_black: true, is_same_place: false, str: '２二角成'});
-  ok(kifu._prepare(), '_prepare');
-  same(kifu.moves, moves, '２二角成');
-
-  // 同銀
-  kifu.moves.addMove({to: {x: 0, y: 0, piece: 'GI'}});
-  moves.addMove({
-    from: {x: 3, y: 1, piece: 'GI'}, to: {x: 2, y: 2, piece: 'GI'},
-    stand: {piece: 'UM', stand: 'KA'},
-    direction: false, movement: false, put: false,
-    is_black: false, is_same_place: true, str: '同銀'});
-  ok(kifu._prepare(), '_prepare');
-  same(kifu.moves, moves, '同銀');
-
-  // ５五角
-  kifu.moves.addMove({to: {x: 5, y: 5, piece: 'KA'}});
-  moves.addMove({
-    from: {x: 0, y: 0, piece: 'KA'}, to: {x: 5, y: 5, piece: 'KA'},
-    direction: false, movement: false, put: false,
-    is_black: true, is_same_place: false, str: '５五角'});
-  ok(kifu._prepare(), '_prepare');
-  same(kifu.moves, moves, '５五角');
-});
-
 
 })();
 
